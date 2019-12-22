@@ -1,0 +1,80 @@
+package cn.henry.study.pool;
+
+import cn.henry.study.configuration.FtpClientPoolConfig;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PreDestroy;
+
+/**
+ * description: FTP 客户端连接池
+ *
+ * @author Hlingoes
+ * @date 2019/12/22 20:56
+ */
+@Component
+public class FtpClientPool {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FtpClientPool.class);
+
+    /**
+     * ftp客户端连接池
+     */
+    private GenericObjectPool<FTPClient> pool;
+
+    /**
+     * ftp客户端工厂
+     */
+    private FtpClientFactory ftpClientFactory;
+
+    /**
+     * 构造函数中 注入一个bean
+     *
+     * @param ftpClientFactory
+     */
+    public FtpClientPool(@Autowired FtpClientFactory ftpClientFactory) {
+        LOGGER.info("初始化ftpClientPool...");
+        this.ftpClientFactory = ftpClientFactory;
+        pool = new GenericObjectPool<>(ftpClientFactory, ftpClientFactory.getFtpClientPoolConfig());
+    }
+
+    public GenericObjectPool<FTPClient> getPool() {
+        return pool;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (pool != null) {
+            pool.close();
+            LOGGER.info("销毁ftpClientPool...");
+        }
+    }
+
+    /**
+     * 借  获取一个连接对象
+     *
+     * @return
+     * @throws Exception
+     */
+    public FTPClient borrowObject() throws Exception {
+        return pool.borrowObject();
+    }
+
+    /**
+     * 还   归还一个连接对象
+     *
+     * @param ftpClient
+     */
+    public void returnObject(FTPClient ftpClient) {
+        if (ftpClient != null) {
+            pool.returnObject(ftpClient);
+        }
+    }
+}

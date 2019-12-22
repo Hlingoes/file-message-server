@@ -1,5 +1,6 @@
 package cn.henry.study;
 
+import cn.henry.study.configuration.FtpClientPoolConfig;
 import cn.henry.study.configuration.HttpClientPoolConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,14 +25,21 @@ public class ConfigurationTest {
     @Autowired
     private HttpClientPoolConfig httpClientPoolConfig;
 
+    @Autowired
+    private FtpClientPoolConfig ftpClientPoolConfig;
+
     /**
      * description: 测试将yml配置转为pojo对象，方便多个变量取值
      *
      * @return void
      * @author Hlingoes 2019/12/21
      */
-    @Test
     public void testReadHttpClientPoolConfig() {
         LOGGER.info("httpClientPoolConfig: {}", httpClientPoolConfig.toString());
+    }
+
+    @Test
+    public void testReadFtpClientPoolConfig() {
+        LOGGER.info("ftpClientPoolConfig: {}", ftpClientPoolConfig.toString());
     }
 }

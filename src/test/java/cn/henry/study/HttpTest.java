@@ -1,12 +1,10 @@
 package cn.henry.study;
 
 import cn.henry.study.appication.HttpClientTemplateService;
-import cn.henry.study.base.FileService;
 import cn.henry.study.entity.Book;
-import cn.henry.study.pool.HttpDownloadPool;
+import cn.henry.study.pool.HttpClientDownloadPool;
 import cn.henry.study.utils.JacksonUtils;
 import org.apache.catalina.User;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -43,7 +41,7 @@ public class HttpTest {
     private HttpClientTemplateService httpClientTemplate;
 
     @Autowired
-    private HttpDownloadPool httpDownloadPool;
+    private HttpClientDownloadPool httpDownloadPool;
 
     public void testLogin() {
         String url = "http://localhost:8181/UserApplication/FormUserManager/login";

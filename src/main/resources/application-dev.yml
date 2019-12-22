@@ -26,6 +26,44 @@ spring:
       keepAliveTargetHost:
         www.baidu.com: 5
         www.cnblogs.com: 2
+  ftp:
+    pool:
+      host: 192.168.1.107
+      port: 21
+      username: henry
+      password: faith
+      #ftp 连接超时时间 毫秒
+      connectTimeOut: 5000
+      #控制连接的字符编码
+      controlEncoding: UTF-8
+      #缓冲区大小
+      bufferSize: 1024
+      #传输文件类型，2表二进制
+      fileType: 2
+      #数据传输超时 毫秒
+      dataTimeout: 120000
+      #是否启用ftp被动模式
+      passiveMode: true
+      #连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
+      blockWhenExhausted: true
+      #最大空闲等待时间(毫秒)，建议设置稍微长点，如90分钟
+      maxWaitMillis: 5400000
+      #最大空闲连接数
+      maxIdle: 50
+      #最大连接数
+      maxTotal: 50
+      #最小空闲连接数
+      minIdle: 2
+      #申请连接时 检测是否有效
+      testOnBorrow: true
+      #创建连接时 检测是否有效
+      testOnCreate: true
+      #返回连接时 检测是否有效
+      testOnReturn: true
+      #空闲时检测连接是否有效
+      testWhileIdle: true
+      useEPSVwithIPv4: false
+
 server:
   port: 9012
 logging:

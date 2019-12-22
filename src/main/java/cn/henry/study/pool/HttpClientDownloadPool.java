@@ -32,9 +32,9 @@ import java.util.concurrent.*;
  * @date 2019/12/22 0:28
  */
 @Component
-public class HttpDownloadPool {
+public class HttpClientDownloadPool {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpDownloadPool.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloadPool.class);
 
     /**
      * 使用自定义的httpclient的restTemplate
@@ -70,7 +70,6 @@ public class HttpDownloadPool {
     private static String prefix = String.valueOf(System.currentTimeMillis());
 
     public void downloadByMultithread(String url, String targetPath, Integer threadNum) {
-
         long startTimestamp = System.currentTimeMillis();
         //开启线程
         threadNum = threadNum == null ? MIN_POOL_SIZE : threadNum;
@@ -116,7 +115,6 @@ public class HttpDownloadPool {
                 CompletableFuture<DownloadTemp> future = CompletableFuture.supplyAsync(thread::call, threadPool);
                 futures.add(future);
             }
-
         } catch (Exception e) {
             LOGGER.error("[多线程下载] 下载出错", e);
             return;
