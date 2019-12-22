@@ -1,14 +1,10 @@
 package cn.henry.study.pool;
 
-import cn.henry.study.configuration.FtpClientPoolConfig;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
@@ -30,18 +26,13 @@ public class FtpClientPool {
     private GenericObjectPool<FTPClient> pool;
 
     /**
-     * ftp客户端工厂
-     */
-    private FtpClientFactory ftpClientFactory;
-
-    /**
-     * 构造函数中 注入一个bean
+     * description: 构造器注入，初始化连接池pool
      *
      * @param ftpClientFactory
+     * @author Hlingoes 2019/12/23
      */
     public FtpClientPool(@Autowired FtpClientFactory ftpClientFactory) {
         LOGGER.info("初始化ftpClientPool...");
-        this.ftpClientFactory = ftpClientFactory;
         pool = new GenericObjectPool<>(ftpClientFactory, ftpClientFactory.getFtpClientPoolConfig());
     }
 
@@ -58,19 +49,20 @@ public class FtpClientPool {
     }
 
     /**
-     * 借  获取一个连接对象
+     * description: 借  获取一个连接对象
      *
-     * @return
-     * @throws Exception
+     * @return org.apache.commons.net.ftp.FTPClient
+     * @author Hlingoes 2019/12/23
      */
     public FTPClient borrowObject() throws Exception {
         return pool.borrowObject();
     }
 
     /**
-     * 还   归还一个连接对象
+     * description: 还   归还一个连接对象
      *
      * @param ftpClient
+     * @author Hlingoes 2019/12/23
      */
     public void returnObject(FTPClient ftpClient) {
         if (ftpClient != null) {

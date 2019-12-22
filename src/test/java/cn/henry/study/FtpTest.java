@@ -30,6 +30,6 @@ public class FtpTest {
 
     @Test
     public void testDownload() {
-        ftpService.downloadFile("/html", "cat_meme.html", "G:\\迅雷下载\\test.html");
+        ftpService.downloadFile("/html", "cat_meme.html", "G:\\迅雷下载");
     }
 }
