@@ -26,12 +26,12 @@ groovyScript(
     return result ", methodParameters())
 PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的注释需要手动添加
 ````
-
+##### 2. 在windows10本地创建新用户，搭建FTP服务器
 #### 更新记录
 ##### 1. 2019-12-22 完成RestTemplate的服务开发，做了基本测试 
 ##### 2. 2019-12-23 完成HttpRestTemplate的服务开发，优化小文件下载，整合HTTP连接池,实现大文件的多线程分割下载，做了基本测试
 ##### 3. 2019-12-23 完成FTP服务的开发，整合FTP连接池，做了基本测试
-##### 2. 在windows10本地创建新用户，搭建FTP服务器
+
 ---
 > 参考了众多博主的帖子，按照实际使用做了调整，一并感谢，共勉
 > 1. [SpringBoot的restTemplate整合HttpClient连接池及配置](https://blog.csdn.net/zzzgd_666/article/details/88858181)
