@@ -25,19 +25,19 @@ public class FtpClientPool {
      */
     private GenericObjectPool<FTPClient> pool;
 
+    @Autowired
+    private FtpClientFactory ftpClientFactory;
+
     /**
      * description: 构造器注入，初始化连接池pool
      *
      * @param ftpClientFactory
      * @author Hlingoes 2019/12/23
      */
-    public FtpClientPool(@Autowired FtpClientFactory ftpClientFactory) {
+
+    public FtpClientPool(FtpClientFactory ftpClientFactory) {
         LOGGER.info("初始化ftpClientPool...");
         pool = new GenericObjectPool<>(ftpClientFactory, ftpClientFactory.getFtpClientPoolConfig());
-    }
-
-    public GenericObjectPool<FTPClient> getPool() {
-        return pool;
     }
 
     @PreDestroy

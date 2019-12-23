@@ -68,5 +68,5 @@ server:
   port: 9012
 logging:
   level:
-    ROOT: info
+    ROOT: debug
     org.apache.http: info
