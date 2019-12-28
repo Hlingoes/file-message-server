@@ -1,14 +1,14 @@
-####问题触发环境
-#####1. java中使用org.apache.commons.net.ftp.FTPClient包
-#####2. 通过chrome浏览器的file标签上传文件
-#####3. 在windows上部署的FileZilla服务上传的文件名正常显示，在linux上的vsftpd服务文件名显示乱码
-#####4. 直接chrome浏览器访问linux的ftp目录(chrome的默认编码是UTF-8)
-#####5. 乱码出现后，尝试了各种方式编码处理，造成了环境的各种不可追溯
-####解决过程
-######1. 查询资料:FTP协议规定文件名编码为iso-8859-1，所以上传的文件目录或文件名需要转码
-######2. 参考FileZilla的流程，会向FTP服务器发送OPTS UTF8 ON命令，开启服务器对UTF-8的支持。
-######3. 仿照FileZilla的方式，可向服务器发送该指令，如果服务器支持UTF-8则使用UTF-8，否则使用本地编码(GBK)处理中文名
-######4. 起作用的java关键代码
+##### 问题触发环境
+##### 1. java中使用org.apache.commons.net.ftp.FTPClient包
+##### 2. 通过chrome浏览器的file标签上传文件
+##### 3. 在windows上部署的FileZilla服务上传的文件名正常显示，在linux上的vsftpd服务文件名显示乱码
+##### 4. 直接chrome浏览器访问linux的ftp目录(chrome的默认编码是UTF-8)
+##### 5. 乱码出现后，尝试了各种方式编码处理，造成了环境的各种不可追溯
+##### 解决过程
+##### 1. 查询资料:FTP协议规定文件名编码为iso-8859-1，所以上传的文件目录或文件名需要转码
+##### 2. 参考FileZilla的流程，会向FTP服务器发送OPTS UTF8 ON命令，开启服务器对UTF-8的支持。
+##### 3. 仿照FileZilla的方式，可向服务器发送该指令，如果服务器支持UTF-8则使用UTF-8，否则使用本地编码(GBK)处理中文名
+##### 4. 起作用的java关键代码
 ````/** 本地字符编码 **/ 
 private static String LOCAL_CHARSET = "GBK";
 
@@ -45,7 +45,9 @@ ftpClient.retrieveFile(encodingServerPath(fileName), outputStream);
 System.out.println("当前工作目录："+ new String(ftp.printWorkingDirectory().getBytes("iso-8859-1"), LOCAL_CHARSET));
 
 ````
-######5. 实际使用中上述操作可以去除乱码，个人理解的转码和解码过程如下： 
+
+###### 个人理解的转码和解码过程如下：
+
 ````
 filePath 的原始编码: origin_charset => start
 java后台: new String(filePath.getBytes(Local_CHARSET), "ISO-8859-1") => step_1
