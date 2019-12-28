@@ -14,8 +14,13 @@ public class FundamentalTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FundamentalTest.class);
 
-    @Test
     public void testFormat() {
         LOGGER.info(String.format("http-demo-%d", 5));
+    }
+
+    @Test
+    public void encodingPath() {
+        String path = "a//b\\\\c\\d/e";
+        LOGGER.info(path.replace("\\", "/").replaceAll("//", "/"));
     }
 }

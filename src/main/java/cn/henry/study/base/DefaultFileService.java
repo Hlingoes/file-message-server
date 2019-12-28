@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -28,32 +27,27 @@ public class DefaultFileService implements FileService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFileService.class);
 
     @Override
-    public File download(String fileName, String localPath) throws IOException {
-        return null;
-    }
-
-    @Override
-    public boolean upload(String fileName, File file) throws IOException {
+    public boolean download(String remotePath, String localPath) {
         return false;
     }
 
     @Override
-    public boolean upload(String fileName, InputStream inputStream) throws IOException {
+    public boolean upload(String remotePath, File file) {
         return false;
     }
 
     @Override
-    public boolean upload(String fileName, byte[] bytes) throws IOException {
+    public boolean upload(String remotePath, InputStream inputStream) {
         return false;
     }
 
     @Override
-    public boolean delete(String fileName) throws IOException {
+    public boolean delete(String remotePath) {
         return false;
     }
 
     @Override
-    public List<String> filter(String filePath, Pattern pattern) throws IOException {
+    public List<String> filter(String filePath, Pattern pattern) {
         return null;
     }
 

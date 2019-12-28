@@ -1,8 +1,8 @@
 package cn.henry.study;
 
 import cn.henry.study.appication.FtpService;
-import cn.henry.study.entity.Book;
-import cn.henry.study.utils.JacksonUtils;
+import cn.henry.study.pool.CustomThreadFactoryBuilder;
+import cn.henry.study.pool.HttpClientDownloadPool;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.concurrent.*;
 
 /**
  * description: FTP测试用例
@@ -30,6 +31,21 @@ public class FtpTest {
 
     @Test
     public void testDownload() {
-        ftpService.downloadFile("/html", "cat_meme.html", "G:\\迅雷下载");
+        ftpService.download("/html", "cat_meme.html", "G:\\迅雷下载");
+    }
+
+    public void testUpload() {
+        File dir = new File("G:\\下载");
+        File[] files = dir.listFiles();
+        String path = "/资料/bak/";
+        for (File file : files) {
+            ftpService.upload(path, file.getName(), file);
+        }
+    }
+
+    @Test
+    public void  testDelete(){
+        String path = "/资料/bak/黄山山名由来及其文化背景研究.pdf";
+        ftpService.deleteFile(path);
     }
 }

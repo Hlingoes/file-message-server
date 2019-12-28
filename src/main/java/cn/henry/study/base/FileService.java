@@ -17,51 +17,41 @@ public interface FileService {
     /**
      * description: 下载文件
      *
-     * @param fileName
+     * @param remotePath
      * @param localPath
-     * @return java.io.File
+     * @return boolean
      * @throws IOException
      */
-    File download(String fileName, String localPath) throws IOException;
+    boolean download(String remotePath, String localPath);
     
     /**
      * description: 上传文件的方式
      *
-     * @param fileName
+     * @param remotePath
      * @param file
      * @return boolean
      * @throws IOException
      */
-    boolean upload(String fileName, File file) throws IOException;
+    boolean upload(String remotePath, File file);
 
     /**
      * description: 上传文件流的方式
      *
-     * @param fileName
+     * @param remotePath
      * @param inputStream
      * @return boolean
      * @throws IOException
      */
-    boolean upload(String fileName, InputStream inputStream) throws IOException;
-
-    /**
-     * description: 上传字节码的方式
-     *
-     * @param fileName
-     * @param bytes
-     * @return boolean
-     * @throws IOException
-     */
-    boolean upload(String fileName, byte[] bytes) throws IOException;
+    boolean upload(String remotePath, InputStream inputStream);
 
     /**
      * description: 删除文件
      *
-     * @param fileName
+     * @param remotePath
      * @return boolean
      * @throws IOException
      */
-    boolean delete(String fileName) throws IOException;
+    boolean delete(String remotePath);
 
     /**
      * description: 过滤出符合条件的文件集合
@@ -70,7 +60,7 @@ public interface FileService {
      * @param pattern
      * @return java.util.List<java.lang.String>
      */
-    List<String> filter(String filePath, Pattern pattern) throws IOException;
+    List<String> filter(String filePath, Pattern pattern);
 
     /**
      * description: 实体类的class，业务实现

@@ -24,6 +24,10 @@ public class FtpClientFactory extends BasePooledObjectFactory<FTPClient> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpClientFactory.class);
 
+    private static String COMMAND = "OPTS UTF8";
+
+    private static String ARGS = "ON";
+
     @Autowired
     private FtpClientPoolConfig ftpClientPoolConfig;
 
@@ -48,6 +52,14 @@ public class FtpClientFactory extends BasePooledObjectFactory<FTPClient> {
                 LOGGER.error("ftpClient登录失败!");
                 throw new Exception("ftpClient登录失败! userName:" + ftpClientPoolConfig.getUsername() + ", password:"
                         + ftpClientPoolConfig.getPassword());
+            }
+            if (FTPReply.isPositiveCompletion(ftpClient.sendCommand(COMMAND, ARGS))) {
+                // 开启服务器对UTF-8的支持，如果服务器支持就用UTF-8，否则使用本地编码(GBK)
+                ftpClient.setControlEncoding("UTF-8");
+                ftpClientPoolConfig.setControlEncoding("UTF-8");
+            } else {
+                ftpClient.setControlEncoding("GBK");
+                ftpClientPoolConfig.setControlEncoding("GBK");
             }
             ftpClient.setControlEncoding(ftpClientPoolConfig.getControlEncoding());
             ftpClient.setBufferSize(ftpClientPoolConfig.getBufferSize());

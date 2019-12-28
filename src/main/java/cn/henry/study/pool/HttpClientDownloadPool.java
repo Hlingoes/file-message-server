@@ -176,7 +176,6 @@ public class HttpClientDownloadPool {
 
         @Override
         public DownloadTemp call() {
-            //定义请求头的接收类型
             try {
                 if (isBigFile) {
                     downloadBigFile();
@@ -200,6 +199,7 @@ public class HttpClientDownloadPool {
          * @throws IOException
          */
         private void downloadLittleFile() throws IOException {
+            // 定义请求头的接收类型
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.RANGE, "bytes=" + start + "-" + end);
             headers.setAccept(Collections.singletonList(MediaType.ALL));
