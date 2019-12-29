@@ -33,11 +33,6 @@ public class FtpService extends DefaultFileService {
     private static Logger LOGGER = LoggerFactory.getLogger(FtpService.class);
 
     /**
-     * FTP协议中规定的文件名编码为: iso-8859-1
-     */
-    private static String FTP_CHARSET = "ISO-8859-1";
-
-    /**
      * 目录分隔符
      */
     private static String SEPARATOR = "/";
@@ -57,7 +52,7 @@ public class FtpService extends DefaultFileService {
      * @param path      ftp服务器保存目录
      * @param fileName  上传到ftp的文件名
      * @param localPath 待上传文件的名称（绝对地址）
-     * @return
+     * @return boolean
      */
     public boolean upload(String path, String fileName, String localPath) {
         String remotePath = path + SEPARATOR + fileName;
@@ -74,8 +69,13 @@ public class FtpService extends DefaultFileService {
      * @author Hlingoes 2019/12/28
      */
     public boolean upload(String path, String fileName, File file) {
-        String remotePath = path + SEPARATOR + fileName;
-        return upload(remotePath, file);
+        boolean success = false;
+        try {
+            success = upload(path, fileName, FileUtils.openInputStream(file));
+        } catch (IOException e) {
+            LOGGER.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
+        }
+        return success;
     }
 
     /**
@@ -88,8 +88,29 @@ public class FtpService extends DefaultFileService {
      * @author Hlingoes 2019/12/28
      */
     public boolean upload(String path, String fileName, InputStream inputStream) {
-        String remotePath = path + SEPARATOR + fileName;
-        return upload(remotePath, inputStream);
+        boolean flag = false;
+        FTPClient ftpClient = null;
+        // 格式化为linux的目录格式
+        path = path.replace("\\", SEPARATOR).replaceAll("//", SEPARATOR);
+        try {
+            ftpClient = ftpClientPool.borrowObject();
+            LOGGER.info("开始上传文件[{}]", path + SEPARATOR + fileName);
+            if (makeAndChangeDirectory(path, ftpClient)) {
+                flag = ftpClient.storeFile(encodingPath(fileName, ftpClient), inputStream);
+                inputStream.close();
+            } else {
+                LOGGER.error("切换目录失败", path);
+            }
+        } catch (Exception e) {
+            flag = false;
+            LOGGER.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
+        } finally {
+            if (flag) {
+                LOGGER.info("上传文件[{}]成功", path + SEPARATOR + fileName);
+            }
+            ftpClientPool.returnObject(ftpClient);
+        }
+        return flag;
     }
 
     /**
@@ -133,30 +154,10 @@ public class FtpService extends DefaultFileService {
      */
     @Override
     public boolean upload(String remotePath, InputStream inputStream) {
-        boolean flag = false;
-        FTPClient ftpClient = null;
-        // 格式化为linux的目录格式
-        remotePath = remotePath.replace("\\", SEPARATOR).replaceAll("//", SEPARATOR);
         int index = remotePath.lastIndexOf(SEPARATOR);
         String path = remotePath.substring(0, index);
         String fileName = remotePath.substring(index + 1);
-        try {
-            ftpClient = ftpClientPool.borrowObject();
-            LOGGER.info("{}: 开始上传文件[{}]", Thread.currentThread().getName(), remotePath);
-            if (makeAndChangeDirectory(path, ftpClient)) {
-                flag = ftpClient.storeFile(encodingPath(fileName, ftpClient), inputStream);
-                inputStream.close();
-            }
-        } catch (Exception e) {
-            flag = false;
-            LOGGER.error("{}: 上传文件[{}]失败", Thread.currentThread().getName(), remotePath, e);
-        } finally {
-            if (flag) {
-                LOGGER.info("{}: 上传文件[{}]成功", Thread.currentThread().getName(), remotePath);
-            }
-            ftpClientPool.returnObject(ftpClient);
-        }
-        return flag;
+        return upload(path, fileName, inputStream);
     }
 
     /**
@@ -165,11 +166,32 @@ public class FtpService extends DefaultFileService {
      * @param path      FTP服务器文件目录
      * @param fileName  文件名称
      * @param localPath 下载后的文件路径
-     * @return
+     * @return boolean
      */
     public boolean download(String path, String fileName, String localPath) {
-        String remotePath = path + SEPARATOR + fileName;
-        return download(remotePath, localPath);
+        boolean flag = false;
+        FTPClient ftpClient = null;
+        try {
+            ftpClient = ftpClientPool.borrowObject();
+            LOGGER.info("开始下载文件[{}]", path + SEPARATOR + fileName);
+            //切换FTP目录
+            if (ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient))) {
+                File localFile = new File(localPath);
+                flag = ftpClient.retrieveFile(encodingPath(fileName, ftpClient), FileUtils.openOutputStream(localFile));
+            } else {
+                LOGGER.error("切换目录失败", path);
+            }
+        } catch (Exception e) {
+            LOGGER.info("下载文件[{}]到[{}]失败", path + SEPARATOR + fileName, localPath);
+        } finally {
+            if (flag) {
+                LOGGER.info("下载文件[{}]到[{}]成功", path + SEPARATOR + fileName, localPath);
+            } else {
+                LOGGER.info("下载文件[{}]到[{}]失败", path + SEPARATOR + fileName, localPath);
+            }
+            ftpClientPool.returnObject(ftpClient);
+        }
+        return flag;
     }
 
     /**
@@ -182,51 +204,51 @@ public class FtpService extends DefaultFileService {
      */
     @Override
     public boolean download(String remotePath, String localPath) {
-        boolean flag = false;
-        FTPClient ftpClient = null;
-        try {
-            ftpClient = ftpClientPool.borrowObject();
-            LOGGER.info("开始下载文件[{}]", remotePath);
-            //切换FTP目录
-            if (ftpClient.changeWorkingDirectory(encodingPath(remotePath, ftpClient))) {
-                File localFile = new File(localPath);
-                String fileName = StringUtils.substringAfterLast(remotePath, SEPARATOR);
-                flag = ftpClient.retrieveFile(encodingPath(fileName, ftpClient), FileUtils.openOutputStream(localFile));
-            }
-        } catch (Exception e) {
-            LOGGER.info("下载文件[{}]到[{}]失败", remotePath, localPath);
-        } finally {
-            if (flag) {
-                LOGGER.info("下载文件[{}]到[{}]成功", remotePath, localPath);
-            }
-            ftpClientPool.returnObject(ftpClient);
-        }
-        return flag;
+        int index = remotePath.lastIndexOf(SEPARATOR);
+        String path = remotePath.substring(0, index);
+        String fileName = remotePath.substring(index + 1);
+        return download(path, fileName, localPath);
     }
 
     /**
      * 删除文件
      *
      * @param remotePath FTP服务器的文件名称
-     * @return
+     * @return boolean
      */
-    public boolean deleteFile(String remotePath) {
+    @Override
+    public boolean delete(String remotePath) {
+        int index = remotePath.lastIndexOf(SEPARATOR);
+        String path = remotePath.substring(0, index);
+        String fileName = remotePath.substring(index + 1);
+        return delete(path, fileName);
+    }
+
+    /**
+     * description:
+     *
+     * @param path     文件目录
+     * @param fileName 文件名
+     * @return boolean
+     * @author Hlingoes 2019/12/29
+     */
+    public boolean delete(String path, String fileName) {
         boolean flag = false;
         FTPClient ftpClient = null;
         try {
             ftpClient = ftpClientPool.borrowObject();
-            LOGGER.info("开始删除文件");
+            LOGGER.info("开始删除文件[{}]", path + SEPARATOR + fileName);
             //切换FTP目录
-            int index = remotePath.lastIndexOf(SEPARATOR);
-            String path = remotePath.substring(0, index);
-            String fileName = remotePath.substring(index + 1);
-            ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient));
-            flag = ftpClient.deleteFile(encodingPath(fileName, ftpClient));
+            if (ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient))) {
+                flag = ftpClient.deleteFile(encodingPath(fileName, ftpClient));
+            } else {
+                LOGGER.error("切换目录失败", path);
+            }
         } catch (Exception e) {
-            LOGGER.error("删除文件失败[{}]", remotePath, e);
+            LOGGER.error("删除文件失败[{}]", path + SEPARATOR + fileName, e);
         } finally {
             if (flag) {
-                LOGGER.info("删除文件成功[{}]", remotePath);
+                LOGGER.info("删除文件成功[{}]", path + SEPARATOR + fileName);
             }
             ftpClientPool.returnObject(ftpClient);
         }
@@ -240,7 +262,7 @@ public class FtpService extends DefaultFileService {
      * @return FTPFile数组
      * @throws IOException
      */
-    public FTPFile[] retrieveFTPFiles(String remotePath) throws IOException {
+    public FTPFile[] retrieveFtpFiles(String remotePath) throws IOException {
         FTPClient ftpClient = null;
         FTPFile[] files = null;
         try {
@@ -263,7 +285,7 @@ public class FtpService extends DefaultFileService {
      * @throws IOException
      */
     public List<String> retrieveFileNames(String remotePath) throws IOException {
-        FTPFile[] ftpFiles = retrieveFTPFiles(remotePath);
+        FTPFile[] ftpFiles = retrieveFtpFiles(remotePath);
         if (null == ftpFiles || ftpFiles.length == 0) {
             return new ArrayList<>();
         }
@@ -274,20 +296,20 @@ public class FtpService extends DefaultFileService {
     /**
      * description: 编码文件路径，FTP协议里面，规定文件名编码为iso-8859-1，所以目录名或文件名需要转码
      *
-     * @param path
-     * @param ftpClient
+     * @param path      路径
+     * @param ftpClient 客户端
      * @return java.lang.String
      * @author Hlingoes 2019/12/28
      */
     private String encodingPath(String path, FTPClient ftpClient) throws UnsupportedEncodingException {
-        return new String(path.getBytes(ftpClient.getControlEncoding()), FTP_CHARSET);
+        return new String(path.getBytes(ftpClient.getControlEncoding()), "ISO-8859-1");
     }
 
     /**
      * description: 创建多层目录文件，如果ftp服务器上已存在该文件，则不创建，如果无，则创建
      *
-     * @param remotePath
-     * @param ftpClient
+     * @param remotePath 路径
+     * @param ftpClient  客户端
      * @return boolean
      * @author Hlingoes 2019/12/28
      */

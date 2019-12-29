@@ -34,7 +34,6 @@ public class FtpClientPool {
      * @param ftpClientFactory
      * @author Hlingoes 2019/12/23
      */
-
     public FtpClientPool(FtpClientFactory ftpClientFactory) {
         LOGGER.info("初始化ftpClientPool...");
         pool = new GenericObjectPool<>(ftpClientFactory, ftpClientFactory.getFtpClientPoolConfig());
