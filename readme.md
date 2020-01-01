@@ -40,4 +40,5 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 4. [Springboot项目搭建有ftpClientPool的Ftp工具类](https://blog.csdn.net/u011424653/article/details/78637725/)
 > 5. [git项目ftpClientPool](https://github.com/jellyflu/ftpClientPool)
 > 6. [springboot快速启动插件ftp篇-连接池](https://blog.csdn.net/qq_31463999/article/details/82761938)
+> 6. [springboot-rabbitmq](https://github.com/a870368162/SpringBoot-RabbitMQ)
 <br>**** 待续...****

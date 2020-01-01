@@ -32,7 +32,6 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -52,7 +51,6 @@ import java.util.*;
  * @date 2019/12/21 20:55
  */
 @Configuration
-@Component
 @ConditionalOnClass(value = {RestTemplate.class, CloseableHttpClient.class})
 public class HttpClientConfig {
 
