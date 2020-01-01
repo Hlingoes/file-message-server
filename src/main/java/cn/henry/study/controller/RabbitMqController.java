@@ -1,6 +1,8 @@
 package cn.henry.study.controller;
 
+import cn.henry.study.anno.ResponseResult;
 import cn.henry.study.appication.rabbitmq.RabbitMqSend;
+import cn.henry.study.base.CommonResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019/8/15
  */
 @RestController
+@ResponseResult
 public class RabbitMqController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMqController.class);
@@ -29,29 +32,19 @@ public class RabbitMqController {
 
     @ApiOperation(value = "简单模式发送json消息", notes = "简单模式发送json消息")
     @ApiImplicitParam(name = "msg", value = "消息json", required = true,
-            dataType = "String", defaultValue = "test")
+            dataType = "String", paramType = "header",defaultValue = "test")
     @GetMapping("/simpleSend")
-    public String simpleSend(@RequestParam(value = "msg", required = false) String msg) {
-        try {
-            this.send.simpleSend(msg);
-            return "succeed";
-        } catch (Exception e) {
-            LOGGER.error("发送消息失败: {}", msg, e);
-            return "error";
-        }
+    public CommonResult simpleSend(@RequestParam(value = "msg", required = false) String msg) {
+        this.send.simpleSend(msg);
+        return CommonResult.success(msg);
     }
 
     @ApiOperation(value = "订阅模式发送json消息", notes = "订阅模式发送json消息")
     @ApiImplicitParam(name = "msg", value = "消息json", required = true, dataType = "String", defaultValue = "test")
     @GetMapping("/routeSend")
-    public String routeSend(@RequestParam(value = "msg", required = false) String msg) {
-        try {
-            this.send.routeSend(msg);
-            return "succeed";
-        } catch (Exception e) {
-            LOGGER.error("发送消息失败: {}", msg, e);
-            return "error";
-        }
+    public CommonResult routeSend(@RequestParam(value = "msg", required = false) String msg) {
+        this.send.routeSend(msg);
+        return CommonResult.success(msg);
     }
 
     @ApiOperation(value = "路由模式发送json消息", notes = "路由模式发送json消息")
@@ -59,16 +52,11 @@ public class RabbitMqController {
             @ApiImplicitParam(name = "msg", value = "消息json", required = true, dataType = "String", defaultValue = "test"),
             @ApiImplicitParam(name = "routingKey", value = "key", required = true, dataType = "String", defaultValue = "test")})
     @GetMapping("/routingSend")
-    public String routingSend(
+    public CommonResult routingSend(
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "routingKey", required = false) String routingKey) {
-        try {
-            this.send.routingSend(routingKey, msg);
-            return "succeed";
-        } catch (Exception e) {
-            LOGGER.error("发送消息失败: routingKey: {}，message: {}", routingKey, msg, e);
-            return "error";
-        }
+        this.send.routingSend(routingKey, msg);
+        return CommonResult.success(msg);
     }
 
     @ApiOperation(value = "主题模式发送json消息", notes = "主题模式发送json消息")
@@ -76,16 +64,11 @@ public class RabbitMqController {
             @ApiImplicitParam(name = "msg", value = "消息json", required = true, dataType = "String", defaultValue = "test"),
             @ApiImplicitParam(name = "routingKey", value = "key", required = true, dataType = "String", defaultValue = "test")})
     @GetMapping("/topicSend")
-    public String topicSend(
+    public CommonResult topicSend(
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "routingKey", required = false) String routingKey) {
-        try {
-            this.send.topicSend(routingKey, msg);
-            return "succeed";
-        } catch (Exception e) {
-            LOGGER.error("发送消息失败: routingKey: {}，message: {}", routingKey, msg, e);
-            return "error";
-        }
+        this.send.topicSend(routingKey, msg);
+        return CommonResult.success(msg);
     }
 
     @ApiOperation(value = "死信模式发送json消息", notes = "用于处理定时任务,如订单超时未支付自动取消")
@@ -93,22 +76,17 @@ public class RabbitMqController {
             @ApiImplicitParam(name = "msg", value = "消息json", required = true, dataType = "String", defaultValue = "test"),
             @ApiImplicitParam(name = "routingKey", value = "key", required = true, dataType = "String", defaultValue = "test")})
     @GetMapping("/beadSend")
-    public String beadSend(
+    public CommonResult beadSend(
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "routingKey", required = false) String routingKey) {
-        try {
-            MessageProperties messageProperties = new MessageProperties();
-            //设置消息过期时间,这里设置的时间是10分钟
-            messageProperties.setExpiration(600 + "000");
-            Message message = new Message(msg.getBytes(), messageProperties);
-            message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-            //这里的key应该传死信队列绑定死信交换机的路由key,这里我们传key1
-            this.send.beadSend("routing_key1", message);
-            return "succeed";
-        } catch (Exception e) {
-            LOGGER.error("发送消息失败: routingKey: {}，message: {}", routingKey, msg, e);
-            return "error";
-        }
+        MessageProperties messageProperties = new MessageProperties();
+        //设置消息过期时间,这里设置的时间是10分钟
+        messageProperties.setExpiration(600 + "000");
+        Message message = new Message(msg.getBytes(), messageProperties);
+        message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+        //这里的key应该传死信队列绑定死信交换机的路由key,这里我们传key1
+        this.send.beadSend("routing_key1", message);
+        return CommonResult.success(msg);
     }
 
 }

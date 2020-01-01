@@ -14,16 +14,16 @@ template text:
  
 param参数表达式：
 groovyScript(
-    "def result=''; 
+    "def commonResult=''; 
     def params=\"${_1}\".replaceAll('[\\\\[|\\\\]|\\\\s]', '').split(',').toList(); 
     for(i = 0; i < params.size(); i++) {
         if (i == 0) {
-            result += params[i];
+            commonResult += params[i];
         } else {
-            result += '\\n' + ' * @param ' + params[i];
+            commonResult += '\\n' + ' * @param ' + params[i];
         }
     }; 
-    return result ", methodParameters())
+    return commonResult ", methodParameters())
 PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的注释需要手动添加
 ````
 ##### 2. 在windows10本地创建新用户，搭建FTP服务器
