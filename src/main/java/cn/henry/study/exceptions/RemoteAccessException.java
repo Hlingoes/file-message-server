@@ -2,7 +2,7 @@ package cn.henry.study.exceptions;
 
 
 import cn.henry.study.base.BaseException;
-import cn.henry.study.base.ResultCode;
+import cn.henry.study.result.ResultCode;
 
 /**
  * @desc 远程访问异常

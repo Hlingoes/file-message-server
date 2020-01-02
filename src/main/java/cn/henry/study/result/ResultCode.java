@@ -1,4 +1,4 @@
-package cn.henry.study.base;
+package cn.henry.study.result;
 
 /**
  * description: 全局状态码

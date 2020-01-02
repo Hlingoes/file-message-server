@@ -1,11 +1,13 @@
 package cn.henry.study.base;
 
-import cn.henry.study.base.ExceptionEnum;
-import cn.henry.study.base.ResultCode;
+import cn.henry.study.result.ResultCode;
 
 /**
  * @author zhumaer
- * @desc 业务异常类
+ * @desc 业务异常类，定义的项目中异常的基本方法
+ * 1. 在exceptions包中有具体的实现类，将项目中的问题进行归类
+ * 2. 在BaseGlobalExceptionHandler中处理exceptions包的每个实例方法
+ *
  * @since 9/18/2017 3:00 PM
  */
 public class BaseException extends RuntimeException {

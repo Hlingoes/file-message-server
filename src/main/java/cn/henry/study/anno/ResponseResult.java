@@ -1,7 +1,7 @@
 package cn.henry.study.anno;
 
-import cn.henry.study.base.CommonResult;
-import cn.henry.study.base.Result;
+import cn.henry.study.result.CommonResult;
+import cn.henry.study.result.Result;
 
 import java.lang.annotation.*;
 

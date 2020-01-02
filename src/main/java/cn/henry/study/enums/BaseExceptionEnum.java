@@ -1,15 +1,17 @@
-package cn.henry.study.base;
+package cn.henry.study.enums;
 
+import cn.henry.study.base.BaseException;
 import cn.henry.study.exceptions.*;
 import cn.henry.study.result.ResultCode;
 import org.springframework.http.HttpStatus;
 
 /**
- * description: 异常、HTTP状态码、默认自定义返回码 映射类
- *
- * @author Hlingoes 2020/1/1
+ * @author zhumaer
+ * @desc 异常、HTTP状态码、默认自定义返回码 映射类
+ * @since 9/21/2017 14:11 PM
  */
-public enum ExceptionEnum {
+public enum BaseExceptionEnum {
+
     /**
      * 无效参数
      */
@@ -46,7 +48,7 @@ public enum ExceptionEnum {
 
     private ResultCode resultCode;
 
-    ExceptionEnum(Class<? extends BaseException> eClass, HttpStatus httpStatus, ResultCode resultCode) {
+    BaseExceptionEnum(Class<? extends BaseException> eClass, HttpStatus httpStatus, ResultCode resultCode) {
         this.eClass = eClass;
         this.httpStatus = httpStatus;
         this.resultCode = resultCode;
@@ -65,7 +67,7 @@ public enum ExceptionEnum {
     }
 
     public static boolean isSupportHttpStatus(int httpStatus) {
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (exceptionEnum.httpStatus.value() == httpStatus) {
                 return true;
             }
@@ -75,7 +77,7 @@ public enum ExceptionEnum {
     }
 
     public static boolean isSupportException(Class<?> z) {
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (exceptionEnum.eClass.equals(z)) {
                 return true;
             }
@@ -84,12 +86,12 @@ public enum ExceptionEnum {
         return false;
     }
 
-    public static ExceptionEnum getByHttpStatus(HttpStatus httpStatus) {
+    public static BaseExceptionEnum getByHttpStatus(HttpStatus httpStatus) {
         if (httpStatus == null) {
             return null;
         }
 
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (httpStatus.equals(exceptionEnum.httpStatus)) {
                 return exceptionEnum;
             }
@@ -98,16 +100,17 @@ public enum ExceptionEnum {
         return null;
     }
 
-    public static ExceptionEnum getByEClass(Class<? extends BaseException> eClass) {
+    public static BaseExceptionEnum getByEClass(Class<? extends BaseException> eClass) {
         if (eClass == null) {
             return null;
         }
 
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (eClass.equals(exceptionEnum.eClass)) {
                 return exceptionEnum;
             }
         }
+
         return null;
     }
 }

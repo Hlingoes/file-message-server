@@ -1,6 +1,9 @@
 package cn.henry.study.base;
 
 import cn.henry.study.anno.ResponseResult;
+import cn.henry.study.result.CommonResult;
+import cn.henry.study.result.DefaultErrorResult;
+import cn.henry.study.result.Result;
 import cn.henry.study.interceptor.ResponseResultInterceptor;
 import cn.henry.study.utils.JacksonUtils;
 import cn.henry.study.utils.RequestContextHolderUtils;
@@ -70,4 +73,5 @@ public class BaseResponseResultHandler implements ResponseBodyAdvice<Object> {
         }
         return body;
     }
+
 }

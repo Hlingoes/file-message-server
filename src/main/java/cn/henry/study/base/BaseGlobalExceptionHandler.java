@@ -1,5 +1,7 @@
 package cn.henry.study.base;
 
+import cn.henry.study.result.DefaultErrorResult;
+import cn.henry.study.result.ResultCode;
 import cn.henry.study.utils.ConvertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ import java.util.List;
  * @author Hlingoes
  * @date 2020/1/1 23:29
  */
-public class BaseGlobalExceptionHandler {
+public abstract class BaseGlobalExceptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseGlobalExceptionHandler.class);
 
@@ -74,4 +76,13 @@ public class BaseGlobalExceptionHandler {
         LOGGER.error("handleRuntimeException start, uri:{}, caused by: ", request.getRequestURI(), e);
         return DefaultErrorResult.failure(ResultCode.SYSTEM_INNER_ERROR, e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    /**
+     * 处理未预测到的其他错误（反500错误码）
+     */
+    protected DefaultErrorResult handleThrowable(Throwable e, HttpServletRequest request) {
+        LOGGER.error("handleThrowable start, uri:{}, caused by: ", request.getRequestURI(), e);
+        return DefaultErrorResult.failure(ResultCode.SYSTEM_INNER_ERROR, e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

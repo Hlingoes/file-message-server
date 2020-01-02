@@ -1,6 +1,4 @@
-package cn.henry.study.base;
-
-import java.io.Serializable;
+package cn.henry.study.result;
 
 /**
  * description: 通用的返回结果
