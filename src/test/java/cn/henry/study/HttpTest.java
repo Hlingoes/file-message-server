@@ -1,6 +1,6 @@
 package cn.henry.study;
 
-import cn.henry.study.appication.HttpClientTemplateService;
+import cn.henry.study.application.HttpClientTemplateService;
 import cn.henry.study.entity.Book;
 import cn.henry.study.pool.HttpClientDownloadPool;
 import cn.henry.study.utils.JacksonUtils;

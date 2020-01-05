@@ -1,5 +1,6 @@
 package cn.henry.study.aspect;
 
+import cn.henry.frame.example.Teacher;
 import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.handler.GlobalExceptionHandler;
 import cn.henry.study.utils.IpUtils;
@@ -51,6 +52,7 @@ public class RestControllerAspect {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // TODO 业务逻辑，例如获取用户信息
+        Teacher teacher = new Teacher();
 
         String ip = IpUtils.getRealIp(request);
         String methodName = this.getMethodName(joinPoint);

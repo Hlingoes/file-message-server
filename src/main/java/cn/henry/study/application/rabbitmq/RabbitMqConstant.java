@@ -1,4 +1,4 @@
-package cn.henry.study.appication.rabbitmq;
+package cn.henry.study.application.rabbitmq;
 
 /**
  * @消息队列常量

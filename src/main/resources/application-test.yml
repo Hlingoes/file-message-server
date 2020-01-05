@@ -1,0 +1,88 @@
+spring:
+  servlet:
+    multipart:
+      #单个文件的最大上限
+      max-file-size: 2048MB
+      #单个请求的文件总大小上限
+      max-request-size: 2048MB
+  http-client:
+    pool:
+      #连接池的最大连接数，0代表不限；如果取0，需要考虑连接泄露导致系统崩溃的后果
+      maxTotalConnect: 1000
+      #每个路由的最大连接数,如果只调用一个地址,可以将其设置为最大连接数
+      maxConnectPerRoute: 200
+      # 指客户端和服务器建立连接的超时时间,ms , 最大约21秒,因为内部tcp在进行三次握手建立连接时,默认tcp超时时间是20秒
+      connectTimeout: 20000
+      # 指客户端从服务器读取数据包的间隔超时时间,不是总读取时间,也就是socket timeout,ms
+      readTimeout: 30000
+      # 从连接池获取连接的timeout,不宜过大,ms
+      connectionRequestTimout: 20000
+      # 重试次数
+      retryTimes: 3
+      # 长连接保持时间 单位s,不宜过长
+      keepAliveTime: 10
+      # 针对不同的网址,长连接保持的存活时间,单位s,如果是频繁而持续的请求,可以设置小一点,不建议设置过大,避免大量无用连接占用内存资源
+      keepAliveTargetHost:
+        www.baidu.com: 5
+        www.cnblogs.com: 2
+  ftp:
+    pool:
+      host: 192.168.1.107
+      port: 21
+      username: henry
+      password: faith
+      #ftp 连接超时时间 毫秒
+      connectTimeOut: 5000
+      #控制连接的字符编码
+      controlEncoding: UTF-8
+      #缓冲区大小
+      bufferSize: 1024
+      #传输文件类型，2表二进制
+      fileType: 2
+      #数据传输超时 毫秒
+      dataTimeout: 120000
+      #是否启用ftp被动模式
+      passiveMode: true
+      #连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
+      blockWhenExhausted: true
+      #最大空闲等待时间(毫秒)，建议设置稍微长点，如90分钟
+      maxWaitMillis: 5400000
+      #最大空闲连接数
+      maxIdle: 50
+      #最大连接数
+      maxTotal: 50
+      #最小空闲连接数
+      minIdle: 2
+      #申请连接时 检测是否有效
+      testOnBorrow: true
+      #创建连接时 检测是否有效
+      testOnCreate: true
+      #返回连接时 检测是否有效
+      testOnReturn: true
+      #空闲时检测连接是否有效
+      testWhileIdle: true
+      useEPSVwithIPv4: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: henry
+    password: faith
+    publisher-returns: true
+    publisher-confirms: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        default-requeue-rejected: false
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+        retry:
+          enabled: true
+server:
+  port: 9012
+logging:
+  level:
+    ROOT: debug
+    org.apache.http: info

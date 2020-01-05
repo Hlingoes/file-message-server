@@ -1,8 +1,9 @@
-package cn.henry.study.appication;
+package cn.henry.study.application;
 
 import cn.henry.study.base.DefaultFileService;
 import cn.henry.study.pool.FtpClientPool;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -11,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -177,7 +175,9 @@ public class FtpService extends DefaultFileService {
             //切换FTP目录
             if (ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient))) {
                 File localFile = new File(localPath);
-                flag = ftpClient.retrieveFile(encodingPath(fileName, ftpClient), FileUtils.openOutputStream(localFile));
+                OutputStream outputStream = FileUtils.openOutputStream(localFile);
+                flag = ftpClient.retrieveFile(encodingPath(fileName, ftpClient), outputStream);
+                IOUtils.closeQuietly(outputStream);
             } else {
                 LOGGER.error("切换目录失败", path);
             }

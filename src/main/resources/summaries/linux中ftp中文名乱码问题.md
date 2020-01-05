@@ -2,7 +2,7 @@
 ##### 1. java中使用org.apache.commons.net.ftp.FTPClient包
 ##### 2. 通过chrome浏览器的file标签上传文件
 ##### 3. 在windows上部署的FileZilla服务上传的文件名正常显示，在linux上的vsftpd服务文件名显示乱码
-##### 4. 直接chrome浏览器访问linux的ftp目录(chrome的默认编码是UTF-8)
+##### 4. 直接chrome浏览器访问linux的ftp目录(chrome的默认编码是UTF-8)，正常显示
 ##### 5. 乱码出现后，尝试了各种方式编码处理，造成了环境的各种不可追溯
 ##### 解决过程
 ##### 1. 查询资料:FTP协议规定文件名编码为iso-8859-1，所以上传的文件目录或文件名需要转码

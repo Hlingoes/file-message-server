@@ -8,7 +8,7 @@
         <version>2.0.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>cn.henry.collection</groupId>
+    <groupId>cn.henry.study</groupId>
     <artifactId>fileMessageServer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>fileMessageServer</name>
@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -108,14 +109,105 @@
             <version>2.8.0</version>
         </dependency>
 
+        <!-- 测试本地jar包引入和打包 -->
+        <!--<dependency>
+            <groupId>cn.henry.frame</groupId>
+            <artifactId>local_test</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/local_lib/local_test.jar</systemPath>
+        </dependency>-->
+        <!-- 在cmd中切换到local_test.jar包所在的目录
+            mvn install:install-file "-DgroupId=cn.henry.frame" "-DartifactId=local_test" "-Dversion=1.0.0" "-Dpackaging=jar" "-Dfile=local_test.jar"
+        -->
+        <dependency>
+            <groupId>cn.henry.frame</groupId>
+            <artifactId>local_test</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
+        <!-- 项目管理的角度，尽量不使用本地jar包，搭建maven私服可以统一更新管理自研jar包 -->
         <plugins>
-            <plugin>
+            <!-- 常规打包，flat jar，方便测试，不易于补丁发布和配置发布 -->
+            <!--<plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                &lt;!&ndash; 作用:项目打成jar的同时将本地jar包也引入进去 &ndash;&gt;
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>-->
+
+            <!-- 配置文件，依赖jar和可执行jar分离的包，便于文件替换发布 -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            &lt;!&ndash; MANIFEST.MF 中 Class-Path 加入前缀 &ndash;&gt;
+                            <classpathPrefix>lib/</classpathPrefix>
+                            &lt;!&ndash;指定入口类 &ndash;&gt;
+                            <mainClass>cn.henry.study.FileMessageServer</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
+            &lt;!&ndash; 复制依赖的jar包到指定的文件夹里，相当于：mvn dependency:copy-dependencies -DoutputDirectory=lib &ndash;&gt;
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <!-- 提供给第三方使用的，包含所有依赖的普通jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 加入启动类 -->
+                            <!--<transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>xxx.xxx</mainClass>
+                                </transformer>
+                            </transformers>-->
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

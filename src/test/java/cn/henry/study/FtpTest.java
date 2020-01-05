@@ -1,6 +1,6 @@
 package cn.henry.study;
 
-import cn.henry.study.appication.FtpService;
+import cn.henry.study.application.FtpService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -28,11 +28,10 @@ public class FtpTest {
 
     @Test
     public void testDownload() {
-        ftpService.download("/资料/bak/[emuch.net]普林斯顿数学指南.pdf",
-                "G:\\迅雷下载\\普林斯顿数学指南.pdf");
+        ftpService.download("/资料/bak/[muchong.com]数学物理方法.pdf",
+                "G:\\迅雷下载\\[muchong.com]数学物理方法.pdf");
     }
 
-    @Test
     public void testUpload() {
         File dir = new File("G:\\Literatures");
         File[] files = dir.listFiles();
@@ -42,7 +41,6 @@ public class FtpTest {
         }
     }
 
-    @Test
     public void testDelete() {
         String path = "/资料/bak/[emuch.net]普林斯顿数学指南.pdf";
         ftpService.delete(path);

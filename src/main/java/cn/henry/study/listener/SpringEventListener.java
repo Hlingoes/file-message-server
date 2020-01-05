@@ -23,6 +23,7 @@ public class SpringEventListener {
 
     @EventListener
     public void event(ApplicationReadyEvent event) {
+        LOGGER.info("the active profile: {}", event.getApplicationContext().getEnvironment().getActiveProfiles()[0]);
         Map<String, DefaultFileService> map = event.getApplicationContext().getBeansOfType(DefaultFileService.class);
         map.forEach((key, value) -> {
             if (null != value.getEntityClazz()) {

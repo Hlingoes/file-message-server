@@ -1,7 +1,7 @@
 package cn.henry.study.controller;
 
 import cn.henry.study.anno.ResponseResult;
-import cn.henry.study.appication.rabbitmq.RabbitMqSend;
+import cn.henry.study.application.rabbitmq.RabbitMqSend;
 import cn.henry.study.result.CommonResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

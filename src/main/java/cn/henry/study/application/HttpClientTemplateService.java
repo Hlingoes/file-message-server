@@ -1,4 +1,4 @@
-package cn.henry.study.appication;
+package cn.henry.study.application;
 
 import cn.henry.study.base.DefaultFileService;
 import org.slf4j.Logger;

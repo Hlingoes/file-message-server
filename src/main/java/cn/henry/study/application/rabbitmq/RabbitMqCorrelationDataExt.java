@@ -1,4 +1,4 @@
-package cn.henry.study.appication.rabbitmq;
+package cn.henry.study.application.rabbitmq;
 
 import org.springframework.amqp.rabbit.support.CorrelationData;
 
