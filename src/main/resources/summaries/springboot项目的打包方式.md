@@ -3,17 +3,17 @@
 1. normal jar: 普通的jar，用于项目依赖引入，不能通过java -jar xx.jar执行，一般不包含其它依赖的jar包。
 2. fat jar: 也叫做uber jar，是一种可执行的jar(executable jar)，既包含自己代码中的class ，也包含第三方依赖的jar。
 3. 不可执行，但包含第三方依赖的jar包，避免生成的jar与第三方引入后出现依赖版本冲突。
-##### POM文件中的内置属性(Maven预定义可以直接使用)
+##### POM文件中的内置属性(Maven预定义可以直接使用)：
  ````
   ${basedir} 项目根目录
-  ${version}表示项目版本;
-  ${project.basedir}同${basedir};
-  ${project.version}表示项目版本,与${version}相同;
+  ${version} 表示项目版本;
+  ${project.basedir} 同${basedir};
+  ${project.version} 表示项目版本,与${version}相同;
   ${project.build.directory} 构建目录，缺省为target;
-  ${project.build.sourceEncoding}表示主源码的编码格式;
-  ${project.build.sourceDirectory}表示主源码路径;
-  ${project.build.finalName}表示输出文件名称;
-  ${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes 
+  ${project.build.sourceEncoding} 表示主源码的编码格式;
+  ${project.build.sourceDirectory} 表示主源码路径;
+  ${project.build.finalName} 表示输出文件名称;
+  ${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes
  ````
  
 ##### 1. 第一类需求: 生成单个fat jar
@@ -89,7 +89,7 @@ maven-jar-plugin, maven-dependency-plugin，输出为可执行的jar和lib包，
                         <mainClass>cn.henry.study.FileMessageServer</mainClass>
                     </manifest>
                     <manifestEntries>
-                        <!-- 在Class-Path下添加配置文件的路径 -->
+                        <!-- 在Class-Path下添加配置文件的路径，本地jar的引入方式: dependency中的artifactid-version.jar -->
                         <Class-Path>lib/local_test-1.0.0.jar</Class-Path>
                         <!--这里表示jar路径加入到MANIFEST.MF-->
                     </manifestEntries>
