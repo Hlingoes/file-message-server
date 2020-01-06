@@ -56,8 +56,8 @@ maven-jar-plugin, maven-dependency-plugin，输出为可执行的jar和lib包，
     <systemPath>${basedir}/src/main/local_lib/local_test.jar</systemPath>
 </dependency>
 <build>
+    <!-- 配置文件，依赖jar和可执行jar分离的包，便于文件替换发布 -->
     <plugins>
-        !-- 配置文件，依赖jar和可执行jar分离的包，便于文件替换发布 -->
         <!-- 复制依赖的jar包到指定的文件夹里，相当于：mvn dependency:copy-dependencies -DoutputDirectory=lib -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
