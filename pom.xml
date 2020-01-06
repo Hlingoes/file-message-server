@@ -110,21 +110,21 @@
         </dependency>
 
         <!-- 测试本地jar包引入和打包 -->
-        <!--<dependency>
+        <dependency>
             <groupId>cn.henry.frame</groupId>
             <artifactId>local_test</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/src/main/local_lib/local_test.jar</systemPath>
-        </dependency>-->
+        </dependency>
         <!-- 在cmd中切换到local_test.jar包所在的目录
             mvn install:install-file "-DgroupId=cn.henry.frame" "-DartifactId=local_test" "-Dversion=1.0.0" "-Dpackaging=jar" "-Dfile=local_test.jar"
         -->
-        <dependency>
+        <!--<dependency>
             <groupId>cn.henry.frame</groupId>
             <artifactId>local_test</artifactId>
             <version>1.0.0</version>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 
@@ -142,22 +142,7 @@
             </plugin>-->
 
             <!-- 配置文件，依赖jar和可执行jar分离的包，便于文件替换发布 -->
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            &lt;!&ndash; MANIFEST.MF 中 Class-Path 加入前缀 &ndash;&gt;
-                            <classpathPrefix>lib/</classpathPrefix>
-                            &lt;!&ndash;指定入口类 &ndash;&gt;
-                            <mainClass>cn.henry.study.FileMessageServer</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            &lt;!&ndash; 复制依赖的jar包到指定的文件夹里，相当于：mvn dependency:copy-dependencies -DoutputDirectory=lib &ndash;&gt;
+            <!-- 复制依赖的jar包到指定的文件夹里，相当于：mvn dependency:copy-dependencies -DoutputDirectory=lib -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -173,10 +158,31 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+            <!-- 配置依赖和启动类-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!-- MANIFEST.MF 中 Class-Path 加入前缀 -->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!--指定入口类 -->
+                            <mainClass>cn.henry.study.FileMessageServer</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <!-- 在Class-Path下添加配置文件的路径 -->
+                            <Class-Path>lib/local_test-1.0.0.jar</Class-Path>
+                            <!--这里表示jar路径加入到MANIFEST.MF-->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
 
             <!-- 提供给第三方使用的，包含所有依赖的普通jar -->
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
@@ -186,12 +192,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- 加入启动类 -->
-                            <!--<transformers>
+                            &lt;!&ndash; 加入启动类 &ndash;&gt;
+                            &lt;!&ndash;<transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>xxx.xxx</mainClass>
                                 </transformer>
-                            </transformers>-->
+                            </transformers>&ndash;&gt;
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <filters>
                                 <filter>
@@ -206,7 +212,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
         </plugins>
     </build>
