@@ -48,4 +48,5 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 7. [springboot-rabbitmq](https://github.com/a870368162/SpringBoot-RabbitMQ)
 > 8. [Windows 下安装RabbitMQ服务器及基本配置](https://www.cnblogs.com/vaiyanzi/p/9531607.html)
 > 9. [Restful Api写法心得之三《返回值篇》](https://blog.csdn.net/aiyaya_/article/details/78209992)
+> 10.[Hystrix使用说明，配置参数说明](https://blog.csdn.net/tongtong_use/article/details/78611225)
 <br>**** 待续...****

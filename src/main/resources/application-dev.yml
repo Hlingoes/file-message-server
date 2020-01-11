@@ -82,6 +82,16 @@ spring:
           enabled: true
 server:
   port: 9012
+  connection-timeout: 80000
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000        #最大并发数
+    max-connections: 20000   #接受和处理的最大连接数
+    min-spare-threads: 20     #初始化时创建的线程数
+    acceptCount: 700         #可以放到处理队列中的请求数
+    max-http-post-size: -1
+    maxHttpHeaderSize: -1
+
 logging:
   level:
     ROOT: debug
