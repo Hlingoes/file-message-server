@@ -313,7 +313,7 @@ public class FtpService extends DefaultFileService {
      * @return boolean
      * @author Hlingoes 2019/12/28
      */
-    public boolean makeAndChangeDirectory(String remotePath, FTPClient ftpClient) throws IOException {
+    public synchronized boolean makeAndChangeDirectory(String remotePath, FTPClient ftpClient) throws IOException {
         // 切换到上传目录
         if (!ftpClient.changeWorkingDirectory(encodingPath(remotePath, ftpClient))) {
             //如果目录不存在就创建目录

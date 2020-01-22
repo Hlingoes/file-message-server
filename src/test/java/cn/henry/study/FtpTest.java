@@ -26,14 +26,15 @@ public class FtpTest {
     @Autowired
     private FtpService ftpService;
 
-    @Test
+
     public void testDownload() {
         ftpService.download("/资料/bak/[muchong.com]数学物理方法.pdf",
                 "G:\\迅雷下载\\[muchong.com]数学物理方法.pdf");
     }
 
+    @Test
     public void testUpload() {
-        File dir = new File("G:\\Literatures");
+        File dir = new File("G:\\下载");
         File[] files = dir.listFiles();
         String path = "/books/bak/";
         for (File file : files) {

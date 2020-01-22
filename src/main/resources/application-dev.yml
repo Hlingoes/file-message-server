@@ -36,7 +36,7 @@ spring:
       #控制连接的字符编码
       controlEncoding: UTF-8
       #缓冲区大小
-      bufferSize: 1024
+      bufferSize: 512
       #传输文件类型，2表二进制
       fileType: 2
       #数据传输超时 毫秒
@@ -48,11 +48,11 @@ spring:
       #最大空闲等待时间(毫秒)，建议设置稍微长点，如90分钟
       maxWaitMillis: 5400000
       #最大空闲连接数
-      maxIdle: 50
+      maxIdle: 20
       #最大连接数
       maxTotal: 50
       #最小空闲连接数
-      minIdle: 2
+      minIdle: 5
       #申请连接时 检测是否有效
       testOnBorrow: true
       #创建连接时 检测是否有效
