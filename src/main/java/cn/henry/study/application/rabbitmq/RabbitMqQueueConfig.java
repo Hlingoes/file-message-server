@@ -11,8 +11,8 @@ import java.util.Map;
 
 /**
  * @消息队列配置
- * @Autor zxf
- * @Date 2019/8/15
+ * @author zxf
+ * @date 2019/8/15
  */
 @Configuration
 public class RabbitMqQueueConfig {
@@ -141,7 +141,7 @@ public class RabbitMqQueueConfig {
      */
     @Bean
     public Binding topicBinding1() {
-        return BindingBuilder.bind(Queue1()).to(topicExchange()).with(RabbitMqConstant.TOPIC_ROUTINGKEY1);
+        return BindingBuilder.bind(Queue1()).to(topicExchange()).with(RabbitMqConstant.TOPIC_BINDING_KEY1);
     }
 
     /**
@@ -151,7 +151,7 @@ public class RabbitMqQueueConfig {
      */
     @Bean
     public Binding topicBinding2() {
-        return BindingBuilder.bind(Queue2()).to(topicExchange()).with(RabbitMqConstant.TOPIC_ROUTINGKEY2);
+        return BindingBuilder.bind(Queue2()).to(topicExchange()).with(RabbitMqConstant.TOPIC_BINDING_KEY2);
     }
 
 
@@ -161,7 +161,7 @@ public class RabbitMqQueueConfig {
      * @return
      */
     @Bean
-    public Binding beadQueuebinding() {
+    public Binding beadQueueBinding() {
         return BindingBuilder.bind(BeadQueue()).to(deadExchange()).with(RabbitMqConstant.ROUTING_KEY1);
     }
 

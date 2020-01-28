@@ -33,7 +33,7 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 ##### 1. 2019-12-22 完成RestTemplate的服务开发，做了基本测试 
 ##### 2. 2019-12-23 完成HttpRestTemplate的服务开发，优化小文件下载，整合HTTP连接池,实现大文件的多线程分割下载，做了基本测试
 ##### 3. 2019-12-23 完成FTP服务的开发，整合FTP连接池，做了基本测试
-##### 4. 2020-01-01 完成rabbitmq服务的开发，做了基本测试
+##### 4. 2020-01-01 完成rabbitmq服务的开发，做了基本测试，分发模式的理解，可阅读官方文档[RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
 ##### 5. 2020-01-02 参考[zhuma](https://github.com/zhumaer/zhuma)的博客规划了项目的日志打印和异常分类处理(非常值得借鉴)
 ##### 6. 2020-01-05 完成项目打包的总结，放在resources/summaries中
 
@@ -45,10 +45,9 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 4. [Springboot项目搭建有ftpClientPool的Ftp工具类](https://blog.csdn.net/u011424653/article/details/78637725/)
 > 5. [git项目ftpClientPool](https://github.com/jellyflu/ftpClientPool)
 > 6. [springboot快速启动插件ftp篇-连接池](https://blog.csdn.net/qq_31463999/article/details/82761938)
-> 7. [springboot-rabbitmq](https://github.com/a870368162/SpringBoot-RabbitMQ)
-> 8. [Windows 下安装RabbitMQ服务器及基本配置](https://www.cnblogs.com/vaiyanzi/p/9531607.html)
-> 9. [Restful Api写法心得之三《返回值篇》](https://blog.csdn.net/aiyaya_/article/details/78209992)
-> 10. [Hystrix使用说明，配置参数说明](https://blog.csdn.net/tongtong_use/article/details/78611225)
+> 7. [Windows 下安装RabbitMQ服务器及基本配置](https://www.cnblogs.com/vaiyanzi/p/9531607.html)
+> 8. [Restful Api写法心得之三《返回值篇》](https://blog.csdn.net/aiyaya_/article/details/78209992)
+> 9. [Hystrix使用说明，配置参数说明](https://blog.csdn.net/tongtong_use/article/details/78611225)
 <br>
 <br>
 **** 待续...****

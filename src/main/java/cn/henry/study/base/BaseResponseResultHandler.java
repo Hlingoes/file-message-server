@@ -41,7 +41,7 @@ public class BaseResponseResultHandler implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * description: 对于返回的对象如果不是最终对象ResponseResult，则选包装一下
+     * description: 对于返回的对象如果不是最终对象ResponseResult，则包装一下
      *
      * @param body
      * @param methodParameter

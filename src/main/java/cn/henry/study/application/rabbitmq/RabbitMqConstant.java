@@ -54,10 +54,10 @@ public class RabbitMqConstant {
     /**
      * 符号*匹配一个词
      */
-    public static final String TOPIC_ROUTINGKEY1 = "hello.*";
+    public static final String TOPIC_BINDING_KEY1 = "hello.*";
 
     /**
      * 符号#匹配一个或多个词
      */
-    public static final String TOPIC_ROUTINGKEY2 = "hello.#";
+    public static final String TOPIC_BINDING_KEY2 = "hello.#";
 }

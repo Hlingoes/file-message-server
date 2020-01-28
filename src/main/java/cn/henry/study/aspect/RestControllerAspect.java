@@ -51,7 +51,7 @@ public class RestControllerAspect {
         }
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        // TODO 业务逻辑，例如获取用户信息
+        // TODO 业务逻辑，例如获取用户信息， 测试本地jar引入
         Teacher teacher = new Teacher();
 
         String ip = IpUtils.getRealIp(request);

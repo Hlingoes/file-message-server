@@ -31,10 +31,9 @@ public class RabbitMqController {
     private RabbitMqSend send;
 
     @ApiOperation(value = "简单模式发送json消息", notes = "简单模式发送json消息")
-    @ApiImplicitParam(name = "msg", value = "消息json", required = true,
-            dataType = "String", paramType = "header",defaultValue = "test")
+    @ApiImplicitParam(name = "msg", value = "消息json", required = true, dataType = "String", defaultValue = "test")
     @GetMapping("/simpleSend")
-    public CommonResult simpleSend(@RequestParam(value = "msg", required = false) String msg) {
+    public CommonResult simpleSend(@RequestParam(value = "msg", required = true) String msg) {
         this.send.simpleSend(msg);
         return CommonResult.success(msg);
     }
@@ -42,7 +41,7 @@ public class RabbitMqController {
     @ApiOperation(value = "订阅模式发送json消息", notes = "订阅模式发送json消息")
     @ApiImplicitParam(name = "msg", value = "消息json", required = true, dataType = "String", defaultValue = "test")
     @GetMapping("/routeSend")
-    public CommonResult routeSend(@RequestParam(value = "msg", required = false) String msg) {
+    public CommonResult routeSend(@RequestParam(value = "msg", required = true) String msg) {
         this.send.routeSend(msg);
         return CommonResult.success(msg);
     }
@@ -53,8 +52,8 @@ public class RabbitMqController {
             @ApiImplicitParam(name = "routingKey", value = "key", required = true, dataType = "String", defaultValue = "test")})
     @GetMapping("/routingSend")
     public CommonResult routingSend(
-            @RequestParam(value = "msg", required = false) String msg,
-            @RequestParam(value = "routingKey", required = false) String routingKey) {
+            @RequestParam(value = "msg", required = true) String msg,
+            @RequestParam(value = "routingKey", required = true) String routingKey) {
         this.send.routingSend(routingKey, msg);
         return CommonResult.success(msg);
     }
@@ -65,8 +64,8 @@ public class RabbitMqController {
             @ApiImplicitParam(name = "routingKey", value = "key", required = true, dataType = "String", defaultValue = "test")})
     @GetMapping("/topicSend")
     public CommonResult topicSend(
-            @RequestParam(value = "msg", required = false) String msg,
-            @RequestParam(value = "routingKey", required = false) String routingKey) {
+            @RequestParam(value = "msg", required = true) String msg,
+            @RequestParam(value = "routingKey", required = true) String routingKey) {
         this.send.topicSend(routingKey, msg);
         return CommonResult.success(msg);
     }
@@ -77,8 +76,8 @@ public class RabbitMqController {
             @ApiImplicitParam(name = "routingKey", value = "key", required = true, dataType = "String", defaultValue = "test")})
     @GetMapping("/beadSend")
     public CommonResult beadSend(
-            @RequestParam(value = "msg", required = false) String msg,
-            @RequestParam(value = "routingKey", required = false) String routingKey) {
+            @RequestParam(value = "msg", required = true) String msg,
+            @RequestParam(value = "routingKey", required = true) String routingKey) {
         MessageProperties messageProperties = new MessageProperties();
         //设置消息过期时间,这里设置的时间是10分钟
         messageProperties.setExpiration(600 + "000");
