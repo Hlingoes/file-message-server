@@ -1,5 +1,8 @@
 package cn.henry.study.pool;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -19,6 +22,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @date 2019/12/22 0:45
  */
 public class CustomThreadFactoryBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomThreadFactoryBuilder.class);
+
     private String nameFormat = null;
     private boolean daemon = false;
     private int priority = Thread.NORM_PRIORITY;
@@ -70,6 +75,10 @@ public class CustomThreadFactoryBuilder {
                 thread.setDaemon(daemon);
             }
             thread.setPriority(priority);
+            thread.setUncaughtExceptionHandler((t, e) -> {
+                String threadName = t.getName();
+                LOGGER.error("error occurred! threadName: {}, error msg: {}", threadName, e.getMessage(), e);
+            });
             return thread;
         };
     }
