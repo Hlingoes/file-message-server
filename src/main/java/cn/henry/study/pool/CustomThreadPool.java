@@ -10,21 +10,23 @@ import java.util.concurrent.*;
  * description: 创建通用的线程池
  *
  * @author Hlingoes
+ * @citation https://blog.csdn.net/wanghao112956/article/details/99292107
  * @date 2020/2/26 0:46
  */
 public class CustomThreadPool {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomThreadFactoryBuilder.class);
 
+    private static int POLL_WAITING_TIME = 60 * 10;
     private static int DEFAULT_QUEUE_SIZE = 1000;
-    private static int DEFAULT_CORE_POOL_SIZE = 5;
-    private static int DEFAULT_MAX_POOL_SIZE = 20;
+    private static int DEFAULT_CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors();
+    private static int DEFAULT_MAX_POOL_SIZE = 4 * DEFAULT_CORE_POOL_SIZE;
 
-    public static ExecutorService getExecutorPool() {
+    public static ThreadPoolExecutor getExecutorPool() {
         ThreadFactory customFactory = new CustomThreadFactoryBuilder()
                 .setNameFormat("custom-pool-%d")
                 .build();
         BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
-        ExecutorService customThreadPool = new ThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE,
+        ThreadPoolExecutor customThreadPool = new ThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE,
                 DEFAULT_MAX_POOL_SIZE, 60, TimeUnit.SECONDS, queue, customFactory,
                 (r, executor) -> {
                     if (!executor.isShutdown()) {
@@ -48,10 +50,20 @@ public class CustomThreadPool {
                     }
                 }
                 if (t != null) {
-                    LOGGER.error("statisticsThreadPool error msg: {}", t.getMessage(), t);
+                    LOGGER.error("customThreadPool error msg: {}", t.getMessage(), t);
                 }
             }
         };
+        customThreadPool.prestartAllCoreThreads();
+        customThreadPool.shutdown();
+        try {
+            boolean finished = customThreadPool.awaitTermination(POLL_WAITING_TIME, TimeUnit.SECONDS);
+            if (!finished) {
+                customThreadPool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.error("customThreadPool overtime: {}", e.getMessage());
+        }
         return customThreadPool;
     }
 }
