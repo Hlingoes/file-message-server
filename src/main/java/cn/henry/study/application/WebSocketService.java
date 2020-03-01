@@ -49,12 +49,13 @@ public class WebSocketService {
         this.session = session;
         try {
             webSocketSet.add(this);
-            //在客户端通过webSocket连接时，创建一个SSH的会话
-            this.shellExecutor = new ShellExecutor();
-            //这里写上你的远程服务器ip，账号密码。当然你可以抽取成配置文件
-            this.shellExecutor.initSession("192.168.142.138", "root", "111111");
-            //准备执行命令。
-            shellExecutor.execCommand(this);
+            sendMessage("来自服务端的问候");
+            // 在客户端通过webSocket连接时，创建一个SSH的会话
+//            this.shellExecutor = new ShellExecutor();
+            // 这里写上你的远程服务器ip，账号密码。当然你可以抽取成配置文件
+//            this.shellExecutor.initSession("192.168.142.138", "root", "111111");
+            // 准备执行命令
+//            shellExecutor.execCommand(this);
         } catch (IOException e) {
             LOGGER.error("websocket IO异常", e);
         }
