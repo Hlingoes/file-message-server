@@ -120,6 +120,13 @@
             <version>2.8.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- 测试本地jar包引入和打包 -->
         <dependency>
             <groupId>cn.henry.frame</groupId>

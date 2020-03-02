@@ -17,7 +17,7 @@ import java.io.File;
  * @author Hlingoes
  * @date 2019/12/22 23:52
  */
-@SpringBootTest(classes = FileMessageServer.class)
+@SpringBootTest(classes = FileMessageServer.class, webEnvironment =SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class FtpTest {
 
@@ -26,17 +26,17 @@ public class FtpTest {
     @Autowired
     private FtpService ftpService;
 
-
+    @Test
     public void testDownload() {
         ftpService.download("/资料/bak/[muchong.com]数学物理方法.pdf",
-                "G:\\迅雷下载\\[muchong.com]数学物理方法.pdf");
+                "G:\\迅雷下载\\[muchong.com2]数学物理方法.pdf");
     }
 
     @Test
     public void testUpload() {
         File dir = new File("G:\\下载");
         File[] files = dir.listFiles();
-        String path = "/books/bak/";
+        String path = "/资料/bak/";
         for (File file : files) {
             ftpService.upload(path, file.getName(), file);
         }
