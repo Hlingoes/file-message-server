@@ -1,6 +1,7 @@
 package cn.henry.study.pool;
 
 import cn.henry.study.application.HttpClientTemplateService;
+import cn.henry.study.utils.CustomThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

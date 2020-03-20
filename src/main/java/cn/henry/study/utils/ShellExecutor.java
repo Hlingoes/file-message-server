@@ -2,7 +2,6 @@ package cn.henry.study.utils;
 
 import ch.ethz.ssh2.*;
 import cn.henry.study.application.WebSocketService;
-import cn.henry.study.pool.CustomThreadPool;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -11,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * description: 连接远程服务器的工具类
@@ -86,7 +86,8 @@ public class ShellExecutor {
      */
     public void execCommand(final WebSocketService webSocketService) throws IOException {
         //执行命令方法，使用线程池来执行
-        CustomThreadPool.getExecutorPool().submit(() -> {
+        ThreadPoolExecutor pool = ThreadPoolUtils.getExecutorPool();
+        pool.submit(() -> {
             String line;
             try {
                 // 持续获取服务器标准输出
@@ -98,6 +99,7 @@ public class ShellExecutor {
                 LOGGER.error("获取回显异常", e);
             }
         });
+        ThreadPoolUtils.closeAfterComplete(pool);
     }
 
     /**
