@@ -52,6 +52,10 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 9. [Hystrix使用说明，配置参数说明](https://blog.csdn.net/tongtong_use/article/details/78611225)
 > 10. [Java线程池最佳实践](https://blog.csdn.net/wanghao112956/article/details/99292107)
 > 11. [SpringBoot与JUnit+Mockito 单元测试](https://www.tianmaying.com/tutorial/JunitForSpringBoot)
+> 12. [一次logback多线程调优的经历](https://segmentfault.com/a/1190000016204970?utm_source=tag-newest)
+> 13. [Logback - SiftingAppender](https://blog.csdn.net/tmdcda/article/details/87616919)
+> 14. [自定义logback触发器策略进行日志滚动](https://www.oschina.net/question/5189_7691)
 <br>
 <br>
-**** 待续...****
+*** 
+待续...

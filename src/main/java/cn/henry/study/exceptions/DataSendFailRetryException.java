@@ -27,7 +27,10 @@ public class DataSendFailRetryException extends BaseException {
          * siftLogName的value通过这种方式设置， 这里设置的key-value对是保存在一个ThreadLocal<Map>中
          * 不会对其他线程中的siftLogName这个key产生影响
          */
-        MDC.put("siftLogName", service.getEntityClazz().getSimpleName() + HeaderConstants.DATA_RETRY_SUFFIX);
+        String siftLogName = service.getEntityClazz().getSimpleName() + HeaderConstants.DATA_RETRY_SUFFIX；
+        MDC.put("siftLogName", siftLogName);
+        // remember remove this
+        MDC.remove(siftLogName);
     }
 
     public DataSendFailRetryException(Object data) {
