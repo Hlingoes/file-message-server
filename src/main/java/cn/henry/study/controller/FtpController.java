@@ -1,7 +1,7 @@
 package cn.henry.study.controller;
 
 import cn.henry.frame.example.Teacher;
-import cn.henry.study.application.FtpService;
+import cn.henry.study.service.FtpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

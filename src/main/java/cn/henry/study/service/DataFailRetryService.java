@@ -1,4 +1,4 @@
-package cn.henry.study.application;
+package cn.henry.study.service;
 
 /**
  * description: 文件或消息的失败重传机制

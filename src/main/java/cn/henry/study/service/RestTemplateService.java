@@ -1,4 +1,4 @@
-package cn.henry.study.application;
+package cn.henry.study.service;
 
 import cn.henry.study.base.DefaultFileService;
 import org.springframework.beans.factory.annotation.Autowired;

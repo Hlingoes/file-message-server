@@ -1,6 +1,6 @@
 package cn.henry.study;
 
-import cn.henry.study.application.FtpService;
+import cn.henry.study.service.FtpService;
 import cn.henry.study.entity.Book;
 import org.junit.Assert;
 import org.junit.Test;

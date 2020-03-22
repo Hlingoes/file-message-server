@@ -1,4 +1,4 @@
-package cn.henry.study.application.rabbitmq;
+package cn.henry.study.service.rabbitmq;
 
 
 /**

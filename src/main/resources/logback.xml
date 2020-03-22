@@ -1,10 +1,13 @@
 <configuration>
     <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35} - %msg%n"/>
+    <timestamp key="bySecond" datePattern="yyyyMMddHHmmss"/>
+
     <!-- appender是configuration的子节点，是负责写日志的组件。 -->
     <!-- ConsoleAppender：把日志输出到控制台 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%t %d %p (%file:%line\)- %m%n</pattern>
+            <pattern>${pattern}</pattern>
             <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->
             <charset>UTF-8</charset>
         </encoder>
@@ -23,28 +26,62 @@
             <fileNamePattern>log/sys.%d.%i.log</fileNamePattern>
             <!-- 每产生一个日志文件，该日志文件的保存期限为30天 -->
             <maxHistory>30</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- maxFileSize:这是活动文件的大小，默认值是10MB,本篇设置为1KB，只是为了演示 -->
                 <maxFileSize>102400KB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
             <!-- pattern节点，用来设置日志的输入格式 -->
-            <pattern>
-                %d %p (%file:%line\)- %m%n
-            </pattern>
+            <pattern>${pattern}</pattern>
             <!-- 记录日志的编码 -->
             <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
     </appender>
+
+    <!-- 自定义的筛选日志 -->
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <!--discriminator鉴别器，根据siftLogName这个key对应的value鉴别日志事件，然后委托给具体appender写日志 -->
+        <discriminator>
+            <!-- 代码使用使用MDC.put("siftLogName",value)即可 -->
+            <key>siftLogName</key>
+            <defaultValue>default</defaultValue>
+        </discriminator>
+        <sift>
+            <!--具体的写日志appender，每一个siftLogName创建一个文件 -->
+            <appender name="File-${siftLogName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>study_sift_log/${siftLogName}.log</file>
+                <append>true</append>
+                <encoder charset="UTF-8">
+                    <pattern>${pattern}</pattern>
+                </encoder>
+                <!-- 自定义的日志滚动命名，配合trigger使用 -->
+                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                    <FileNamePattern>study_sift_log/${siftLogName}.${bySecond}.%i.log
+                    </FileNamePattern>
+                    <MinIndex>1</MinIndex>
+                    <MaxIndex>10</MaxIndex>
+                </rollingPolicy>
+                <!-- 自定义的日志滚动触发器 -->
+                <triggeringPolicy class="cn.henry.study.logback.DataSendRetryTriggeringPolicy">
+                </triggeringPolicy>
+            </appender>
+        </sift>
+    </appender>
+
     <!-- 控制台输出日志级别 -->
     <root level="info">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
     <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
-    <!-- com.appley为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
+    <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
     <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
     <logger name="cn.henry.study" level="DEBUG">
-        <appender-ref ref="syslog" />
+        <appender-ref ref="syslog"/>
+    </logger>
+
+    <!-- 发送文件失败的动态日志 -->
+    <logger name="cn.henry.study.exceptions.DataSendFailRetryException" level="INFO" additivity="false">
+        <appender-ref ref="SIFT"/>
     </logger>
 </configuration>

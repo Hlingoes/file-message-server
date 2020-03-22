@@ -1,6 +1,6 @@
 package cn.henry.study.pool;
 
-import cn.henry.study.application.HttpClientTemplateService;
+import cn.henry.study.service.HttpClientTemplateService;
 import cn.henry.study.utils.CustomThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

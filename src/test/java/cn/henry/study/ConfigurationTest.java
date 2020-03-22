@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Hlingoes
  * @date 2019/12/21 21:21
  */
-@SpringBootTest(classes = FileMessageServer.class)
+@SpringBootTest(classes = FileMessageServer.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class ConfigurationTest {
 
@@ -34,6 +34,7 @@ public class ConfigurationTest {
      * @return void
      * @author Hlingoes 2019/12/21
      */
+    @Test
     public void testReadHttpClientPoolConfig() {
         LOGGER.info("httpClientPoolConfig: {}", httpClientPoolConfig.toString());
     }

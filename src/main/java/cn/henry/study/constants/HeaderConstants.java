@@ -31,4 +31,9 @@ public class HeaderConstants {
      * API的返回格式 {ApiStyleEnum}
      */
     public static final String API_STYLE = "Api-Style";
+
+    /**
+     * 失败重传的文件日志后缀名 {ApiStyleEnum}
+     */
+    public static final String DATA_RETRY_SUFFIX = "_fail_retry";
 }

@@ -1,6 +1,6 @@
 package cn.henry.study;
 
-import cn.henry.study.application.FtpService;
+import cn.henry.study.service.FtpService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.io.File;
  * @author Hlingoes
  * @date 2019/12/22 23:52
  */
-@SpringBootTest(classes = FileMessageServer.class, webEnvironment =SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = FileMessageServer.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class FtpTest {
 
