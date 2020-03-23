@@ -56,6 +56,5 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 13. [Logback - SiftingAppender](https://blog.csdn.net/tmdcda/article/details/87616919)
 > 14. [自定义logback触发器策略进行日志滚动](https://www.oschina.net/question/5189_7691)
 <br>
-<br>
 *** 
 待续...

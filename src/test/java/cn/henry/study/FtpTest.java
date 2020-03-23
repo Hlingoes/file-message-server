@@ -42,6 +42,13 @@ public class FtpTest {
         }
     }
 
+    @Test
+    public void testUploadFail() {
+        File file = new File("G:\\下载\\[emuch.net]普林斯顿数学指南.pdf");
+        String path = "/资料/bak/";
+        ftpService.testUploadFail(path, file.getName(), file, true);
+    }
+
     public void testDelete() {
         String path = "/资料/bak/[emuch.net]普林斯顿数学指南.pdf";
         ftpService.delete(path);

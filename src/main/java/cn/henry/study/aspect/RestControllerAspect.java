@@ -2,7 +2,7 @@ package cn.henry.study.aspect;
 
 import cn.henry.frame.example.Teacher;
 import cn.henry.study.constants.HeaderConstants;
-import cn.henry.study.handler.GlobalExceptionHandler;
+import cn.henry.study.handler.GlobalControllerExceptionHandler;
 import cn.henry.study.utils.IpUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -105,7 +105,7 @@ public class RestControllerAspect {
     private boolean needToLog(Method method) {
         //GET请求不记录日志
         return method.getAnnotation(GetMapping.class) == null
-                && !method.getDeclaringClass().equals(GlobalExceptionHandler.class);
+                && !method.getDeclaringClass().equals(GlobalControllerExceptionHandler.class);
     }
 
     /**

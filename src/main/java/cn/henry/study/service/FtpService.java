@@ -1,7 +1,9 @@
 package cn.henry.study.service;
 
 import cn.henry.study.base.DefaultFileService;
+import cn.henry.study.exceptions.DataSendFailRetryException;
 import cn.henry.study.pool.FtpClientPool;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +59,16 @@ public class FtpService extends DefaultFileService {
         return upload(remotePath, localPath);
     }
 
+    public boolean testUploadFail(String path, String fileName, File file, boolean isTesting) {
+        if (isTesting) {
+            JSONObject json = new JSONObject();
+            json.put("rowKey", path + SEPARATOR + fileName);
+            json.put("filePath", file.getAbsolutePath());
+            throw new DataSendFailRetryException(this, json);
+        }
+        return false;
+    }
+
     /**
      * description: 上传文件
      *
@@ -70,7 +82,7 @@ public class FtpService extends DefaultFileService {
         boolean success = false;
         try {
             success = upload(path, fileName, FileUtils.openInputStream(file));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
         }
         return success;

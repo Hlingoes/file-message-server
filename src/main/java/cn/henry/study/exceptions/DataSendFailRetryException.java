@@ -1,11 +1,9 @@
 package cn.henry.study.exceptions;
 
-import cn.henry.frame.base.DefaultService;
 import cn.henry.study.base.BaseException;
-import cn.henry.study.constants.HeaderConstants;
+import cn.henry.study.base.DefaultFileService;
 import cn.henry.study.result.ResultCode;
 import com.alibaba.fastjson.JSONObject;
-import org.slf4j.MDC;
 
 /**
  * description: 处理通用的文件、消息发送失败的异常
@@ -15,22 +13,16 @@ import org.slf4j.MDC;
  */
 public class DataSendFailRetryException extends BaseException {
 
+    private DefaultFileService service;
+
     public DataSendFailRetryException() {
         super();
     }
 
-    public DataSendFailRetryException(DefaultService service, JSONObject data) {
+    public DataSendFailRetryException(DefaultFileService service, JSONObject data) {
         super();
         super.data = data;
-        /**
-         * logback.xml中discriminator根据siftLogName这个key的value来决定
-         * siftLogName的value通过这种方式设置， 这里设置的key-value对是保存在一个ThreadLocal<Map>中
-         * 不会对其他线程中的siftLogName这个key产生影响
-         */
-        String siftLogName = service.getEntityClazz().getSimpleName() + HeaderConstants.DATA_RETRY_SUFFIX；
-        MDC.put("siftLogName", siftLogName);
-        // remember remove this
-        MDC.remove(siftLogName);
+        this.service = service;
     }
 
     public DataSendFailRetryException(Object data) {
@@ -53,4 +45,13 @@ public class DataSendFailRetryException extends BaseException {
     public DataSendFailRetryException(String formatMsg, Object... objects) {
         super(formatMsg, objects);
     }
+
+    public DefaultFileService getService() {
+        return service;
+    }
+
+    public void writeRetryLog(){
+
+    }
+
 }

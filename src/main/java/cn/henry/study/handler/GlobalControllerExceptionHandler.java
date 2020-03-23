@@ -11,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -21,9 +20,8 @@ import javax.validation.ConstraintViolationException;
  * @desc 统一异常处理器
  * @since 8/31/2017 3:00 PM
  */
-@RestController
 @ControllerAdvice
-public class GlobalExceptionHandler extends BaseGlobalExceptionHandler {
+public class GlobalControllerExceptionHandler extends BaseGlobalExceptionHandler {
 
     /**
      * 处理400类异常
@@ -72,7 +70,7 @@ public class GlobalExceptionHandler extends BaseGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Throwable.class)
     public DefaultErrorResult handleThrowable(Throwable e, HttpServletRequest request) {
-        //TODO 可通过邮件、微信公众号等方式发送信息至开发人员、记录存档等操作
+        // TODO 可通过邮件、微信公众号等方式发送信息至开发人员、记录存档等操作
         return super.handleThrowable(e, request);
     }
 
