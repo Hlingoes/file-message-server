@@ -1,7 +1,7 @@
 package cn.henry.study.base;
 
 import cn.henry.study.constants.HeaderConstants;
-import com.alibaba.fastjson.JSONObject;
+import cn.henry.study.result.RetryMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -32,11 +32,11 @@ public class FileServiceFactory {
     /**
      * 用来缓存发送失败的文件信息
      */
-    private Map<String, BlockingQueue<JSONObject>> failDataCacheMap = new HashMap<>();
+    private Map<String, BlockingQueue<RetryMessage>> currentCacheMap = new HashMap<>();
     /**
      * 初始化获取之前上传失败的文件信息
      */
-    private Map<String, BlockingQueue<JSONObject>> failRetryDataCacheMap = new HashMap<>();
+    private Map<String, BlockingQueue<RetryMessage>> preCacheMap = new HashMap<>();
 
     @EventListener
     public void event(ApplicationReadyEvent event) {
@@ -46,33 +46,50 @@ public class FileServiceFactory {
             if (null != value.getEntityClazz()) {
                 String logName = value.getEntityClazz().getSimpleName() + HeaderConstants.DATA_RETRY_SUFFIX;
                 massFactory.put(value.getEntityClazz(), value);
-                BlockingQueue<JSONObject> failDataQueue = new LinkedBlockingQueue<>(failDataSize);
-                BlockingQueue<JSONObject> failRetryDataQueue = new LinkedBlockingQueue<>(failRetryDataSize);
-                failDataCacheMap.put(logName, failDataQueue);
-                failRetryDataCacheMap.put(logName, failRetryDataQueue);
+                BlockingQueue<RetryMessage> failDataQueue = new LinkedBlockingQueue<>(failDataSize);
+                BlockingQueue<RetryMessage> failRetryDataQueue = new LinkedBlockingQueue<>(failRetryDataSize);
+                currentCacheMap.put(logName, failDataQueue);
+                preCacheMap.put(logName, failRetryDataQueue);
             }
         });
         massFactory.forEach((key, value) -> LOGGER.info("key: {}, value: {}", key, value.getClass()));
-        failDataCacheMap.forEach((key, value) -> LOGGER.info("key: {}, valve: {}", key, value.getClass()));
-        failRetryDataCacheMap.forEach((key, value) -> LOGGER.info("key: {}, valve: {}", key, value.getClass()));
+        currentCacheMap.forEach((key, value) -> LOGGER.info("key: {}, valve: {}", key, value.getClass()));
+        preCacheMap.forEach((key, value) -> LOGGER.info("key: {}, valve: {}", key, value.getClass()));
     }
 
     @EventListener
     public void event(ContextClosedEvent event) {
         LOGGER.info("application is closing", event.getApplicationContext().getEnvironment().getActiveProfiles()[0]);
         // 取出此次失败的缓存数据
-        failDataCacheMap.forEach((key, value) -> {
-            List<JSONObject> list = new ArrayList<>(failDataSize);
+        currentCacheMap.forEach((key, value) -> {
+            List<RetryMessage> list = new ArrayList<>(failDataSize);
             value.drainTo(list);
-            list.forEach(jsonObject -> LoggerFactory.getLogger(key).info("{}", value.poll()));
+            list.forEach(retryMessage -> retryMessage.writeRetryLog());
         });
-        // 取出之前失败的，可能未消费玩的缓存数据
-        failRetryDataCacheMap.forEach((key, value) -> {
+        // 取出之前失败的，可能未消费完的缓存数据
+        preCacheMap.forEach((key, value) -> {
             // 取出缓存的所有数据
-            List<JSONObject> list = new ArrayList<>(failRetryDataSize);
+            List<RetryMessage> list = new ArrayList<>(failRetryDataSize);
             value.drainTo(list);
-            list.forEach(jsonObject -> LoggerFactory.getLogger(key).info("{}", value.poll()));
+            list.forEach(retryMessage -> retryMessage.writeRetryLog());
         });
+    }
+
+    /**
+     * description: 将失败的文件参数写入缓存
+     *
+     * @param retryMessage
+     * @return void
+     * @author Hlingoes 2020/3/27
+     */
+    public void cacheFailData(RetryMessage retryMessage) {
+        String key = retryMessage.getLogName();
+        retryMessage.writeTempFile();
+        if (currentCacheMap.containsKey(key)) {
+            if (!currentCacheMap.get(key).offer(retryMessage)) {
+                retryMessage.writeRetryLog();
+            }
+        }
     }
 
 }

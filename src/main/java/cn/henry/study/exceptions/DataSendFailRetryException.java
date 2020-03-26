@@ -2,8 +2,8 @@ package cn.henry.study.exceptions;
 
 import cn.henry.study.base.BaseException;
 import cn.henry.study.base.DefaultFileService;
+import cn.henry.study.result.RetryMessage;
 import cn.henry.study.result.ResultCode;
-import com.alibaba.fastjson.JSONObject;
 
 /**
  * description: 处理通用的文件、消息发送失败的异常
@@ -19,9 +19,9 @@ public class DataSendFailRetryException extends BaseException {
         super();
     }
 
-    public DataSendFailRetryException(DefaultFileService service, JSONObject data) {
+    public DataSendFailRetryException(DefaultFileService service, RetryMessage retryMessage) {
         super();
-        super.data = data;
+        super.data = retryMessage;
         this.service = service;
     }
 
@@ -48,10 +48,6 @@ public class DataSendFailRetryException extends BaseException {
 
     public DefaultFileService getService() {
         return service;
-    }
-
-    public void writeRetryLog(){
-
     }
 
 }

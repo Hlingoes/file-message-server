@@ -40,7 +40,8 @@ public class RestControllerAspect {
      * @return 切入点返回值
      * @throws Throwable 异常信息
      */
-    @Around("@within(org.springframework.web.bind.annotation.RestController) || @annotation(org.springframework.web.bind.annotation.RestController)")
+    @Around("@within(org.springframework.web.bind.annotation.RestController) " +
+            "|| @annotation(org.springframework.web.bind.annotation.RestController)")
     public Object apiLog(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
