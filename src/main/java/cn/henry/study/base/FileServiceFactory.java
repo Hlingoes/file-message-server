@@ -36,11 +36,13 @@ public class FileServiceFactory {
     /**
      * 用来缓存发送失败的文件信息
      */
-    private Map<String, BlockingQueue<MessageBrief>> currentCacheMap = new HashMap<>();
+    private Map<String, BlockingQueue<MessageBrief>> curFailCacheMap = new HashMap<>();
     /**
      * 初始化获取之前上传失败的文件信息
      */
-    private Map<String, BlockingQueue<MessageBrief>> preCacheMap = new HashMap<>();
+    private Map<String, BlockingQueue<MessageBrief>> preFailCacheMap = new HashMap<>();
+
+    private BlockingQueue<String> logNameFlagQueue;
 
     @EventListener
     public void event(ApplicationReadyEvent event) {
@@ -53,26 +55,26 @@ public class FileServiceFactory {
                 BlockingQueue<MessageBrief> failDataQueue = new LinkedBlockingQueue<>(this.failDataSize);
                 BlockingQueue<MessageBrief> failRetryDataQueue = new LinkedBlockingQueue<>(this.failRetryDataSize);
                 String logName = className + HeaderConstants.DATA_RETRY_SUFFIX;
-                this.currentCacheMap.put(logName, failDataQueue);
-                this.preCacheMap.put(logName, failRetryDataQueue);
+                this.curFailCacheMap.put(logName, failDataQueue);
+                this.preFailCacheMap.put(logName, failRetryDataQueue);
             }
         });
         this.serviceCacheMap.forEach((key, value) -> LOGGER.info("key: {}, value: {}", key, value.getClass()));
-        this.currentCacheMap.forEach((key, value) -> LOGGER.info("key: {}, valve: {}", key, value.getClass()));
-        this.preCacheMap.forEach((key, value) -> LOGGER.info("key: {}, valve: {}", key, value.getClass()));
+        this.curFailCacheMap.forEach((key, value) -> value.forEach(messageBrief -> LOGGER.info("{}", messageBrief)));
+        this.preFailCacheMap.forEach((key, value) -> value.forEach(messageBrief -> LOGGER.info("{}", messageBrief)));
     }
 
     @EventListener
     public void event(ContextClosedEvent event) {
         LOGGER.info("application is closing", event.getApplicationContext().getEnvironment().getActiveProfiles()[0]);
         // 取出此次失败的缓存数据
-        this.currentCacheMap.forEach((key, value) -> {
+        this.curFailCacheMap.forEach((key, value) -> {
             List<MessageBrief> list = new ArrayList<>(this.failDataSize);
             value.drainTo(list);
             list.forEach(retryMessage -> retryMessage.writeRetryLog());
         });
         // 取出之前失败的，可能未消费完的缓存数据
-        this.preCacheMap.forEach((key, value) -> {
+        this.preFailCacheMap.forEach((key, value) -> {
             // 取出缓存的所有数据
             List<MessageBrief> list = new ArrayList<>(this.failRetryDataSize);
             value.drainTo(list);
@@ -90,8 +92,8 @@ public class FileServiceFactory {
     public void cacheFailData(RetryMessage retryMessage) {
         retryMessage.writeTempFile();
         String key = retryMessage.getMessageBrief().getLogName();
-        if (this.currentCacheMap.containsKey(key)) {
-            if (!this.currentCacheMap.get(key).offer(retryMessage.getMessageBrief())) {
+        if (this.curFailCacheMap.containsKey(key)) {
+            if (!this.curFailCacheMap.get(key).offer(retryMessage.getMessageBrief())) {
                 retryMessage.writeRetryLog();
             }
         }
@@ -107,8 +109,8 @@ public class FileServiceFactory {
      */
     public void cacheFailData(String clazz, MessageBrief brief) {
         String key = clazz + HeaderConstants.DATA_RETRY_SUFFIX;
-        if (this.currentCacheMap.containsKey(key)) {
-            if (!this.currentCacheMap.get(key).offer(brief)) {
+        if (this.curFailCacheMap.containsKey(key)) {
+            if (!this.curFailCacheMap.get(key).offer(brief)) {
                 brief.writeRetryLog();
             }
         }
