@@ -2,7 +2,7 @@ package cn.henry.study.aspect;
 
 import cn.henry.study.base.FileServiceFactory;
 import cn.henry.study.exceptions.DataSendFailRetryException;
-import cn.henry.study.result.RetryMessage;
+import cn.henry.study.base.RetryMessage;
 import com.google.common.base.Stopwatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

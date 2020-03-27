@@ -2,7 +2,7 @@ package cn.henry.study.exceptions;
 
 import cn.henry.study.base.BaseException;
 import cn.henry.study.base.DefaultFileService;
-import cn.henry.study.result.RetryMessage;
+import cn.henry.study.base.RetryMessage;
 import cn.henry.study.result.ResultCode;
 
 /**

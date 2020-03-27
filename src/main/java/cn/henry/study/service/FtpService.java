@@ -3,7 +3,7 @@ package cn.henry.study.service;
 import cn.henry.study.base.DefaultFileService;
 import cn.henry.study.exceptions.DataSendFailRetryException;
 import cn.henry.study.pool.FtpClientPool;
-import cn.henry.study.result.RetryMessage;
+import cn.henry.study.base.RetryMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
