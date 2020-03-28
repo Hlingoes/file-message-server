@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <!-- logback.xml和logback-test.xml会被logback组件直接读取 -->
+    <!-- 如果要交给spring管理，需要修改配置文件名为logback-spring.xml -->
+    <!-- springProfile标签可以为不同的环境使用不同的配置 -->
+
     <springProperty scope="context" name="LOG_HOME" source="logback.logHome" defaultValue="log"/>
     <springProperty scope="context" name="SIFT_LOG_HOME" source="logback.siftLogHome" defaultValue="sift"/>
 
@@ -136,7 +140,7 @@
         </logger>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="pro">
         <root level="INFO">
             <appender-ref ref="FILE"/>
             <appender-ref ref="STDOUT"/>
