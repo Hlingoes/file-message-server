@@ -3,7 +3,7 @@ package cn.henry.study.service;
 import cn.henry.study.base.DefaultFileService;
 import cn.henry.study.exceptions.DataSendFailRetryException;
 import cn.henry.study.pool.FtpClientPool;
-import cn.henry.study.base.RetryMessage;
+import cn.henry.study.base.RetryService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class FtpService extends DefaultFileService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(FtpService.class);
+    private static Logger logger = LoggerFactory.getLogger(FtpService.class);
 
     /**
      * 目录分隔符
@@ -73,7 +73,7 @@ public class FtpService extends DefaultFileService {
         try {
             success = upload(path, fileName, FileUtils.openInputStream(file));
         } catch (Exception e) {
-            LOGGER.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
+            logger.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
         }
         return success;
     }
@@ -94,27 +94,27 @@ public class FtpService extends DefaultFileService {
         path = path.replace("\\", SEPARATOR).replaceAll("//", SEPARATOR);
         try {
             ftpClient = ftpClientPool.borrowObject();
-            LOGGER.info("开始上传文件[{}]", path + SEPARATOR + fileName);
+            logger.info("开始上传文件[{}]", path + SEPARATOR + fileName);
             if (makeAndChangeDirectory(path, ftpClient)) {
                 flag = ftpClient.storeFile(encodingPath(fileName, ftpClient), inputStream);
                 inputStream.close();
             } else {
-                LOGGER.error("切换目录失败", path);
+                logger.error("切换目录失败", path);
             }
         } catch (Exception e) {
             flag = false;
-            LOGGER.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
+            logger.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
             String rowKey = path + SEPARATOR + fileName;
             try {
                 byte[] content = IOUtils.toByteArray(inputStream);
-                RetryMessage failMessage = new RetryMessage(this, rowKey, content);
+                RetryService failMessage = new RetryService(this, rowKey, content);
                 throw new DataSendFailRetryException(this, failMessage);
             } catch (IOException ex) {
-                LOGGER.info("文件流读取失败", ex);
+                logger.info("文件流读取失败", ex);
             }
         } finally {
             if (flag) {
-                LOGGER.info("上传文件[{}]成功", path + SEPARATOR + fileName);
+                logger.info("上传文件[{}]成功", path + SEPARATOR + fileName);
             }
             ftpClientPool.returnObject(ftpClient);
         }
@@ -147,7 +147,7 @@ public class FtpService extends DefaultFileService {
         try {
             success = upload(remotePath, FileUtils.openInputStream(file));
         } catch (IOException e) {
-            LOGGER.error("上传文件[{}]失败", remotePath, e);
+            logger.error("上传文件[{}]失败", remotePath, e);
         }
         return success;
     }
@@ -181,7 +181,7 @@ public class FtpService extends DefaultFileService {
         FTPClient ftpClient = null;
         try {
             ftpClient = ftpClientPool.borrowObject();
-            LOGGER.info("开始下载文件[{}]", path + SEPARATOR + fileName);
+            logger.info("开始下载文件[{}]", path + SEPARATOR + fileName);
             //切换FTP目录
             if (ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient))) {
                 File localFile = new File(localPath);
@@ -189,15 +189,15 @@ public class FtpService extends DefaultFileService {
                 flag = ftpClient.retrieveFile(encodingPath(fileName, ftpClient), outputStream);
                 IOUtils.closeQuietly(outputStream);
             } else {
-                LOGGER.error("切换目录失败", path);
+                logger.error("切换目录失败", path);
             }
         } catch (Exception e) {
-            LOGGER.info("下载文件[{}]到[{}]失败", path + SEPARATOR + fileName, localPath);
+            logger.info("下载文件[{}]到[{}]失败", path + SEPARATOR + fileName, localPath);
         } finally {
             if (flag) {
-                LOGGER.info("下载文件[{}]到[{}]成功", path + SEPARATOR + fileName, localPath);
+                logger.info("下载文件[{}]到[{}]成功", path + SEPARATOR + fileName, localPath);
             } else {
-                LOGGER.info("下载文件[{}]到[{}]失败", path + SEPARATOR + fileName, localPath);
+                logger.info("下载文件[{}]到[{}]失败", path + SEPARATOR + fileName, localPath);
             }
             ftpClientPool.returnObject(ftpClient);
         }
@@ -247,18 +247,18 @@ public class FtpService extends DefaultFileService {
         FTPClient ftpClient = null;
         try {
             ftpClient = ftpClientPool.borrowObject();
-            LOGGER.info("开始删除文件[{}]", path + SEPARATOR + fileName);
+            logger.info("开始删除文件[{}]", path + SEPARATOR + fileName);
             //切换FTP目录
             if (ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient))) {
                 flag = ftpClient.deleteFile(encodingPath(fileName, ftpClient));
             } else {
-                LOGGER.error("切换目录失败", path);
+                logger.error("切换目录失败", path);
             }
         } catch (Exception e) {
-            LOGGER.error("删除文件失败[{}]", path + SEPARATOR + fileName, e);
+            logger.error("删除文件失败[{}]", path + SEPARATOR + fileName, e);
         } finally {
             if (flag) {
-                LOGGER.info("删除文件成功[{}]", path + SEPARATOR + fileName);
+                logger.info("删除文件成功[{}]", path + SEPARATOR + fileName);
             }
             ftpClientPool.returnObject(ftpClient);
         }
@@ -280,7 +280,7 @@ public class FtpService extends DefaultFileService {
             files = ftpClient.listFiles(encodingPath(remotePath, ftpClient),
                     file -> file != null && file.getSize() > 0);
         } catch (Exception e) {
-            LOGGER.error("获取指定路径下FTP文件失败: {}", remotePath, e);
+            logger.error("获取指定路径下FTP文件失败: {}", remotePath, e);
         } finally {
             ftpClientPool.returnObject(ftpClient);
         }
@@ -333,19 +333,39 @@ public class FtpService extends DefaultFileService {
                 if (StringUtils.isNotEmpty(dir)) {
                     path = path + SEPARATOR + dir;
                     if (!ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient))) {
-                        LOGGER.info("进入文件夹: [{}]失败！开始创建文件夹", path);
+                        logger.info("进入文件夹: [{}]失败！开始创建文件夹", path);
                         if (!ftpClient.makeDirectory(encodingPath(path, ftpClient))) {
-                            LOGGER.info("创建目录[{}]失败", path);
+                            logger.info("创建目录[{}]失败", path);
                             return false;
                         } else {
                             ftpClient.changeWorkingDirectory(encodingPath(path, ftpClient));
-                            LOGGER.info("进入文件夹: [{}]  成功", path);
+                            logger.info("进入文件夹: [{}]  成功", path);
                         }
                     }
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * description: 测试上传失败的流程
+     *
+     * @param path
+     * @param fileName
+     * @param file
+     * @return void
+     * @author Hlingoes 2020/3/28
+     */
+    public void testUploadFail(String path, String fileName, File file) {
+        byte[] content = new byte[0];
+        try {
+            content = FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            logger.info("文件流读取失败: {}", file.getAbsolutePath(), e);
+        }
+        RetryService failMessage = new RetryService(this, path + SEPARATOR + fileName, content);
+        throw new DataSendFailRetryException(this, failMessage);
     }
 
 }

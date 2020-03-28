@@ -1,41 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+
+    <springProperty scope="context" name="LOG_HOME" source="logback.logHome" defaultValue="log"/>
+    <springProperty scope="context" name="SIFT_LOG_HOME" source="logback.siftLogHome" defaultValue="sift"/>
+
     <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
     <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35} - %msg%n"/>
     <timestamp key="bySecond" datePattern="yyyyMMddHHmmss"/>
 
     <!-- appender是configuration的子节点，是负责写日志的组件。 -->
-    <!-- ConsoleAppender：把日志输出到控制台 -->
+    <!-- ch.qos.logback.core.ConsoleAppender：把日志输出到控制台 -->
+    <!-- 打印到控制台 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
             <pattern>${pattern}</pattern>
-            <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->
+            <!-- 记录日志的编码 -->
             <charset>UTF-8</charset>
         </encoder>
     </appender>
+
     <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
-    <!-- 以下的大概意思是：1.先按日期存日志，日期变了，将前一天的日志文件名重命名为XXX%日期%索引，新的日志仍然是sys.log -->
-    <!--             2.如果日期没有发生变化，但是当前日志的文件大小超过1KB时，对当前日志进行分割 重命名-->
-    <appender name="syslog"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>log/sys.log</File>
-        <!-- rollingPolicy:当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名。 -->
-        <!-- TimeBasedRollingPolicy： 最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动 -->
+    <!-- 打印所有日志，保存到文件-->
+    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/service_all.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次 -->
-            <!-- 文件名：log/sys.2017-12-05.0.log -->
-            <fileNamePattern>log/sys.%d.%i.log</fileNamePattern>
-            <!-- 每产生一个日志文件，该日志文件的保存期限为30天 -->
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
+            <fileNamePattern>${logHome}/service_all.%d.%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- maxFileSize:这是活动文件的大小，默认值是10MB,本篇设置为1KB，只是为了演示 -->
-                <maxFileSize>102400KB</maxFileSize>
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
             <!-- pattern节点，用来设置日志的输入格式 -->
             <pattern>${pattern}</pattern>
             <!-- 记录日志的编码 -->
-            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="FILE_SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/fileService.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
+            <fileNamePattern>${LOG_HOME}/fileService.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
@@ -49,39 +71,75 @@
         </discriminator>
         <sift>
             <!--具体的写日志appender，每一个siftLogName创建一个文件 -->
-            <appender name="File-${siftLogName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>study_sift_log/${siftLogName}.log</file>
+            <appender name="FILE_${siftLogName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${SIFT_LOG_HOME}/${siftLogName}.log</file>
                 <append>true</append>
                 <encoder charset="UTF-8">
                     <pattern>${pattern}</pattern>
                 </encoder>
                 <!-- 自定义的日志滚动命名，配合trigger使用 -->
                 <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                    <FileNamePattern>study_sift_log/${siftLogName}.${bySecond}.%i.log
-                    </FileNamePattern>
+                    <FileNamePattern>${SIFT_LOG_HOME}/${siftLogName}.${bySecond}.%i.log</FileNamePattern>
                     <MinIndex>1</MinIndex>
                     <MaxIndex>10</MaxIndex>
                 </rollingPolicy>
                 <!-- 自定义的日志滚动触发器 -->
-                <triggeringPolicy class="cn.henry.study.logback.DataSendRetryTriggeringPolicy">
+                <triggeringPolicy class="cn.henry.study.logback.FailuresRetryTriggeringPolicy">
                 </triggeringPolicy>
             </appender>
         </sift>
     </appender>
 
-    <!-- 控制台输出日志级别 -->
-    <root level="info">
-        <appender-ref ref="STDOUT"/>
-    </root>
-    <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
-    <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
-    <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
-    <logger name="cn.henry.study" level="DEBUG">
-        <appender-ref ref="syslog"/>
-    </logger>
+    <!-- rest template logger-->
+    <!--<logger name="org.springframework.web.client.RestTemplate" level="DEBUG" />-->
+    <!--<logger name="org.springframework" level="DEBUG" />-->
 
-    <!-- 发送文件失败的动态日志 -->
-    <logger name="cn.henry.study.entity.MessageBrief" level="ERROR" additivity="false">
-        <appender-ref ref="SIFT"/>
-    </logger>
+    <!-- jdbc-->
+    <!--<logger name="jdbc.sqltiming" level="DEBUG" />-->
+    <!--<logger name="org.mybatis" level="DEBUG"/>-->
+
+    <!-- zookeeper-->
+    <!--<logger name="org.apache.zookeeper" level="ERROR"/>-->
+
+    <!-- dubbo -->
+    <!--<logger name="com.alibaba.dubbo.monitor" level="ERROR"/>-->
+    <!--<logger name="com.alibaba.dubbo.remoting" level="ERROR"/>-->
+
+    <!--    <springProfile name="dev">-->
+    <!--        &lt;!&ndash; 开发环境时激活 &ndash;&gt;-->
+    <!--    </springProfile>-->
+
+    <!--    <springProfile name="dev,test">-->
+    <!--        &lt;!&ndash; 开发，测试的时候激活&ndash;&gt;-->
+    <!--    </springProfile>-->
+
+    <!--    <springProfile name="!prod">-->
+    <!--        &lt;!&ndash; 当 "生产" 环境时，该配置不激活&ndash;&gt;-->
+    <!--    </springProfile>-->
+    <springProfile name="dev,test">
+        <!-- 控制台输出日志级别 -->
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE_ALL"/>
+        </root>
+
+        <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
+        <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
+        <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
+        <logger name="cn.henry.study" level="INFO">
+            <appender-ref ref="FILE_SERVICE"/>
+        </logger>
+
+        <!-- 发送文件失败的动态日志 -->
+        <logger name="cn.henry.study.entity.MessageBrief" level="ERROR" additivity="false">
+            <appender-ref ref="SIFT"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
 </configuration>

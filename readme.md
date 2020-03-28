@@ -38,6 +38,7 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 ##### 6. 2020-01-05 完成项目打包的总结，放在resources/summaries中
 ##### 7. 2020-01-12 完成spring hystrix和内置tomcat组件的参数调优的小结，放在resources/summaries中
 ##### 8. 2020-02-27 完成SSH服务和WebScoket服务的开发，使用自定义线程池，测试中
+##### 9. 2020-03-13 开始使用logback的自定义线程日志sift特性，spring的close事件，整合quartz，实现通用的文件失败重传
 
 ---
 > 参考了众多博主的帖子，按照实际使用做了调整，一并感谢，共勉

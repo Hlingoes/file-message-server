@@ -2,7 +2,7 @@ package cn.henry.study.exceptions;
 
 import cn.henry.study.base.BaseException;
 import cn.henry.study.base.DefaultFileService;
-import cn.henry.study.base.RetryMessage;
+import cn.henry.study.base.RetryService;
 import cn.henry.study.result.ResultCode;
 
 /**
@@ -19,9 +19,9 @@ public class DataSendFailRetryException extends BaseException {
         super();
     }
 
-    public DataSendFailRetryException(DefaultFileService service, RetryMessage retryMessage) {
+    public DataSendFailRetryException(DefaultFileService service, RetryService retryService) {
         super();
-        super.data = retryMessage;
+        super.data = retryService;
         this.service = service;
     }
 

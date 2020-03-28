@@ -1,12 +1,9 @@
 package cn.henry.study.base;
 
-import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.entity.MessageBrief;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.boot.system.ApplicationHome;
 
 import java.io.File;
@@ -18,8 +15,8 @@ import java.io.IOException;
  * @author Hlingoes
  * @date 2020/3/26 23:36
  */
-public class RetryMessage {
-    private static Logger logger = LoggerFactory.getLogger(RetryMessage.class);
+public class RetryService {
+    private static Logger logger = LoggerFactory.getLogger(RetryService.class);
 
     private DefaultFileService fileService;
 
@@ -27,9 +24,9 @@ public class RetryMessage {
 
     private MessageBrief messageBrief;
 
-    public RetryMessage(DefaultFileService fileService, String rowKey, byte[] content) {
+    public RetryService(DefaultFileService fileService, String rowKey, byte[] content) {
         this.fileService = fileService;
-        this.messageBrief = new MessageBrief(rowKey, fileService.getEntityClazz() + HeaderConstants.DATA_RETRY_SUFFIX);
+        this.messageBrief = new MessageBrief(rowKey, fileService);
         this.content = content;
     }
 
@@ -49,7 +46,11 @@ public class RetryMessage {
      */
     public void writeTempFile() {
         try {
-            FileUtils.writeByteArrayToFile(this.messageBrief.getTempFile(), this.content);
+            File file = this.messageBrief.tempFile();
+            if (!file.exists()) {
+                // 同一文件，多次失败，不需要重复写入
+                FileUtils.writeByteArrayToFile(file, this.content);
+            }
         } catch (IOException e) {
             logger.info("写临时文件失败: {}", this, e);
         }

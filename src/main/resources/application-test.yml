@@ -82,7 +82,6 @@ spring:
           enabled: true
 server:
   port: 9012
-logging:
-  level:
-    ROOT: debug
-    org.apache.http: info
+logback:
+  logHome: logs
+  siftLogHome: logs/sift_retry_log

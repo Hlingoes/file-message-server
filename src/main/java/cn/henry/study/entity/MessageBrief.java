@@ -1,5 +1,8 @@
 package cn.henry.study.entity;
 
+import cn.henry.study.base.DefaultFileService;
+import cn.henry.study.constants.HeaderConstants;
+import cn.henry.study.utils.JacksonUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,7 +21,9 @@ import java.io.File;
 public class MessageBrief {
     private static Logger logger = LoggerFactory.getLogger(MessageBrief.class);
 
-    private String retryDir = "fail_upload_files";
+    public static File jarHome = new ApplicationHome(MessageBrief.class).getDir();
+
+    public static String retryDir = "fail_upload_files";
 
     private String rowKey;
 
@@ -26,9 +31,26 @@ public class MessageBrief {
 
     private String retryPath;
 
+    /**
+     * Jackson反序列化需要无参构造器
+     */
+    public MessageBrief() {
+
+    }
+
+    public MessageBrief(String logName) {
+        this.logName = logName;
+    }
+
     public MessageBrief(String rowKey, String logName) {
         this.rowKey = rowKey;
         this.logName = logName;
+    }
+
+    public MessageBrief(String rowKey, DefaultFileService fileService) {
+        this.rowKey = rowKey;
+        this.retryPath = this.tempFile().getAbsolutePath();
+        this.logName = fileService.getEntityClazz().getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
     }
 
     /**
@@ -42,7 +64,8 @@ public class MessageBrief {
      */
     public void writeRetryLog() {
         MDC.put("siftLogName", this.logName);
-        logger.error("{}", this.toString());
+        String brief = this.briefMark() + JacksonUtils.object2Str(this);
+        logger.error("{}", brief);
         // remember remove MDC
         MDC.remove(this.logName);
     }
@@ -54,16 +77,20 @@ public class MessageBrief {
      * @return void
      * @author Hlingoes 2020/3/26
      */
-    public File getTempFile() {
+    public File tempFile() {
         String fileName = StringUtils.substringAfterLast(this.getRowKey(), "/");
-        return FileUtils.getFile(this.getBaseJarDir(), this.retryDir, fileName);
+        return FileUtils.getFile(jarHome, retryDir, fileName);
     }
 
     /**
-     * 获取当前jar包所在系统中的目录
+     * description: 日志标记
+     *
+     * @param
+     * @return java.lang.String
+     * @author Hlingoes 2020/3/28
      */
-    private File getBaseJarDir() {
-        return new ApplicationHome(getClass()).getDir();
+    public String briefMark() {
+        return this.getClass().getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
     }
 
     public String getRowKey() {
@@ -90,11 +117,4 @@ public class MessageBrief {
         this.retryPath = retryPath;
     }
 
-    @Override
-    public String toString() {
-        return "MessageBrief{" +
-                "rowKey='" + rowKey + '\'' +
-                ", retryPath='" + retryPath + '\'' +
-                '}';
-    }
 }

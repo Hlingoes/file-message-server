@@ -33,7 +33,12 @@ public class HeaderConstants {
     public static final String API_STYLE = "Api-Style";
 
     /**
-     * 失败重传的文件日志后缀名 {ApiStyleEnum}
+     * 失败重传的文件日志前缀名
      */
-    public static final String DATA_RETRY_SUFFIX = "_fail_retry";
+    public static final String SIFT_LOG_PREFIX = "_fail_retry";
+
+    /**
+     * 失败重传的文件日志后缀名
+     */
+    public static final String SIFT_LOG_SUFFIX = ".log";
 }

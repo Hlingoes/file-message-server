@@ -2,7 +2,7 @@ package cn.henry.study.aspect;
 
 import cn.henry.study.base.FileServiceFactory;
 import cn.henry.study.exceptions.DataSendFailRetryException;
-import cn.henry.study.base.RetryMessage;
+import cn.henry.study.base.RetryService;
 import com.google.common.base.Stopwatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -55,7 +55,7 @@ public class GlobalServiceExceptionAspect {
             LOGGER.info("耗时: {}ms", consumeTime);
             LOGGER.info("执行结束: {}, 返回值: {}, 耗时: {}ms", pjp.getSignature(), result, consumeTime);
         } catch (DataSendFailRetryException ex) {
-            fileServiceFactory.cacheFailData((RetryMessage) ex.getData());
+            fileServiceFactory.cacheFailData((RetryService) ex.getData());
             LOGGER.error(pjp.getSignature() + " 接口记录返回结果失败！，原因为：{}", ex.getMessage());
         }
         return result;

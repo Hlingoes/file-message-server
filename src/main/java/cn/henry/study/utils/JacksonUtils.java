@@ -1,6 +1,5 @@
 package cn.henry.study.utils;
 
-import cn.henry.study.configuration.HttpClientConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -18,7 +17,7 @@ import java.util.List;
  */
 public class JacksonUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JacksonUtils.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -31,8 +30,7 @@ public class JacksonUtils {
      */
     public static String object2Str(Object data) {
         try {
-            String string = MAPPER.writeValueAsString(data);
-            return string;
+            return MAPPER.writeValueAsString(data);
         } catch (JsonProcessingException e) {
             LOGGER.error("对象转string失败: {}", data, e);
         }
@@ -49,8 +47,7 @@ public class JacksonUtils {
      */
     public static <T> T str2Bean(String data, Class<T> beanType) {
         try {
-            T t = MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).readValue(data, beanType);
-            return t;
+            return MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).readValue(data, beanType);
         } catch (Exception e) {
             LOGGER.error("string转对象失败: {}", data, e);
         }
@@ -69,8 +66,7 @@ public class JacksonUtils {
         JavaType javaType = MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .getTypeFactory().constructParametricType(List.class, beanType);
         try {
-            List<T> list = MAPPER.readValue(data, javaType);
-            return list;
+            return MAPPER.readValue(data, javaType);
         } catch (Exception e) {
             LOGGER.error("string转对象失败: {}", data, e);
         }
