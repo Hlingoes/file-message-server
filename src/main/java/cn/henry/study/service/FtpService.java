@@ -1,9 +1,9 @@
 package cn.henry.study.service;
 
 import cn.henry.study.base.DefaultFileService;
-import cn.henry.study.exceptions.DataSendFailRetryException;
+import cn.henry.study.entity.MessageBrief;
+import cn.henry.study.exceptions.FailRetryException;
 import cn.henry.study.pool.FtpClientPool;
-import cn.henry.study.base.RetryService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -103,15 +103,10 @@ public class FtpService extends DefaultFileService {
             }
         } catch (Exception e) {
             flag = false;
-            logger.error("上传文件[{}]失败", path + SEPARATOR + fileName, e);
             String rowKey = path + SEPARATOR + fileName;
-            try {
-                byte[] content = IOUtils.toByteArray(inputStream);
-                RetryService failMessage = new RetryService(this, rowKey, content);
-                throw new DataSendFailRetryException(this, failMessage);
-            } catch (IOException ex) {
-                logger.info("文件流读取失败", ex);
-            }
+            logger.error("上传文件[{}]失败", rowKey, e);
+            MessageBrief brief = new MessageBrief(this.getClass(), rowKey, inputStream);
+            throw new FailRetryException(this, brief);
         } finally {
             if (flag) {
                 logger.info("上传文件[{}]成功", path + SEPARATOR + fileName);
@@ -358,14 +353,12 @@ public class FtpService extends DefaultFileService {
      * @author Hlingoes 2020/3/28
      */
     public void testUploadFail(String path, String fileName, File file) {
-        byte[] content = new byte[0];
         try {
-            content = FileUtils.readFileToByteArray(file);
+            MessageBrief brief = new MessageBrief(this.getClass(), path + SEPARATOR + fileName, new FileInputStream(file));
+            throw new FailRetryException(this, brief);
         } catch (IOException e) {
             logger.info("文件流读取失败: {}", file.getAbsolutePath(), e);
         }
-        RetryService failMessage = new RetryService(this, path + SEPARATOR + fileName, content);
-        throw new DataSendFailRetryException(this, failMessage);
     }
 
 }

@@ -1,16 +1,20 @@
 package cn.henry.study.entity;
 
 import cn.henry.study.base.DefaultFileService;
+import cn.henry.study.base.FileService;
 import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.utils.JacksonUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.boot.system.ApplicationHome;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * description: 文件或消息简介
@@ -38,19 +42,37 @@ public class MessageBrief {
 
     }
 
-    public MessageBrief(String logName) {
-        this.logName = logName;
-    }
-
     public MessageBrief(String rowKey, String logName) {
         this.rowKey = rowKey;
         this.logName = logName;
+        this.retryPath = this.tempFile().getAbsolutePath();
     }
 
-    public MessageBrief(String rowKey, DefaultFileService fileService) {
+    public MessageBrief(Class<? extends FileService> clazz, String rowKey, InputStream inputStream) {
         this.rowKey = rowKey;
+        this.logName = clazz.getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
         this.retryPath = this.tempFile().getAbsolutePath();
-        this.logName = fileService.getEntityClazz().getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
+        writeTempFile(inputStream);
+    }
+
+    /**
+     * description: 将文件写入临时文件夹
+     *
+     * @param
+     * @return void
+     * @author Hlingoes 2020/3/26
+     */
+    public void writeTempFile(InputStream inputStream) {
+        File file = this.tempFile();
+        // 同一文件，多次失败，不需要重复写入
+        if (file.exists()) {
+            return;
+        }
+        try {
+            Files.copy(inputStream, Paths.get(this.retryPath));
+        } catch (IOException e) {
+            logger.info("写临时文件失败: {}", this, e);
+        }
     }
 
     /**
@@ -64,8 +86,7 @@ public class MessageBrief {
      */
     public void writeRetryLog() {
         MDC.put("siftLogName", this.logName);
-        String brief = this.briefMark() + JacksonUtils.object2Str(this);
-        logger.error("{}", brief);
+        logger.error("{}{}", briefMark(), JacksonUtils.object2Str(this));
         // remember remove MDC
         MDC.remove(this.logName);
     }
@@ -78,7 +99,7 @@ public class MessageBrief {
      * @author Hlingoes 2020/3/26
      */
     public File tempFile() {
-        String fileName = StringUtils.substringAfterLast(this.getRowKey(), "/");
+        String fileName = StringUtils.substringAfterLast(this.rowKey, "/");
         return FileUtils.getFile(jarHome, retryDir, fileName);
     }
 
@@ -89,8 +110,8 @@ public class MessageBrief {
      * @return java.lang.String
      * @author Hlingoes 2020/3/28
      */
-    public String briefMark() {
-        return this.getClass().getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
+    public static String briefMark() {
+        return MessageBrief.class.getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
     }
 
     public String getRowKey() {

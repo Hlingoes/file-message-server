@@ -81,16 +81,14 @@ public class FileServiceFactory {
     /**
      * description: 将失败的数据写入文件，将数据简介写入缓存
      *
-     * @param retryService
+     * @param brief
      * @return void
      * @author Hlingoes 2020/3/27
      */
-    public void cacheFailData(RetryService retryService) {
-        retryService.writeTempFile();
-        String key = retryService.getMessageBrief().getLogName();
-        if (this.failFilesCacheMap.containsKey(key)) {
-            if (!this.failFilesCacheMap.get(key).offer(retryService.getMessageBrief())) {
-                retryService.writeRetryLog();
+    public void cacheFailData(MessageBrief brief) {
+        if (this.failFilesCacheMap.containsKey(brief.getLogName())) {
+            if (!this.failFilesCacheMap.get(brief.getLogName()).offer(brief)) {
+                brief.writeRetryLog();
             }
         }
     }
@@ -136,10 +134,9 @@ public class FileServiceFactory {
             BufferedReader bufferedReader = new BufferedReader(read);
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
-                MessageBrief brief = new MessageBrief(logName);
-                String messageBrief = StringUtils.substringAfter(line, brief.briefMark());
+                String messageBrief = StringUtils.substringAfter(line, MessageBrief.briefMark());
                 if (StringUtils.isNotEmpty(messageBrief)) {
-                    brief = JacksonUtils.str2Bean(messageBrief, MessageBrief.class);
+                    MessageBrief brief = JacksonUtils.str2Bean(messageBrief, MessageBrief.class);
                     File retryFile = new File(brief.getRetryPath());
                     if (retryFile.exists()) {
                         this.cacheFailData(logName, brief);
