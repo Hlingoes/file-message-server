@@ -13,8 +13,6 @@ import org.slf4j.MDC;
 import org.springframework.boot.system.ApplicationHome;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * description: 文件或消息简介
@@ -69,7 +67,7 @@ public class MessageBrief {
             return;
         }
         try {
-            Files.copy(inputStream, Paths.get(this.retryPath));
+            FileUtils.writeByteArrayToFile(file, IOUtils.toByteArray(inputStream));
         } catch (IOException e) {
             logger.info("写临时文件失败: {}", this, e);
         }

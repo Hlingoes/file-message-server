@@ -94,22 +94,6 @@ public class FileServiceFactory {
     }
 
     /**
-     * description: 将失败的文件参数写入缓存
-     *
-     * @param logName
-     * @param brief
-     * @return void
-     * @author Hlingoes 2020/3/27
-     */
-    public void cacheFailData(String logName, MessageBrief brief) {
-        if (this.failFilesCacheMap.containsKey(logName)) {
-            if (!this.failFilesCacheMap.get(logName).offer(brief)) {
-                brief.writeRetryLog();
-            }
-        }
-    }
-
-    /**
      * description: 获取实例化bean
      *
      * @param
@@ -139,7 +123,7 @@ public class FileServiceFactory {
                     MessageBrief brief = JacksonUtils.str2Bean(messageBrief, MessageBrief.class);
                     File retryFile = new File(brief.getRetryPath());
                     if (retryFile.exists()) {
-                        this.cacheFailData(logName, brief);
+                        this.cacheFailData(brief);
                         logger.info("读取日志到队列, File: {}", activeFile.getAbsolutePath());
                     }
                 }
