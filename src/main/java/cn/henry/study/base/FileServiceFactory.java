@@ -136,4 +136,28 @@ public class FileServiceFactory {
             logger.info("读取日志到队列失败, File: {}", activeFile.getAbsolutePath(), e);
         }
     }
+
+    /**
+     * description: 重新上传文件，每次取出50个
+     *
+     * @param
+     * @return void
+     * @author Hlingoes 2020/3/29
+     */
+    public void reUploadFiles() {
+        logger.info("开始失败重传任务");
+        this.failFilesCacheMap.forEach((key, value) -> {
+            List<MessageBrief> list = new ArrayList<>(50);
+            value.drainTo(list);
+            list.forEach(brief -> {
+                String className = StringUtils.substringBefore(brief.getLogName(), HeaderConstants.SIFT_LOG_PREFIX);
+                File retryFile = new File(brief.getRetryPath());
+                if (retryFile.exists()) {
+                    this.serviceCacheMap.get(className).upload(brief.getRowKey(), retryFile);
+                    retryFile.delete();
+                    logger.info("上传完成: {}, 删除文件: {}", brief, retryFile.getAbsolutePath());
+                }
+            });
+        });
+    }
 }

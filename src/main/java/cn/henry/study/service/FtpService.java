@@ -354,7 +354,7 @@ public class FtpService extends DefaultFileService {
      */
     public void testUploadFail(String path, String fileName, File file) {
         try {
-            MessageBrief brief = new MessageBrief(this.getClass(), path + SEPARATOR + fileName, new FileInputStream(file));
+            MessageBrief brief = new MessageBrief(this.getEntityClazz(), path + SEPARATOR + fileName, new FileInputStream(file));
             throw new FailRetryException(this, brief);
         } catch (IOException e) {
             logger.info("文件流读取失败: {}", file.getAbsolutePath(), e);

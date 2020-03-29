@@ -30,7 +30,7 @@
         <File>${LOG_HOME}/service_all.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logHome}/service_all.%d.%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/service_all.%d.%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
@@ -94,20 +94,26 @@
         </sift>
     </appender>
 
-    <!-- rest template logger-->
-    <!--<logger name="org.springframework.web.client.RestTemplate" level="DEBUG" />-->
-    <!--<logger name="org.springframework" level="DEBUG" />-->
 
-    <!-- jdbc-->
-    <!--<logger name="jdbc.sqltiming" level="DEBUG" />-->
-    <!--<logger name="org.mybatis" level="DEBUG"/>-->
-
-    <!-- zookeeper-->
-    <!--<logger name="org.apache.zookeeper" level="ERROR"/>-->
-
-    <!-- dubbo -->
-    <!--<logger name="com.alibaba.dubbo.monitor" level="ERROR"/>-->
-    <!--<logger name="com.alibaba.dubbo.remoting" level="ERROR"/>-->
+    <!-- 记录sql -->
+    <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/sql.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
+            <fileNamePattern>${LOG_HOME}/sql.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
 
     <!--    <springProfile name="dev">-->
     <!--        &lt;!&ndash; 开发环境时激活 &ndash;&gt;-->
@@ -127,10 +133,15 @@
             <appender-ref ref="FILE_ALL"/>
         </root>
 
+        <!-- mybatis loggers -->
+        <logger name="cn.henry.study.mapper" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL"/>
+        </logger>
+
         <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
         <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
         <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
-        <logger name="cn.henry.study" level="INFO">
+        <logger name="cn.henry.study" level="INFO" additivity="false">
             <appender-ref ref="FILE_SERVICE"/>
         </logger>
 

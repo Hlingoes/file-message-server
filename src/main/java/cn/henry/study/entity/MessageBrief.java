@@ -46,7 +46,7 @@ public class MessageBrief {
         this.retryPath = this.tempFile().getAbsolutePath();
     }
 
-    public MessageBrief(Class<? extends FileService> clazz, String rowKey, InputStream inputStream) {
+    public MessageBrief(Class clazz, String rowKey, InputStream inputStream) {
         this.rowKey = rowKey;
         this.logName = clazz.getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
         this.retryPath = this.tempFile().getAbsolutePath();
