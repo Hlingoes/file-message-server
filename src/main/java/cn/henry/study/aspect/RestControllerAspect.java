@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,6 +29,7 @@ import java.util.List;
  * @desc 请求参数、响应体统一日志打印
  * @since 10/10/2017 9:54 AM
  */
+@Component
 @Aspect
 public class RestControllerAspect {
 
