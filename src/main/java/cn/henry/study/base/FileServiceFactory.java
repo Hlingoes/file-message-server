@@ -22,7 +22,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * description:
+ * description: 文件服务处理工厂，实现主体逻辑
  *
  * @author Hlingoes
  * @date 2019/12/21 18:27
