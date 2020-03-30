@@ -483,10 +483,12 @@ public class FailuresRetryTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
  HttpService_fail_retry.log
  ---
 ````
-###### 重点关注的部分
-#####1. 统一的业务处理逻辑，提取为接口，利用spring的特性注册bean，获取bean实例
-#####2. 采用AOP可以很好的聚合同类型问题，面向切面和接口实现业务逻辑
-#####3. 使用logback日志框架的MDC特性，实现日志按照指定的key动态生成独立的日志文件
-#####4. 使用logback日状况的TriggeringPolicy，自定义日志滚动，规避数据的重复写入
-#####5. spring-boot-starter-quartz集成处理定时任务，减少了很多模板代码，更易用
+
+##### 重点关注的部分
+>1. 统一的业务处理逻辑，提取为接口，利用spring的特性注册bean，获取bean实例
+>2. 采用AOP可以很好的聚合同类型问题，面向切面和接口实现业务逻辑
+>3. 使用logback日志框架的MDC特性，实现日志按照指定的key动态生成独立的日志文件
+>4. 使用logback日状况的TriggeringPolicy，自定义日志滚动，规避数据的重复写入
+>5. spring-boot-starter-quartz集成处理定时任务，减少了很多模板代码，更易用
+
 ######代码详情在github中 [Hlingoes/file-message-server](https://github.com/Hlingoes/file-message-server)
