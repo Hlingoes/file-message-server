@@ -1,5 +1,5 @@
 ##### 问题背景
-######对于频繁的数据采集和上报服务，数据发送端经常会遇到文件上传失败的情况。通常的做法
+对于频繁的数据采集和上报服务，数据发送端经常会遇到文件上传失败的情况。通常的做法
 ````
 // 失败重试，最多尝试3次
 Exception ex = null;
@@ -491,4 +491,4 @@ public class FailuresRetryTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 >4. 使用logback日状况的TriggeringPolicy，自定义日志滚动，规避数据的重复写入
 >5. spring-boot-starter-quartz集成处理定时任务，减少了很多模板代码，更易用
 
-######代码详情在github中 [Hlingoes/file-message-server](https://github.com/Hlingoes/file-message-server)
+代码详情在github中 [Hlingoes/file-message-server](https://github.com/Hlingoes/file-message-server)
