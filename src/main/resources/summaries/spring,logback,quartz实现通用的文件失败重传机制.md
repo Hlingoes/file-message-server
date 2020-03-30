@@ -3,7 +3,7 @@
 ````
 // 失败重试，最多尝试3次
 Exception ex = null;
-for (int i = 0; i < 3' i++) {
+for (int i = 0; i < 3; i++) {
     try {
         service.upload(...);
         break;
