@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="true">
 
     <!-- logback.xml和logback-test.xml会被logback组件直接读取 -->
     <!-- 如果要交给spring管理，需要修改配置文件名为logback-spring.xml -->
