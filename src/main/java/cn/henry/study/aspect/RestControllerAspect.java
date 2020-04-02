@@ -2,6 +2,7 @@ package cn.henry.study.aspect;
 
 import cn.henry.frame.example.Teacher;
 import cn.henry.study.constants.HeaderConstants;
+import cn.henry.study.database.DatabaseContextHolder;
 import cn.henry.study.handler.GlobalControllerExceptionHandler;
 import cn.henry.study.utils.IpUtils;
 import com.alibaba.fastjson.JSON;
@@ -56,6 +57,8 @@ public class RestControllerAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // TODO 业务逻辑，例如获取用户信息， 测试本地jar引入
         Teacher teacher = new Teacher();
+        // 设定动态数据源
+        DatabaseContextHolder.setDatabaseType("");
 
         String ip = IpUtils.getRealIp(request);
         String methodName = this.getMethodName(joinPoint);

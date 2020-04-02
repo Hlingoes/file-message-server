@@ -1,5 +1,6 @@
 package cn.henry.study;
 
+import cn.henry.study.configuration.DataSourceConfig;
 import cn.henry.study.configuration.FtpClientPoolConfig;
 import cn.henry.study.configuration.HttpClientPoolConfig;
 import org.junit.Test;
@@ -28,6 +29,9 @@ public class ConfigurationTest {
     @Autowired
     private FtpClientPoolConfig ftpClientPoolConfig;
 
+    @Autowired
+    private DataSourceConfig dataSourceConfig;
+
     /**
      * description: 测试将yml配置转为pojo对象，方便多个变量取值
      *
@@ -36,11 +40,16 @@ public class ConfigurationTest {
      */
     @Test
     public void testReadHttpClientPoolConfig() {
-        LOGGER.info("httpClientPoolConfig: {}", httpClientPoolConfig.toString());
+        LOGGER.info("httpClientPoolConfig: {}", httpClientPoolConfig);
     }
 
     @Test
     public void testReadFtpClientPoolConfig() {
-        LOGGER.info("ftpClientPoolConfig: {}", ftpClientPoolConfig.toString());
+        LOGGER.info("ftpClientPoolConfig: {}", ftpClientPoolConfig);
+    }
+
+    @Test
+    public void testMultiDataSourceConfig() {
+        LOGGER.info("multiDataSourceInitialConfig: {}", dataSourceConfig);
     }
 }
