@@ -162,6 +162,14 @@
             <scope>system</scope>
             <systemPath>${basedir}/src/main/local_lib/local_test.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>org.csource</groupId>
+            <artifactId>fastdfs-client-java</artifactId>
+            <version>1.28-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/local_lib/fastdfs-client-java-1.28-SNAPSHOT.jar</systemPath>
+        </dependency>
         <!-- 在cmd中切换到local_test.jar包所在的目录
             mvn install:install-file "-DgroupId=cn.henry.frame" "-DartifactId=local_test" "-Dversion=1.0.0" "-Dpackaging=jar" "-Dfile=local_test.jar"
         -->

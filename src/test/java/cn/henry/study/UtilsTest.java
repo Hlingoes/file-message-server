@@ -1,5 +1,6 @@
 package cn.henry.study;
 
+import cn.henry.study.utils.FastDFSClientUtils;
 import cn.henry.study.utils.FileHelpUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,5 +25,10 @@ public class UtilsTest {
     @Test
     public void testDeleteEmptyDir() {
         FileHelpUtils.deleteEmptyDir(new File("F:\\new"));
+    }
+
+    @Test
+    public void testFdfsConfigReading() {
+        System.out.println(FastDFSClientUtils.getClientConfigInfo());
     }
 }
