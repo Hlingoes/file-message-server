@@ -32,6 +32,24 @@ public class DataSourceConfig {
     public DataSourceConfig() {
     }
 
+    /**
+     * description: 默认数据源的routeKey
+     *
+     * @param
+     * @return java.lang.String
+     * @author Hlingoes 2020/4/3
+     */
+    public String defaultRouteKey() {
+        String routeKey = "";
+        for (JdbcProperties props : this.mysqlClients) {
+            routeKey = props.getRouteKey();
+            if (props.getMaster()) {
+                break;
+            }
+        }
+        return routeKey;
+    }
+
     public List<JdbcProperties> getMysqlClients() {
         return mysqlClients;
     }

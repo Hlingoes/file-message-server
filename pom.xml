@@ -125,6 +125,14 @@
             <version>2.4</version>
         </dependency>
 
+        <!-- json token工具类 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
+        <!-- ssh工具类 -->
         <dependency>
             <groupId>ch.ethz.ganymed</groupId>
             <artifactId>ganymed-ssh2</artifactId>

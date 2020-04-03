@@ -1,19 +1,24 @@
 package cn.henry.study.aspect;
 
 import cn.henry.frame.example.Teacher;
+import cn.henry.study.configuration.DataSourceConfig;
 import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.database.DatabaseContextHolder;
+import cn.henry.study.database.DynamicDataSource;
+import cn.henry.study.entity.JdbcProperties;
 import cn.henry.study.handler.GlobalControllerExceptionHandler;
 import cn.henry.study.utils.IpUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -33,8 +38,10 @@ import java.util.List;
 @Component
 @Aspect
 public class RestControllerAspect {
+    private static Logger logger = LoggerFactory.getLogger(RestControllerAspect.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestControllerAspect.class);
+    @Autowired
+    private DataSourceConfig dataSourceConfig;
 
     /**
      * 环绕通知
@@ -48,17 +55,24 @@ public class RestControllerAspect {
     public Object apiLog(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         boolean logFlag = this.needToLog(method);
+
         if (!logFlag) {
-            return joinPoint.proceed();
+            // 设定指定数据源
+            String routeKey = request.getParameter("routeKey");
+            if (StringUtils.isEmpty(routeKey)) {
+                routeKey = dataSourceConfig.defaultRouteKey();
+            }
+            DatabaseContextHolder.setRouteKey(routeKey);
+            Object result = joinPoint.proceed();
+            // 清除绑定的数据源
+            DatabaseContextHolder.removeRouteKey();
+            return result;
         }
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // TODO 业务逻辑，例如获取用户信息， 测试本地jar引入
         Teacher teacher = new Teacher();
-        // 设定动态数据源
-        DatabaseContextHolder.setDatabaseType("");
 
         String ip = IpUtils.getRealIp(request);
         String methodName = this.getMethodName(joinPoint);
@@ -69,11 +83,11 @@ public class RestControllerAspect {
         String apiVersion = request.getHeader(HeaderConstants.API_VERSION);
         String userAgent = request.getHeader("user-agent");
 
-        LOGGER.info("Started request method [{}] params [{}] IP [{}] callSource [{}] appVersion [{}] apiVersion [{}] userAgent [{}]",
+        logger.info("Started request method [{}] params [{}] IP [{}] callSource [{}] appVersion [{}] apiVersion [{}] userAgent [{}]",
                 methodName, params, ip, callSource, appVersion, apiVersion, userAgent);
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed();
-        LOGGER.info("Ended request method [{}] params[{}] response is [{}] cost [{}] millis ",
+        logger.info("Ended request method [{}] params[{}] response is [{}] cost [{}] millis ",
                 methodName, params, this.deleteSensitiveContent(result), System.currentTimeMillis() - start);
         return result;
     }
@@ -109,7 +123,7 @@ public class RestControllerAspect {
     }
 
     private boolean needToLog(Method method) {
-        //GET请求不记录日志
+        // GET请求不记录日志
         return method.getAnnotation(GetMapping.class) == null
                 && !method.getDeclaringClass().equals(GlobalControllerExceptionHandler.class);
     }

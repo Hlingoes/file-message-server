@@ -84,14 +84,18 @@ spring:
     mysqlClients:
       - type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/freewebwork?useUnicode=true&amp;characterEncoding=UTF-8
+        url: jdbc:mysql://localhost:3306/ny_cloud_vue?useUnicode=true&amp;characterEncoding=UTF-8
         username: henry
         password: faith
+        master: false
+        routeKey: ny_cloud_vue
       - type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
         url: jdbc:mysql://localhost:3306/henrydb?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true
         username: henry
         password: faith
+        master: true
+        routeKey: henrydb
     initialSize: 2    #连接池初始大小
     minIdle: 10       #连接池中最小的活跃连接数
     maxActive: 20     #连接池中最大的活跃连接数

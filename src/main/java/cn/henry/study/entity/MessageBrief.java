@@ -85,7 +85,7 @@ public class MessageBrief {
     public void writeRetryLog() {
         MDC.put("siftLogName", this.logName);
         logger.error("{}{}", briefMark(), JacksonUtils.object2Str(this));
-        // remember remove MDC
+        // remember removeRouteKey MDC
         MDC.remove(this.logName);
     }
 

@@ -24,26 +24,24 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @Aspect
-public class GlobalServiceExceptionAspect {
-    public static final Logger LOGGER = LoggerFactory.getLogger(GlobalServiceExceptionAspect.class);
+public class FileServiceExceptionAspect {
+    public static final Logger LOGGER = LoggerFactory.getLogger(FileServiceExceptionAspect.class);
 
     @Autowired
     private FileServiceFactory fileServiceFactory;
 
     /**
-     * 定义命名的切点，不拦截cn.henry.study.service包中的rabbitmq下的类和WebSocketService类中的方法
+     * 定义命名的切点，拦截cn.henry.study.service.files包中的upload开头的方法
      */
-    @Pointcut("execution(* cn.henry.study.service..*.*(..)) " +
-            "&& !execution(* cn.henry.study.service..WebSocketService.*(..))" +
-            "&& !execution(* cn.henry.study.service..rabbitmq.*.*(..))")
-    public void methodException() {
+    @Pointcut("execution(* cn.henry.study.service.files..*.*load*(..)) ")
+    public void uploadException() {
 
     }
 
     /**
      * 环绕通知方法
      */
-    @Around("methodException()")
+    @Around("uploadException()")
     public Object watchMethodException(ProceedingJoinPoint pjp) throws Throwable {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Object result = null;

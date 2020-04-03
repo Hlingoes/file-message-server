@@ -1,6 +1,6 @@
 package cn.henry.study;
 
-import cn.henry.study.service.FtpService;
+import cn.henry.study.service.files.FtpService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class FtpTest {
     public void testUploadFail() {
         File file = new File("G:\\下载\\[emuch.net]普林斯顿数学指南.pdf");
         String path = "/资料/bak/";
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             ftpService.testUploadFail(path, file.getName(), file);
         }
     }

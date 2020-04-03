@@ -1,4 +1,4 @@
-package cn.henry.study.service;
+package cn.henry.study.service.jdbc;
 
 import cn.henry.study.entity.QuartzJob;
 import cn.henry.study.enums.JobStatus;

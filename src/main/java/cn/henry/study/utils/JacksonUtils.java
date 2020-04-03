@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+
 /**
  * description:
  *
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class JacksonUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JacksonUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(JacksonUtils.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -32,7 +33,7 @@ public class JacksonUtils {
         try {
             return MAPPER.writeValueAsString(data);
         } catch (JsonProcessingException e) {
-            LOGGER.error("对象转string失败: {}", data, e);
+            logger.error("对象转string失败: {}", data, e);
         }
         return null;
     }
@@ -49,7 +50,7 @@ public class JacksonUtils {
         try {
             return MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).readValue(data, beanType);
         } catch (Exception e) {
-            LOGGER.error("string转对象失败: {}", data, e);
+            logger.error("string转对象失败: {}", data, e);
         }
         return null;
     }
@@ -68,8 +69,9 @@ public class JacksonUtils {
         try {
             return MAPPER.readValue(data, javaType);
         } catch (Exception e) {
-            LOGGER.error("string转对象失败: {}", data, e);
+            logger.error("string转对象失败: {}", data, e);
         }
         return null;
     }
+
 }

@@ -7,17 +7,38 @@ package cn.henry.study.database;
  * @date 2020/4/2 22:54
  */
 public class DatabaseContextHolder {
-    private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
+    private static ThreadLocal<String> routeKey = new ThreadLocal<String>();
 
-    public static void setDatabaseType(String type) {
-        CONTEXT_HOLDER.set(type);
+    /**
+     * description: 绑定当前线程数据源路由的key，在使用完成之后，必须调用removeRouteKey()方法删除
+     *
+     * @param type
+     * @return void
+     * @author Hlingoes 2020/4/3
+     */
+    public static void setRouteKey(String type) {
+        routeKey.set(type);
     }
 
-    public static String getDatabaseType() {
-        return CONTEXT_HOLDER.get();
+    /**
+     * description: 获取当前线程的数据源路由的key
+     *
+     * @param 
+     * @return java.lang.String
+     * @author Hlingoes 2020/4/3
+     */
+    public static String getRouteKey() {
+        return routeKey.get();
     }
 
-    public static void remove() {
-        CONTEXT_HOLDER.remove();
+    /**
+     * description:  删除与当前线程绑定的数据源路由的key
+     *
+     * @param
+     * @return void
+     * @author Hlingoes 2020/4/3
+     */
+    public static void removeRouteKey() {
+        routeKey.remove();
     }
 }

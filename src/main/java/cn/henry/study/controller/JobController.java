@@ -2,7 +2,7 @@ package cn.henry.study.controller;
 
 import cn.henry.study.entity.QuartzJob;
 import cn.henry.study.result.CommonResult;
-import cn.henry.study.service.QuartzJobService;
+import cn.henry.study.service.jdbc.QuartzJobService;
 import com.github.pagehelper.PageInfo;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;

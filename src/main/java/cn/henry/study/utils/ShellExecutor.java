@@ -1,7 +1,7 @@
 package cn.henry.study.utils;
 
 import ch.ethz.ssh2.*;
-import cn.henry.study.service.WebSocketService;
+import cn.henry.study.service.socket.WebSocketService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;

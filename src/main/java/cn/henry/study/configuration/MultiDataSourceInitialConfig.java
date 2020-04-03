@@ -32,6 +32,12 @@ import java.util.Map;
 
 /**
  * description: mybatis多数据源配置
+ * 1. 根据spring对bean的初始化顺序，当前bean在初始的时候，先走afterPropertiesSet()，动态设置所有数据源；
+ * 2. 初始化完成后，给定默认的数据源DynamicDataSource defaultDataSource，设置到SqlSessionFactory中；
+ * 3. 用DatabaseContextHolder将缓存当前线程的DataSource；
+ * 4. 本案例使用RestControllerAspect切面，通过请求中的routeKey来切换数据源；
+ * 5. 实际调用的地方在DynamicDataSource类；
+ * 可根据使用场景，修改数据库的配置注入，或者用其他方式切换数据源
  *
  * @author Hlingoes
  * @date 2020/4/2 22:44
@@ -75,7 +81,8 @@ public class MultiDataSourceInitialConfig implements InitializingBean, Applicati
             beanDefinitionBuilder.addPropertyValue("filters", dataSourceConfig.getFilters());
             BeanDefinition dataBeanDefinition = beanDefinitionBuilder.getRawBeanDefinition();
             BeanDefinitionRegistry beanFactory = (BeanDefinitionRegistry) applicationContext.getAutowireCapableBeanFactory();
-            beanFactory.registerBeanDefinition(props.beanKey(), dataBeanDefinition);
+            beanFactory.registerBeanDefinition(props.getRouteKey(), dataBeanDefinition);
+            logger.info("数据库连接源: {}", props);
         }
     }
 
@@ -97,16 +104,22 @@ public class MultiDataSourceInitialConfig implements InitializingBean, Applicati
     public DynamicDataSource dataSource() {
         Map<Object, Object> targetDataSources = new HashMap<>();
         String beanKey = null;
-        // 将所有数据源注册到动态数据源map里，key为去掉冒号和斜扛的url，value为对应的datasource所形成的bean
+        Object defaultSource = null;
         for (JdbcProperties props : dataSourceConfig.getMysqlClients()) {
-            targetDataSources.put(props.beanKey(), applicationContext.getBean(props.beanKey()));
-            beanKey = props.beanKey();
+            beanKey = props.getRouteKey();
+            targetDataSources.put(beanKey, applicationContext.getBean(beanKey));
+            if (props.getMaster()) {
+                defaultSource = applicationContext.getBean(beanKey);
+            }
         }
         DynamicDataSource dataSource = new DynamicDataSource();
         // 该方法是AbstractRoutingDataSource的方法
         dataSource.setTargetDataSources(targetDataSources);
-        // 默认的datasource设置为最后一个数据源
-        dataSource.setDefaultTargetDataSource(applicationContext.getBean(beanKey));
+        // 没有设置master哭，则默认的datasource设置为最后一个数据源
+        if (null == defaultSource) {
+            defaultSource = applicationContext.getBean(beanKey);
+        }
+        dataSource.setDefaultTargetDataSource(defaultSource);
 
         return dataSource;
     }
@@ -136,7 +149,7 @@ public class MultiDataSourceInitialConfig implements InitializingBean, Applicati
                 fb.setPlugins(interceptorsArray);
             }
         } catch (Exception e) {
-
+            logger.error("SqlSessionFactory设置失败", e);
         }
         return fb.getObject();
     }
@@ -164,7 +177,7 @@ public class MultiDataSourceInitialConfig implements InitializingBean, Applicati
         // IP白名单 (没有配置或者为空，则允许所有访问)
         initParameters.put("allow", "");
         // IP黑名单 (存在共同时，deny优先于allow)
-        //initParameters.put("deny", "192.168.20.38");
+//        initParameters.put("deny", "192.168.20.38");
         servletRegistrationBean.setInitParameters(initParameters);
         return servletRegistrationBean;
     }
