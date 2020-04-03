@@ -1,20 +1,22 @@
 package cn.henry.study.controller;
 
 import cn.henry.study.entity.QuartzJob;
-import cn.henry.study.enums.JobStatus;
-import cn.henry.study.job.FailFileRetryJob;
 import cn.henry.study.mapper.JobMapper;
 import cn.henry.study.result.CommonResult;
 import cn.henry.study.service.jdbc.QuartzJobService;
+import cn.henry.study.utils.JacksonUtils;
 import com.github.pagehelper.PageInfo;
 import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * description: 定时任务的web接口
@@ -24,6 +26,7 @@ import java.util.Random;
 @RestController
 @RequestMapping("/job")
 public class JobController {
+    private static Logger logger = LoggerFactory.getLogger(JobController.class);
 
     @Autowired
     private QuartzJobService jobService;
@@ -33,19 +36,17 @@ public class JobController {
 
     @GetMapping("/testAdding")
     public CommonResult add(String jobName) throws Exception {
-        QuartzJob quartz = new QuartzJob();
-        long index = System.currentTimeMillis();
-        jobName = jobName + "_" + index;
-        quartz.setJobName(jobName);
-        quartz.setJobClassName(FailFileRetryJob.class.getName());
-        quartz.setJobGroup(jobName + "_group");
-        quartz.setTriggerName(jobName + "_trigger");
-        quartz.setCronExpression("0 0/5 * * * ? 2020");
-        quartz.setDescription("hello metas");
-        quartz.setTriggerState(JobStatus.RUNNING.getStatus());
-        quartz.setOldJobGroup(quartz.getJobGroup());
-        quartz.setOldJobName(quartz.getJobName());
-        return CommonResult.success(jobMapper.saveJob(quartz));
+        return CommonResult.success(jobMapper.saveJob(jobService.getTestQuartzJob(jobName)));
+    }
+
+    @GetMapping("/testBatchAdding")
+    public CommonResult batchAdding(String jobName) throws Exception {
+        List<QuartzJob> jobs = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            jobs.add(jobService.getTestQuartzJob(jobName));
+        }
+        logger.info("为什么是一样的: {}", JacksonUtils.object2Str(jobs));
+        return CommonResult.success(jobMapper.insertBatch(jobs));
     }
 
     @PostMapping("/add")

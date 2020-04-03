@@ -10,7 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * description: 生成主键拦截器，自动生成id
@@ -55,7 +58,18 @@ public class MyBatisGenerateKeyInterceptor implements Interceptor {
         }
         // 获取参数
         Object parameter = invocation.getArgs()[1];
-        generatedMetas(parameter);
+        // 获取批量查询的参数并生成主键
+        if (parameter instanceof HashMap) {
+            Object list = ((Map) parameter).get("list");
+            if (list instanceof ArrayList) {
+                for (Object o : (ArrayList) list) {
+                    generatedMetas(o);
+                }
+            }
+        } else {
+            // 单条插入
+            generatedMetas(parameter);
+        }
         return invocation.proceed();
     }
 
@@ -66,24 +80,25 @@ public class MyBatisGenerateKeyInterceptor implements Interceptor {
      */
     private void generatedMetas(Object parameter) throws Throwable {
         // 如果继承了必备属性
-        if (parameter instanceof Metas) {
-            ReflectionUtils.doWithFields(parameter.getClass(), field -> {
-                ReflectionUtils.makeAccessible(field);
-                if (KEY_NAME.equals(field.getName()) && KEY_TYPE.equals(field.getType().getSimpleName())) {
-                    // 设置雪花id
-                    field.set(parameter, SNOW_FLAKE.nextId());
-                }
-                if (CREATE_TIME.equals(field.getName()) && TIME_TYPE.equals(field.getType().getSimpleName())
-                        && field.get(parameter) == null) {
-                    // 设置创建时间
-                    field.set(parameter, new Timestamp(System.currentTimeMillis()));
-                }
-                if (UPDATE_TIME.equals(field.getName()) && TIME_TYPE.equals(field.getType().getSimpleName())) {
-                    // 设置修改时间
-                    field.set(parameter, new Timestamp(System.currentTimeMillis()));
-                }
-            });
+        if (!(parameter instanceof Metas)) {
+            return;
         }
+        ReflectionUtils.doWithFields(parameter.getClass(), field -> {
+            ReflectionUtils.makeAccessible(field);
+            if (KEY_NAME.equals(field.getName()) && KEY_TYPE.equals(field.getType().getSimpleName())) {
+                // 设置雪花id
+                field.set(parameter, SNOW_FLAKE.nextId());
+            }
+            if (CREATE_TIME.equals(field.getName()) && TIME_TYPE.equals(field.getType().getSimpleName())
+                    && field.get(parameter) == null) {
+                // 设置创建时间
+                field.set(parameter, new Timestamp(System.currentTimeMillis()));
+            }
+            if (UPDATE_TIME.equals(field.getName()) && TIME_TYPE.equals(field.getType().getSimpleName())) {
+                // 设置修改时间
+                field.set(parameter, new Timestamp(System.currentTimeMillis()));
+            }
+        });
     }
 
     /**

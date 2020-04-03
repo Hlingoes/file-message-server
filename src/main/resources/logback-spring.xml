@@ -46,11 +46,31 @@
     </appender>
 
     <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
-    <appender name="FILE_SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${LOG_HOME}/fileService.log</File>
+    <appender name="FILE_SERVICE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/info.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${LOG_HOME}/fileService.%d.%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/info.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="FILE_SERVICE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
+            <fileNamePattern>${LOG_HOME}/error.%d.%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
@@ -142,7 +162,10 @@
         <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
         <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
         <logger name="cn.henry.study" level="INFO" additivity="false">
-            <appender-ref ref="FILE_SERVICE"/>
+            <appender-ref ref="FILE_SERVICE_INFO"/>
+        </logger>
+        <logger name="cn.henry.study" level="ERROR" additivity="false">
+            <appender-ref ref="FILE_SERVICE_ERROR"/>
         </logger>
 
         <!-- 发送文件失败的动态日志 -->

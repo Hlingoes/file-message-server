@@ -43,6 +43,15 @@
           (#{id},#{jobName},#{jobGroup},#{jobClassName},#{cronExpression},#{triggerState},#{oldJobName},#{oldJobGroup},#{description},#{createTime},#{updateTime})
     </insert>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO
+        quartz_job(id,job_name,job_group,job_class_name,cron_expression,trigger_state,old_job_name,old_job_group,description,create_time, update_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.jobName},#{item.jobGroup},#{item.jobClassName},#{item.cronExpression},#{item.triggerState},#{item.oldJobName},#{item.oldJobGroup},#{item.description},#{item.createTime},#{item.updateTime})
+        </foreach>
+    </insert>
+
     <update id="updateJobStatus" parameterType="String">
         UPDATE
           quartz_job

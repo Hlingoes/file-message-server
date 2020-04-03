@@ -1,7 +1,6 @@
 package cn.henry.study.mapper;
 
 import cn.henry.study.entity.QuartzJob;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
  *
  * @author Hlingoes 2020/3/29
  */
-@Mapper
 public interface JobMapper {
 
     List<QuartzJob> listJob(@Param("jobName") String jobName);
@@ -19,6 +17,8 @@ public interface JobMapper {
     QuartzJob getJob(@Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 
     int saveJob(QuartzJob job);
+
+    int insertBatch(List<QuartzJob> quartzJobs);
 
     int updateJobStatus(@Param("jobName") String jobName, @Param("jobGroup") String jobGroup, @Param("status") String status);
 

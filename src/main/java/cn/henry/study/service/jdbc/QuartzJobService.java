@@ -2,7 +2,9 @@ package cn.henry.study.service.jdbc;
 
 import cn.henry.study.entity.QuartzJob;
 import cn.henry.study.enums.JobStatus;
+import cn.henry.study.job.FailFileRetryJob;
 import cn.henry.study.mapper.JobMapper;
+import cn.henry.study.utils.SnowflakeIdWorker;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.quartz.*;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * description: Quartz的web服务类
@@ -18,7 +21,7 @@ import java.util.List;
  */
 @Service
 public class QuartzJobService {
-
+    private static final SnowflakeIdWorker SNOW_FLAKE = new SnowflakeIdWorker(1, 1);
     private static final String TRIGGER_IDENTITY = "trigger";
 
     @Autowired
@@ -91,5 +94,28 @@ public class QuartzJobService {
                 .startNow().withSchedule(cronScheduleBuilder).build();
         //交由Scheduler安排触发
         scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+    /**
+     * description: 测试新增
+     *
+     * @param jobName
+     * @return cn.henry.study.entity.QuartzJob
+     * @author Hlingoes 2020/4/3
+     */
+    public QuartzJob getTestQuartzJob(String jobName) {
+        QuartzJob quartz = new QuartzJob();
+        long index = SNOW_FLAKE.nextId();
+        String name = jobName + "_" + index;
+        quartz.setJobName(name);
+        quartz.setJobClassName(FailFileRetryJob.class.getName());
+        quartz.setJobGroup(name + "_group");
+        quartz.setTriggerName(name + "_trigger");
+        quartz.setCronExpression("0 0/5 * * * ? 2020");
+        quartz.setDescription("hello metas");
+        quartz.setTriggerState(JobStatus.RUNNING.getStatus());
+        quartz.setOldJobName(name);
+        quartz.setOldJobGroup(name + "_group");
+        return quartz;
     }
 }
