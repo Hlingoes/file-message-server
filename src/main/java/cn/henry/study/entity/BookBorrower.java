@@ -8,7 +8,7 @@ import java.util.Date;
  * @author Hlingoes
  * @date 2019/12/22 14:34
  */
-public class Handler {
+public class BookBorrower {
     private Long id;
     private String name;
     private Long number;

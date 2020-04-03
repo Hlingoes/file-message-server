@@ -38,9 +38,9 @@
 
     <insert id="saveJob" parameterType="QuartzJob">
         INSERT INTO
-          quartz_job(job_name,job_group,job_class_name,cron_expression,trigger_state,old_job_name,old_job_group,description,create_time, update_time)
+          quartz_job(id,job_name,job_group,job_class_name,cron_expression,trigger_state,old_job_name,old_job_group,description,create_time, update_time)
         VALUES
-          (#{jobName},#{jobGroup},#{jobClassName},#{cronExpression},#{triggerState},#{oldJobName},#{oldJobGroup},#{description},#{createTime},#{updateTime})
+          (#{id},#{jobName},#{jobGroup},#{jobClassName},#{cronExpression},#{triggerState},#{oldJobName},#{oldJobGroup},#{description},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateJobStatus" parameterType="String">

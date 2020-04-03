@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS quartz_job;
 CREATE TABLE quartz_job (
-  id int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  id bigint unsigned NOT NULL COMMENT '自增主键',
   job_name varchar(50) NOT NULL COMMENT '任务名称',
   job_group varchar(50) NOT NULL COMMENT '任务分组',
   job_class_name varchar(100) NOT NULL COMMENT '执行类',

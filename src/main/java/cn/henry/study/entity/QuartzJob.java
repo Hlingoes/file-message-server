@@ -1,8 +1,6 @@
 package cn.henry.study.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.sql.Timestamp;
+import cn.henry.study.base.Metas;
 
 /**
  * description: 持久化的quartz任务
@@ -10,9 +8,8 @@ import java.sql.Timestamp;
  * @author Hlingoes 2020/3/29
  * @citation https://gitee.com/youzhibing/spring-boot-2.0.3/tree/master/spring-boot-quartz-plus
  */
-public class QuartzJob {
+public class QuartzJob extends Metas {
 
-    private Integer id;
     /**
      * 任务名称
      */
@@ -50,18 +47,6 @@ public class QuartzJob {
      */
     private String oldJobGroup;
 
-    /**
-     * 初始创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Timestamp createTime;
-
-    /**
-     * 更新时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Timestamp updateTime;
-
     public QuartzJob() {
         super();
     }
@@ -74,14 +59,6 @@ public class QuartzJob {
         this.jobClassName = jobClassName;
         this.cronExpression = cronExpression;
         this.triggerName = triggerName;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getJobName() {
@@ -156,19 +133,4 @@ public class QuartzJob {
         this.oldJobGroup = oldJobGroup;
     }
 
-    public Timestamp getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
 }

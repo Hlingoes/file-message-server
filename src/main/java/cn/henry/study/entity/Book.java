@@ -23,7 +23,7 @@ public class Book {
     Date buyTime;
 
     @FormAttribute(label = "借阅人", type = "select", required = true, related = true)
-    List<Handler> handlers;
+    List<BookBorrower> bookBorrowers;
 
     public Long getId() {
         return id;
@@ -73,11 +73,11 @@ public class Book {
         this.buyTime = buyTime;
     }
 
-    public List<Handler> getHandlers() {
-        return handlers;
+    public List<BookBorrower> getBookBorrowers() {
+        return bookBorrowers;
     }
 
-    public void setHandlers(List<Handler> handlers) {
-        this.handlers = handlers;
+    public void setBookBorrowers(List<BookBorrower> bookBorrowers) {
+        this.bookBorrowers = bookBorrowers;
     }
 }
