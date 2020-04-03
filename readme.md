@@ -41,6 +41,8 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 ##### 9. 2020-03-13 开始使用logback的自定义线程日志sift特性，spring的close事件，整合quartz，实现通用的文件失败重传
 ##### 10. 2020-03-30 完成通用的文件失败重传，同步代码仓库到码云，自测试通过
 
+##### 11. 2020-04-03 完成spring，mybatis，druid动态数据源切换
+
 ---
 > 参考了众多博主的帖子，按照实际使用做了调整，一并感谢，共勉
 > 1. [SpringBoot的restTemplate整合HttpClient连接池及配置](https://blog.csdn.net/zzzgd_666/article/details/88858181)
@@ -58,6 +60,8 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 13. [Logback - SiftingAppender](https://blog.csdn.net/tmdcda/article/details/87616919)
 > 14. [自定义logback触发器策略进行日志滚动](https://www.oschina.net/question/5189_7691)
 > 15. [spring-boot-2.0.3之quartz集成，最佳实践](https://www.cnblogs.com/youzhibing/p/10208056.html)
-<br>
-*** 
+> 16. [Datasource动态切换](https://blog.csdn.net/qq_32078397/article/details/54694047)
+> 17. [实现mybatis未知个数数据源动态切换](https://blog.csdn.net/CSDNOFZHC/article/details/90903786)
+> <br>
+***
 待续...
