@@ -62,6 +62,7 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 16. [Datasource动态切换](https://blog.csdn.net/qq_32078397/article/details/54694047)
 > 17. [实现mybatis未知个数数据源动态切换](https://blog.csdn.net/CSDNOFZHC/article/details/90903786)
 > 18. [mybatis拦截器设置分布式id(雪花算法id)](https://blog.csdn.net/qq_40250122/article/details/101535884)
-> <br>
+> 19. [Native Operating System and Hardware Information](https://github.com/oshi/oshi)
+<br>
 ***
 待续...
