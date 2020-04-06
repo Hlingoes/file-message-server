@@ -2,7 +2,7 @@ package cn.henry.study.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * description: 数据表必备字段
@@ -12,40 +12,49 @@ import java.sql.Timestamp;
  */
 public class Metas {
 
-    private long id;
+    private Long id;
     /**
      * 初始创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Timestamp createTime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Timestamp updateTime;
+    private Date updateTime;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Timestamp getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public Timestamp getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Metas{" +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 }
