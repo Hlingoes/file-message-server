@@ -1,6 +1,6 @@
 package cn.henry.study.aspect;
 
-import cn.henry.study.base.FileServiceFactory;
+import cn.henry.study.factory.FileServiceFactory;
 import cn.henry.study.entity.MessageBrief;
 import cn.henry.study.exceptions.FailRetryException;
 import com.google.common.base.Stopwatch;

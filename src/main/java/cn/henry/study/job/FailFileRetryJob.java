@@ -1,6 +1,6 @@
 package cn.henry.study.job;
 
-import cn.henry.study.base.FileServiceFactory;
+import cn.henry.study.factory.FileServiceFactory;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

@@ -1,6 +1,5 @@
 package cn.henry.study.service.files;
 
-import cn.henry.study.base.DefaultFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

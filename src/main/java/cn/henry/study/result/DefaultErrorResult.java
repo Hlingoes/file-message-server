@@ -1,7 +1,7 @@
 package cn.henry.study.result;
 
 import cn.henry.study.base.BaseException;
-import cn.henry.study.base.ExceptionEnum;
+import cn.henry.study.enums.ExceptionEnum;
 import cn.henry.study.utils.RequestContextHolderUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;

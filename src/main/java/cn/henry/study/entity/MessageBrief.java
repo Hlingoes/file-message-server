@@ -1,7 +1,5 @@
 package cn.henry.study.entity;
 
-import cn.henry.study.base.DefaultFileService;
-import cn.henry.study.base.FileService;
 import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.utils.JacksonUtils;
 import org.apache.commons.io.FileUtils;

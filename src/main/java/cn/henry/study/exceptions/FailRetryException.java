@@ -1,7 +1,7 @@
 package cn.henry.study.exceptions;
 
 import cn.henry.study.base.BaseException;
-import cn.henry.study.base.DefaultFileService;
+import cn.henry.study.service.files.DefaultFileService;
 import cn.henry.study.entity.MessageBrief;
 import cn.henry.study.result.ResultCode;
 

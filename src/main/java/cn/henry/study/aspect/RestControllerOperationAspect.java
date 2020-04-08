@@ -4,8 +4,6 @@ import cn.henry.frame.example.Teacher;
 import cn.henry.study.configuration.DataSourceConfig;
 import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.database.DatabaseContextHolder;
-import cn.henry.study.database.DynamicDataSource;
-import cn.henry.study.entity.JdbcProperties;
 import cn.henry.study.handler.GlobalControllerExceptionHandler;
 import cn.henry.study.utils.IpUtils;
 import com.alibaba.fastjson.JSON;
@@ -37,8 +35,8 @@ import java.util.List;
  */
 @Component
 @Aspect
-public class RestControllerAspect {
-    private static Logger logger = LoggerFactory.getLogger(RestControllerAspect.class);
+public class RestControllerOperationAspect {
+    private static Logger logger = LoggerFactory.getLogger(RestControllerOperationAspect.class);
 
     @Autowired
     private DataSourceConfig dataSourceConfig;

@@ -1,5 +1,6 @@
-package cn.henry.study.base;
+package cn.henry.study.factory;
 
+import cn.henry.study.service.files.DefaultFileService;
 import cn.henry.study.constants.HeaderConstants;
 import cn.henry.study.entity.MessageBrief;
 import cn.henry.study.utils.JacksonUtils;
@@ -97,7 +98,7 @@ public class FileServiceFactory {
      * description: 获取实例化bean
      *
      * @param
-     * @return cn.henry.study.base.DefaultFileService
+     * @return cn.henry.study.service.files.DefaultFileService
      * @author Hlingoes 2020/3/27
      */
     public DefaultFileService getService(String clazz) {

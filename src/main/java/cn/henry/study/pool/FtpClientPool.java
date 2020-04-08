@@ -1,5 +1,6 @@
 package cn.henry.study.pool;
 
+import cn.henry.study.factory.FtpClientFactory;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;

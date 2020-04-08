@@ -43,8 +43,8 @@ import java.util.Map;
  * @date 2020/4/2 22:44
  */
 @Configuration
-public class MybatisDynamicDataSourceConfig implements InitializingBean, ApplicationContextAware {
-    private static Logger logger = LoggerFactory.getLogger(MybatisDynamicDataSourceConfig.class);
+public class MyBatisDynamicDataSourceConfig implements InitializingBean, ApplicationContextAware {
+    private static Logger logger = LoggerFactory.getLogger(MyBatisDynamicDataSourceConfig.class);
 
     @Autowired
     private Environment environment;

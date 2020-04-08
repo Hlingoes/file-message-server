@@ -1,4 +1,4 @@
-package cn.henry.study.base;
+package cn.henry.study.handler;
 
 import cn.henry.study.anno.ResponseResult;
 import cn.henry.study.result.CommonResult;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2020/1/2 0:01
  */
 @ControllerAdvice
-public class BaseResponseResultHandler implements ResponseBodyAdvice<Object> {
+public class GlobalResponseResultHandler implements ResponseBodyAdvice<Object> {
 
     /**
      * description: 这个方法表示对于哪些请求要执行beforeBodyWrite，返回true执行，返回false不执行

@@ -4,7 +4,7 @@ package cn.henry.study.enums;
  *
  * @author Hlingoes 2020/3/29
  */
-public enum JobStatus {
+public enum JobStatusEnum {
 
     /**
      * 运行状态
@@ -24,7 +24,7 @@ public enum JobStatus {
      */
     private String status;
 
-    JobStatus(String status) {
+    JobStatusEnum(String status) {
         this.status = status;
     }
 

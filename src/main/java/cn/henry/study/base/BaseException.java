@@ -1,5 +1,6 @@
 package cn.henry.study.base;
 
+import cn.henry.study.enums.ExceptionEnum;
 import cn.henry.study.result.ResultCode;
 
 /**

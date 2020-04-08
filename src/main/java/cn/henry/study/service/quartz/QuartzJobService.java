@@ -1,7 +1,7 @@
-package cn.henry.study.service.jdbc;
+package cn.henry.study.service.quartz;
 
 import cn.henry.study.entity.QuartzJob;
-import cn.henry.study.enums.JobStatus;
+import cn.henry.study.enums.JobStatusEnum;
 import cn.henry.study.job.FailFileRetryJob;
 import cn.henry.study.mapper.JobMapper;
 import cn.henry.study.utils.SnowflakeIdWorker;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * description: Quartz的web服务类
@@ -39,7 +38,7 @@ public class QuartzJobService {
 
     public int saveJob(QuartzJob quartz) throws Exception {
         schedulerJob(quartz);
-        quartz.setTriggerState(JobStatus.RUNNING.getStatus());
+        quartz.setTriggerState(JobStatusEnum.RUNNING.getStatus());
         quartz.setOldJobGroup(quartz.getJobGroup());
         quartz.setOldJobName(quartz.getJobName());
         return jobMapper.saveJob(quartz);
@@ -53,13 +52,13 @@ public class QuartzJobService {
     public int pauseJob(String jobName, String jobGroup) throws SchedulerException {
         JobKey key = new JobKey(jobName, jobGroup);
         scheduler.pauseJob(key);
-        return jobMapper.updateJobStatus(jobName, jobGroup, JobStatus.PAUSED.getStatus());
+        return jobMapper.updateJobStatus(jobName, jobGroup, JobStatusEnum.PAUSED.getStatus());
     }
 
     public int resumeJob(String jobName, String jobGroup) throws SchedulerException {
         JobKey key = new JobKey(jobName, jobGroup);
         scheduler.resumeJob(key);
-        return jobMapper.updateJobStatus(jobName, jobGroup, JobStatus.RUNNING.getStatus());
+        return jobMapper.updateJobStatus(jobName, jobGroup, JobStatusEnum.RUNNING.getStatus());
     }
 
     public void removeJob(String jobName, String jobGroup) throws SchedulerException {
@@ -113,7 +112,7 @@ public class QuartzJobService {
         quartz.setTriggerName(name + "_trigger");
         quartz.setCronExpression("0 0/5 * * * ? 2020");
         quartz.setDescription("hello metas");
-        quartz.setTriggerState(JobStatus.RUNNING.getStatus());
+        quartz.setTriggerState(JobStatusEnum.RUNNING.getStatus());
         quartz.setOldJobName(name);
         quartz.setOldJobGroup(name + "_group");
         return quartz;

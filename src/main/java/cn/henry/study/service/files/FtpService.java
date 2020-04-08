@@ -1,6 +1,5 @@
 package cn.henry.study.service.files;
 
-import cn.henry.study.base.DefaultFileService;
 import cn.henry.study.entity.MessageBrief;
 import cn.henry.study.exceptions.FailRetryException;
 import cn.henry.study.pool.FtpClientPool;

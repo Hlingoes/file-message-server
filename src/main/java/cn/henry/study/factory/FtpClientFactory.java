@@ -1,4 +1,4 @@
-package cn.henry.study.pool;
+package cn.henry.study.factory;
 
 import cn.henry.study.configuration.FtpClientPoolConfig;
 import org.apache.commons.net.ftp.FTPClient;
@@ -21,7 +21,6 @@ import java.io.IOException;
  */
 @Component
 public class FtpClientFactory extends BasePooledObjectFactory<FTPClient> {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpClientFactory.class);
 
     private static String COMMAND = "OPTS UTF8";

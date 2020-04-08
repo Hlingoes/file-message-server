@@ -1,5 +1,6 @@
-package cn.henry.study.base;
+package cn.henry.study.enums;
 
+import cn.henry.study.base.BaseException;
 import cn.henry.study.exceptions.*;
 import cn.henry.study.result.ResultCode;
 import org.springframework.http.HttpStatus;
