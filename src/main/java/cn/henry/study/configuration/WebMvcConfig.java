@@ -7,7 +7,11 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+/**
+ * description: 通过cors支持跨域请求，支持静态资源访问，支持过滤拦截器
+ *
+ * @author Hlingoes 2020/4/8
+ */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
@@ -36,7 +40,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         String apiUri = "/**";
-        //响应结果控制拦截
+        // 响应结果控制拦截
         registry.addInterceptor(responseResultInterceptor).addPathPatterns(apiUri);
     }
 

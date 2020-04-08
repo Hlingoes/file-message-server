@@ -23,8 +23,8 @@ public class FtpController {
     @Autowired
     private FtpService ftpService;
 
-    @GetMapping(value = "hello")
-    public Teacher hello() {
+    @GetMapping(value = "testDownload")
+    public Teacher testDownload() {
         ftpService.download("/资料/bak/[muchong.com]数学物理方法.pdf",
                 "G:\\迅雷下载\\[muchong.com]数学物理方法.pdf");
         return new Teacher();
