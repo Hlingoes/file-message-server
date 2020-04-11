@@ -9,8 +9,36 @@ import java.util.concurrent.*;
 /**
  * description: 创建通用的线程池
  *
+ * corePoolSize：线程池中核心线程数量
+ * maximumPoolSize：线程池同时允许存在的最大线程数量
+ * 内部处理逻辑如下：
+ * 当线程池中工作线程数小于corePoolSize，创建新的工作线程来执行该任务，不管线程池中是否存在空闲线程。
+ * 如果线程池中工作线程数达到corePoolSize，新任务尝试放入队列，入队成功的任务将等待工作线程空闲时调度。
+ * 1. 如果队列满并且线程数小于maximumPoolSize，创建新的线程执行该任务(注意：队列中的任务继续排序)。
+ * 2. 如果队列满且线程数超过maximumPoolSize，拒绝该任务
+ *
+ * keepAliveTime
+ * 当线程池中工作线程数大于corePoolSize，并且线程空闲时间超过keepAliveTime，则这些线程将被终止。
+ * 同样，可以将这种策略应用到核心线程，通过调用allowCoreThreadTimeout来实现。
+ *
+ * BlockingQueue
+ * 任务等待队列，用于缓存暂时无法执行的任务。分为如下三种堵塞队列：
+ * 1. 直接递交，如SynchronousQueue，该策略直接将任务直接交给工作线程。如果当前没有空闲工作线程，创建新线程。
+ * 这种策略最好是配合unbounded线程数来使用，从而避免任务被拒绝。但当任务生产速度大于消费速度，将导致线程数不断的增加。
+ * 2. 无界队列，如LinkedBlockingQueue，当工作的线程数达到核心线程数时，新的任务被放在队列上。
+ * 因此，永远不会有大于corePoolSize的线程被创建，maximumPoolSize参数失效。
+ * 这种策略比较适合所有的任务都不相互依赖，独立执行。
+ * 但是当任务处理速度小于任务进入速度的时候会引起队列的无限膨胀。
+ * 3. 有界队列，如ArrayBlockingQueue，按前面描述的corePoolSize、maximumPoolSize、BlockingQueue处理逻辑处理。
+ * 队列长度和maximumPoolSize两个值会相互影响：
+ * 长队列 + 小maximumPoolSize。会减少CPU的使用、操作系统资源、上下文切换的消耗，但是会降低吞吐量，
+ * 如果任务被频繁的阻塞如IO线程，系统其实可以调度更多的线程。
+ * 短队列 + 大maximumPoolSize。CPU更忙，但会增加线程调度的消耗.
+ * 总结一下，IO密集型可以考虑多些线程来平衡CPU的使用，CPU密集型可以考虑少些线程减少线程调度的消耗
+ *
  * @author Hlingoes
  * @citation https://blog.csdn.net/wanghao112956/article/details/99292107
+ * @citation https://www.jianshu.com/p/896b8e18501b
  * @date 2020/2/26 0:46
  */
 public class ThreadPoolUtils {
@@ -20,6 +48,24 @@ public class ThreadPoolUtils {
     private static int DEFAULT_QUEUE_SIZE = 1000;
     private static int DEFAULT_CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     private static int DEFAULT_MAX_POOL_SIZE = 4 * DEFAULT_CORE_POOL_SIZE;
+
+    /**
+     * description: 创建线程池
+     *
+     * @param waitingTime
+     * @param coreSize
+     * @param maxPoolSize
+     * @param queueSize
+     * @return java.util.concurrent.ThreadPoolExecutor
+     * @author Hlingoes 2020/4/12
+     */
+    public static ThreadPoolExecutor getExecutorPool(int waitingTime, int coreSize, int maxPoolSize, int queueSize) {
+        POLL_WAITING_TIME = waitingTime;
+        DEFAULT_CORE_POOL_SIZE = coreSize;
+        DEFAULT_MAX_POOL_SIZE = maxPoolSize;
+        DEFAULT_QUEUE_SIZE = queueSize;
+        return getExecutorPool();
+    }
 
     /**
      * description: 创建线程池
@@ -139,7 +185,7 @@ public class ThreadPoolUtils {
             }
         } catch (InterruptedException e) {
             LOGGER.error("ThreadPool overtime: {}", e.getMessage());
-            //（重新）取消当前线程是否中断
+            //（重新）丢弃所有尚未被处理的任务，同时会设置线程池中每个线程的中断标志位
             pool.shutdownNow();
             // 保持中断状态
             Thread.currentThread().interrupt();
