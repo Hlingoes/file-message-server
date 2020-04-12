@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -51,7 +52,9 @@ public class UtilsTest {
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
         // 读取resource下的文件
-        Resource resource = new ClassPathResource("generator/generatorConfig.xml");
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        // 获取单个文件
+        Resource resource = resolver.getResource("generator/generatorConfig.xml");
         InputStream is = resource.getInputStream();
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(is);

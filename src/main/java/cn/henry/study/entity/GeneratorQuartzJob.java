@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 这是MyBatis Generator自动生成的Model Class.
  * 对应的数据表是 : quartz_job
  * @author Administrator
- * @date 2020-04-06 21:36:37
+ * @date 2020-04-12 18:24:09
  */
 public class GeneratorQuartzJob extends Metas implements Serializable {
     /**
