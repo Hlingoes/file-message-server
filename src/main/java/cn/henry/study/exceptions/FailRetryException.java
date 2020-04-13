@@ -1,8 +1,6 @@
 package cn.henry.study.exceptions;
 
 import cn.henry.study.base.BaseException;
-import cn.henry.study.service.files.DefaultFileService;
-import cn.henry.study.entity.MessageBrief;
 import cn.henry.study.result.ResultCode;
 
 /**
@@ -15,11 +13,6 @@ public class FailRetryException extends BaseException {
 
     public FailRetryException() {
         super();
-    }
-
-    public FailRetryException(DefaultFileService service, MessageBrief brief) {
-        super();
-        super.data = brief;
     }
 
     public FailRetryException(Object data) {
