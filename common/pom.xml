@@ -15,6 +15,7 @@
 
     <properties>
         <jackson.version>2.9.8</jackson.version>
+        <commons-net.version>3.6</commons-net.version>
         <commons-pool2.version>2.4.2</commons-pool2.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-io.version>2.4</commons-io.version>
@@ -39,6 +40,12 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${commons-net.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -78,6 +85,15 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
+        </dependency>
+
+        <!-- 引入本地jar包 -->
+        <dependency>
+            <groupId>org.csource</groupId>
+            <artifactId>fastdfs-client-java</artifactId>
+            <version>1.28-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/local_lib/fastdfs-client-java-1.28-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 

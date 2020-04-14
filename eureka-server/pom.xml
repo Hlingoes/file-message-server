@@ -24,4 +24,17 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- 常规打包，flat jar，方便测试，不易于补丁发布和配置发布 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 作用:项目打成jar的同时将本地jar包也引入进去 -->
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
