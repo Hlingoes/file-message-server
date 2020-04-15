@@ -9,11 +9,7 @@ import org.apache.ibatis.plugin.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * description: 生成主键拦截器，自动生成id
@@ -41,11 +37,11 @@ public class MyBatisGenerateKeyInterceptor implements Interceptor {
     /**
      * 主键类型
      */
-    private static final String KEY_TYPE = "long";
+    private static final String KEY_TYPE = "Long";
     /**
      * 时间类型
      */
-    private static final String TIME_TYPE = "Timestamp";
+    private static final String TIME_TYPE = "Date";
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -92,11 +88,11 @@ public class MyBatisGenerateKeyInterceptor implements Interceptor {
             if (CREATE_TIME.equals(field.getName()) && TIME_TYPE.equals(field.getType().getSimpleName())
                     && field.get(parameter) == null) {
                 // 设置创建时间
-                field.set(parameter, new Timestamp(System.currentTimeMillis()));
+                field.set(parameter, new Date());
             }
             if (UPDATE_TIME.equals(field.getName()) && TIME_TYPE.equals(field.getType().getSimpleName())) {
                 // 设置修改时间
-                field.set(parameter, new Timestamp(System.currentTimeMillis()));
+                field.set(parameter, new Date());
             }
         });
     }

@@ -187,7 +187,7 @@
 
     <springProfile name="pro">
         <root level="INFO">
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="FILE_ALL"/>
             <appender-ref ref="STDOUT"/>
         </root>
     </springProfile>

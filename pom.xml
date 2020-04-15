@@ -55,6 +55,7 @@
         <module>eureka-server</module>
         <module>common</module>
         <module>web-server</module>
+        <module>msg-consumer</module>
     </modules>
 
 </project>

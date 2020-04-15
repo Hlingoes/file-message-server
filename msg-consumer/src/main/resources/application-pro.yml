@@ -1,0 +1,12 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://henry:faith@localhost:9761/eureka/
+spring:
+  application:
+    name: msg-consumer
+feign:
+  hystrix:
+    enabled: true
+server:
+  port: 9011

@@ -45,7 +45,6 @@ public class JobController {
         for (int i = 0; i < 10; i++) {
             jobs.add(jobService.getTestQuartzJob(jobName));
         }
-        logger.info("为什么是一样的: {}", JacksonUtils.object2Str(jobs));
         return CommonResult.success(jobMapper.insertBatch(jobs));
     }
 

@@ -1,4 +1,10 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://henry:faith@localhost:9761/eureka/
 spring:
+  application:
+    name: web-server
   servlet:
     multipart:
       #单个文件的最大上限
@@ -133,6 +139,7 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+
 server:
   port: 9012
   connection-timeout: 80000
@@ -144,6 +151,9 @@ server:
     acceptCount: 700         #可以放到处理队列中的请求数
     max-http-post-size: -1
     maxHttpHeaderSize: -1
+
+#日志配置，自定义日志路径，防止因自动加载顺序问题，读取不到spring的配置
+logging.config: classpath:logback-custom.xml
 logback:
   logHome: logs
   siftLogHome: logs/sift_retry_log

@@ -33,7 +33,7 @@ public class QuartzConfig {
                 .usingJobData("job_trigger_param","job_trigger_param1")
                 .startNow()
                 //.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(5).repeatForever())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ? 2020"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/2 * * * ? 2020"))
                 .build();
         return trigger;
     }

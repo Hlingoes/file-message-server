@@ -23,7 +23,7 @@ import java.io.InputStream;
 public class MessageBrief {
     private static Logger logger = LoggerFactory.getLogger(MessageBrief.class);
 
-    public static File jarHome = new ApplicationHome(MessageBrief.class).getDir();
+    public static File jarHome = new ApplicationHome(MessageBrief.class).getDir().getParentFile();
 
     public static String retryDir = "fail_upload_files";
 
@@ -136,4 +136,12 @@ public class MessageBrief {
         this.retryPath = retryPath;
     }
 
+    @Override
+    public String toString() {
+        return "MessageBrief{" +
+                "rowKey='" + rowKey + '\'' +
+                ", logName='" + logName + '\'' +
+                ", retryPath='" + retryPath + '\'' +
+                '}';
+    }
 }
