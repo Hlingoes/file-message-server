@@ -67,6 +67,7 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 18. [mybatis拦截器设置分布式id(雪花算法id)](https://blog.csdn.net/qq_40250122/article/details/101535884)
 > 19. [Native Operating System and Hardware Information](https://github.com/oshi/oshi)
 > 20. [Mybatis generator生成工具简单介绍](https://www.cnblogs.com/zhouguanglin/p/11239583.html)
+> 21. [springcloud项目搭建（Finchley.RELEASE版）](https://blog.csdn.net/qq_37170583/article/details/80704904)
 <br>
 ***
 待续...
