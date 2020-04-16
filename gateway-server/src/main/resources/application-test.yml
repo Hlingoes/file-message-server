@@ -1,0 +1,59 @@
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # 是否和服务注册与发现组件结合，设置为 true 后可以直接使用应用名称调用服务
+          enabled: true
+      # 路由（routes：路由，它由唯一标识（ID）、目标服务地址（uri）、一组断言（predicates）和一组过滤器组成（filters）。filters 不是必需参数。）
+      routes:
+        # 路由标识（id：标识，具有唯一性）   综合
+        - id: route_all
+          # 目标服务地址（uri：地址，请求转发后的地址）
+          uri: lb://gateway-service
+          # 路由条件（predicates：断言，匹配 HTTP 请求内容）
+          predicates:
+            ## 转发地址格式为 uri/routeAll，/all 部分会被下面的过滤器给截取掉
+            - Path=/all/routeAll
+            ## 匹配 GET 请求
+            - Method=GET
+          # 过滤器（filters：过滤器，过滤规则）
+          filters:
+            ## 截取路径位数
+            - StripPrefix=1
+            ## 添加指定参数
+            - AddRequestParameter=pass, yes
+            ## 熔断
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                ### fallback 时调用的方法 http://localhost:8000/fallback
+                fallbackUri: forward:/fallback
+            ## 限流
+            - name: RequestRateLimiter
+              args:
+                ### 限流过滤器的 Bean 名称
+                key-resolver: '#{@uriKeyResolver}'
+                ### 希望允许用户每秒处理多少个请求
+                redis-rate-limiter.replenishRate: 1
+                ### 用户允许在一秒钟内完成的最大请求数
+                redis-rate-limiter.burstCapacity: 3
+eureka:
+  instance:
+    # 使用 ip 代替实例名
+    prefer-ip-address: true
+    # 实例的主机名
+    hostname: ${spring.cloud.client.ip-address}
+    # 实例的 ID 规则
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://henry:faith@localhost:9761/eureka/
+server:
+  port: 9000

@@ -1,4 +1,17 @@
+eureka:
+  instance:
+    # 使用 ip 代替实例名
+    prefer-ip-address: true
+    # 实例的主机名
+    hostname: ${spring.cloud.client.ip-address}
+    # 实例的 ID 规则
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://henry:faith@localhost:9761/eureka/
 spring:
+  application:
+    name: web-server
   servlet:
     multipart:
       #单个文件的最大上限
@@ -81,11 +94,21 @@ spring:
         retry:
           enabled: true
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/henrydb?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true
-    username: henry
-    password: faith
+    mysqlClients:
+      - type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ny_cloud_vue?useUnicode=true&amp;characterEncoding=UTF-8
+        username: henry
+        password: faith
+        master: false
+        routeKey: ny_cloud_vue
+      - type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/henrydb?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true
+        username: henry
+        password: faith
+        master: true
+        routeKey: henrydb
     initialSize: 2    #连接池初始大小
     minIdle: 10       #连接池中最小的活跃连接数
     maxActive: 20     #连接池中最大的活跃连接数
@@ -93,7 +116,7 @@ spring:
     poolPreparedStatements: true    #打开PSCache，并且指定每个连接上PSCache的大小
     maxPoolPreparedStatementPerConnectionSize: 20
     validationQuery: SELECT 1
-    validation-query-timeout: 30000
+    validationQueryTimeout: 30000
     testOnBorrow: false             #是否在获得连接后检测其可用性
     testOnReturn: false             #是否在连接放回连接池后检测其可用性
     testWhileIdle: true             #是否在连接空闲一段时间后检测其可用性
@@ -123,6 +146,7 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+
 server:
   port: 9012
   connection-timeout: 80000
@@ -134,6 +158,9 @@ server:
     acceptCount: 700         #可以放到处理队列中的请求数
     max-http-post-size: -1
     maxHttpHeaderSize: -1
+
+#日志配置，自定义日志路径，防止因自动加载顺序问题，读取不到spring的配置
+logging.config: classpath:logback-custom.xml
 logback:
   logHome: logs
   siftLogHome: logs/sift_retry_log

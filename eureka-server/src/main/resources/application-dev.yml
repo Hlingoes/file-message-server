@@ -8,6 +8,13 @@ spring:
       name: henry
       password: faith
 eureka:
+  instance:
+    # 使用 ip 代替实例名
+    prefer-ip-address: true
+    # 实例的主机名
+    hostname: ${spring.cloud.client.ip-address}
+    # 实例的 ID 规则
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
   client:
     # 表示是否将自己注册到Eureka Server，默认为true。
     register-with-eureka: false
