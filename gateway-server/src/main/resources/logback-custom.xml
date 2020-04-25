@@ -6,7 +6,6 @@
     <!-- springProfile标签可以为不同的环境使用不同的配置 -->
 
     <springProperty scope="context" name="LOG_HOME" source="logback.logHome" defaultValue="log"/>
-    <springProperty scope="context" name="SIFT_LOG_HOME" source="logback.siftLogHome" defaultValue="sift"/>
     <springProperty scope="context" name="LOG_NAME_PREFIX" source="spring.application.name" defaultValue=""/>
 
     <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
@@ -85,57 +84,7 @@
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logPath}error.%d.%i.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-        <encoder>
-            <!-- pattern节点，用来设置日志的输入格式 -->
-            <pattern>${pattern}</pattern>
-            <!-- 记录日志的编码 -->
-            <charset>UTF-8</charset>
-        </encoder>
-    </appender>
-
-    <!-- 自定义的筛选日志 -->
-    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
-        <!--discriminator鉴别器，根据siftLogName这个key对应的value鉴别日志事件，然后委托给具体appender写日志 -->
-        <discriminator>
-            <!-- 代码使用使用MDC.put("siftLogName",value)即可 -->
-            <key>siftLogName</key>
-            <defaultValue>default</defaultValue>
-        </discriminator>
-        <sift>
-            <!--具体的写日志appender，每一个siftLogName创建一个文件 -->
-            <appender name="FILE_${siftLogName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${SIFT_LOG_HOME}/${siftLogName}.log</file>
-                <append>true</append>
-                <encoder charset="UTF-8">
-                    <pattern>${pattern}</pattern>
-                </encoder>
-                <!-- 自定义的日志滚动命名，配合trigger使用 -->
-                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                    <FileNamePattern>${SIFT_LOG_HOME}/${siftLogName}.${bySecond}.%i.log</FileNamePattern>
-                    <MinIndex>1</MinIndex>
-                    <MaxIndex>10</MaxIndex>
-                </rollingPolicy>
-                <!-- 自定义的日志滚动触发器 -->
-                <triggeringPolicy class="cn.henry.study.logback.FailuresRetryTriggeringPolicy">
-                </triggeringPolicy>
-            </appender>
-        </sift>
-    </appender>
-
-
-    <!-- 记录sql -->
-    <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}sql.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logPath}sql.%d.%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/error.%d.%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
@@ -168,22 +117,12 @@
             <appender-ref ref="SERVICE_ALL"/>
         </root>
 
-        <!-- mybatis loggers -->
-        <logger name="cn.henry.study.mapper" level="DEBUG" additivity="false">
-            <appender-ref ref="SQL"/>
-        </logger>
-
         <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
         <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
         <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
         <logger name="cn.henry.study" level="INFO" additivity="false">
             <appender-ref ref="SERVICE_INFO"/>
             <appender-ref ref="SERVICE_ERROR"/>
-        </logger>
-
-        <!-- 发送文件失败的动态日志 -->
-        <logger name="cn.henry.study.entity.MessageBrief" level="ERROR" additivity="false">
-            <appender-ref ref="SIFT"/>
         </logger>
     </springProfile>
 

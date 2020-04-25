@@ -28,17 +28,13 @@ spring:
               filters:
                 - StripPrefix=1
                 - AddResponseHeader=foo, bar
-gate:
-  ignore:
-    authentication:
-      startWith: /test,/open
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
+            - id: msg-consumer
+              uri: lb://msg-consumer
+              predicates:
+                - Path=/msg-consumer/**
+              filters:
+                - StripPrefix=1
+                - AddResponseHeader=feign
 #请求和响应GZIP压缩支持
 feign:
   httpclient:
