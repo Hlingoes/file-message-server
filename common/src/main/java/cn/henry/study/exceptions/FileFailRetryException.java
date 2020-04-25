@@ -8,30 +8,30 @@ import cn.henry.study.result.ResultCode;
  * @author Hlingoes
  * @date 2020/3/22 23:19
  */
-public class FailRetryException extends BaseException {
+public class FileFailRetryException extends BaseException {
 
-    public FailRetryException() {
+    public FileFailRetryException() {
         super();
     }
 
-    public FailRetryException(Object data) {
+    public FileFailRetryException(Object data) {
         super();
         super.data = data;
     }
 
-    public FailRetryException(ResultCode resultCode) {
+    public FileFailRetryException(ResultCode resultCode) {
         super(resultCode);
     }
 
-    public FailRetryException(ResultCode resultCode, Object data) {
+    public FileFailRetryException(ResultCode resultCode, Object data) {
         super(resultCode, data);
     }
 
-    public FailRetryException(String msg) {
+    public FileFailRetryException(String msg) {
         super(msg);
     }
 
-    public FailRetryException(String formatMsg, Object... objects) {
+    public FileFailRetryException(String formatMsg, Object... objects) {
         super(formatMsg, objects);
     }
 

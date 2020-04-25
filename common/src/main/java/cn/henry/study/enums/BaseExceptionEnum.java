@@ -2,51 +2,51 @@ package cn.henry.study.enums;
 
 import cn.henry.study.exceptions.*;
 import cn.henry.study.result.ResultCode;
-import org.springframework.http.HttpStatus;
 
 /**
- * description: 异常、HTTP状态码、默认自定义返回码 映射类
- *
- * @author Hlingoes 2020/1/1
+ * @author zhumaer
+ * @desc 异常、HTTP状态码、默认自定义返回码 映射类
+ * @since 9/21/2017 14:11 PM
  */
-public enum ExceptionEnum {
+public enum BaseExceptionEnum {
+
     /**
      * 无效参数
      */
-    PARAMETER_INVALID(ParameterInvalidException.class, HttpStatus.BAD_REQUEST, ResultCode.PARAM_IS_INVALID),
+    PARAMETER_INVALID(ParameterInvalidException.class, HttpBasedStatusEnum.BAD_REQUEST, ResultCode.PARAM_IS_INVALID),
 
     /**
      * 数据未找到
      */
-    NOT_FOUND(DataNotFoundException.class, HttpStatus.NOT_FOUND, ResultCode.RESULE_DATA_NONE),
+    NOT_FOUND(DataNotFoundException.class, HttpBasedStatusEnum.NOT_FOUND, ResultCode.DATA_NOT_FOUND),
 
     /**
      * 接口方法不允许
      */
-    METHOD_NOT_ALLOWED(MethodNotAllowException.class, HttpStatus.METHOD_NOT_ALLOWED, ResultCode.INTERFACE_ADDRESS_INVALID),
+    METHOD_NOT_ALLOWED(MethodNotAllowException.class, HttpBasedStatusEnum.METHOD_NOT_ALLOWED, ResultCode.INTERFACE_ADDRESS_INVALID),
 
     /**
      * 数据已存在
      */
-    CONFLICT(DataConflictException.class, HttpStatus.CONFLICT, ResultCode.DATA_ALREADY_EXISTED),
+    CONFLICT(DataConflictException.class, HttpBasedStatusEnum.CONFLICT, ResultCode.DATA_ALREADY_EXISTED),
 
     /**
      * 远程访问时错误
      */
-    REMOTE_ACCESS_ERROR(RemoteAccessException.class, HttpStatus.INTERNAL_SERVER_ERROR, ResultCode.INTERFACE_OUTTER_INVOKE_ERROR),
+    REMOTE_ACCESS_ERROR(RemoteAccessException.class, HttpBasedStatusEnum.INTERNAL_SERVER_ERROR, ResultCode.INTERFACE_OUTTER_INVOKE_ERROR),
 
     /**
      * 系统内部错误
      */
-    INTERNAL_SERVER_ERROR(InternalServerException.class, HttpStatus.INTERNAL_SERVER_ERROR, ResultCode.SYSTEM_INNER_ERROR);
+    INTERNAL_SERVER_ERROR(InternalServerException.class, HttpBasedStatusEnum.INTERNAL_SERVER_ERROR, ResultCode.SYSTEM_INNER_ERROR);
 
     private Class<? extends BaseException> eClass;
 
-    private HttpStatus httpStatus;
+    private HttpBasedStatusEnum httpStatus;
 
     private ResultCode resultCode;
 
-    ExceptionEnum(Class<? extends BaseException> eClass, HttpStatus httpStatus, ResultCode resultCode) {
+    BaseExceptionEnum(Class<? extends BaseException> eClass, HttpBasedStatusEnum httpStatus, ResultCode resultCode) {
         this.eClass = eClass;
         this.httpStatus = httpStatus;
         this.resultCode = resultCode;
@@ -56,7 +56,7 @@ public enum ExceptionEnum {
         return eClass;
     }
 
-    public HttpStatus getHttpStatus() {
+    public HttpBasedStatusEnum getHttpStatus() {
         return httpStatus;
     }
 
@@ -65,7 +65,7 @@ public enum ExceptionEnum {
     }
 
     public static boolean isSupportHttpStatus(int httpStatus) {
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (exceptionEnum.httpStatus.value() == httpStatus) {
                 return true;
             }
@@ -75,7 +75,7 @@ public enum ExceptionEnum {
     }
 
     public static boolean isSupportException(Class<?> z) {
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (exceptionEnum.eClass.equals(z)) {
                 return true;
             }
@@ -84,12 +84,12 @@ public enum ExceptionEnum {
         return false;
     }
 
-    public static ExceptionEnum getByHttpStatus(HttpStatus httpStatus) {
+    public static BaseExceptionEnum getByHttpStatus(HttpBasedStatusEnum httpStatus) {
         if (httpStatus == null) {
             return null;
         }
 
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (httpStatus.equals(exceptionEnum.httpStatus)) {
                 return exceptionEnum;
             }
@@ -98,16 +98,17 @@ public enum ExceptionEnum {
         return null;
     }
 
-    public static ExceptionEnum getByEClass(Class<? extends BaseException> eClass) {
+    public static BaseExceptionEnum getByEClass(Class<? extends BaseException> eClass) {
         if (eClass == null) {
             return null;
         }
 
-        for (ExceptionEnum exceptionEnum : ExceptionEnum.values()) {
+        for (BaseExceptionEnum exceptionEnum : BaseExceptionEnum.values()) {
             if (eClass.equals(exceptionEnum.eClass)) {
                 return exceptionEnum;
             }
         }
+
         return null;
     }
 }

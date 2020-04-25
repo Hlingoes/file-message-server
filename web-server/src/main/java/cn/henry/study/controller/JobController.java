@@ -4,7 +4,6 @@ import cn.henry.study.entity.QuartzJob;
 import cn.henry.study.mapper.JobMapper;
 import cn.henry.study.result.CommonResult;
 import cn.henry.study.service.quartz.QuartzJobService;
-import cn.henry.study.utils.JacksonUtils;
 import com.github.pagehelper.PageInfo;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;

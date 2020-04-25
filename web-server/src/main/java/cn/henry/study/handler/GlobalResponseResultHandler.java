@@ -3,7 +3,7 @@ package cn.henry.study.handler;
 import cn.henry.study.anno.ResponseResult;
 import cn.henry.study.interceptor.ResponseResultInterceptor;
 import cn.henry.study.result.CommonResult;
-import cn.henry.study.result.DefaultErrorResult;
+import cn.henry.study.result.DefaultWebErrorResult;
 import cn.henry.study.result.Result;
 import cn.henry.study.utils.JacksonUtils;
 import cn.henry.study.utils.RequestContextHolderUtils;
@@ -59,12 +59,12 @@ public class GlobalResponseResultHandler implements ResponseBodyAdvice<Object> {
                 .getAttribute(ResponseResultInterceptor.RESPONSE_RESULT);
         Class<? extends Result> resultClazz = responseResultAnn.value();
         if (resultClazz.isAssignableFrom(CommonResult.class)) {
-            if (body instanceof DefaultErrorResult) {
-                DefaultErrorResult defaultErrorResult = (DefaultErrorResult) body;
+            if (body instanceof DefaultWebErrorResult) {
+                DefaultWebErrorResult defaultWebErrorResult = (DefaultWebErrorResult) body;
                 CommonResult result = new CommonResult();
-                result.setCode(defaultErrorResult.getCode());
-                result.setMsg(defaultErrorResult.getMessage());
-                result.setData(defaultErrorResult.getErrors());
+                result.setCode(defaultWebErrorResult.getCode());
+                result.setMsg(defaultWebErrorResult.getMessage());
+                result.setData(defaultWebErrorResult.getErrors());
                 return result;
             } else if (body instanceof String) {
                 return JacksonUtils.object2Str(CommonResult.success(body));

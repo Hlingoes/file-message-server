@@ -1,7 +1,7 @@
 package cn.henry.study.aspect;
 
 import cn.henry.study.entity.MessageBrief;
-import cn.henry.study.exceptions.FailRetryException;
+import cn.henry.study.exceptions.FileFailRetryException;
 import cn.henry.study.factory.FileServiceFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -48,7 +48,7 @@ public class FileServiceExceptionAspect {
             result = pjp.proceed(pjp.getArgs());
             long consumeTime = System.currentTimeMillis() - startTime;
             logger.info("执行结束: {}, 返回值: {}, 耗时: {}ms", pjp.getSignature(), result, consumeTime);
-        } catch (FailRetryException ex) {
+        } catch (FileFailRetryException ex) {
             fileServiceFactory.cacheFailData((MessageBrief) ex.getData());
             logger.error("{} 接口记录返回结果失败！，原因为：{}", pjp.getSignature(), ex.getMessage());
         }

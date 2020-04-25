@@ -1,5 +1,6 @@
 package cn.henry.study.base;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,8 @@ import java.util.Date;
  * @author Hlingoes
  * @date 2020/4/3 20:12
  */
-public class Metas {
+public class Metas implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 

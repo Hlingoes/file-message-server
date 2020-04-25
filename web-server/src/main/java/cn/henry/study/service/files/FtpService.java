@@ -1,7 +1,7 @@
 package cn.henry.study.service.files;
 
 import cn.henry.study.entity.MessageBrief;
-import cn.henry.study.exceptions.FailRetryException;
+import cn.henry.study.exceptions.FileFailRetryException;
 import cn.henry.study.pool.FtpClientPool;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -105,7 +105,7 @@ public class FtpService extends DefaultFileService {
             String rowKey = path + SEPARATOR + fileName;
             logger.error("上传文件[{}]失败", rowKey, e);
             MessageBrief brief = new MessageBrief(this.getClass(), rowKey, inputStream);
-            throw new FailRetryException(brief);
+            throw new FileFailRetryException(brief);
         } finally {
             if (flag) {
                 logger.info("上传文件[{}]成功", path + SEPARATOR + fileName);
@@ -354,7 +354,7 @@ public class FtpService extends DefaultFileService {
     public void testUploadFail(String path, String fileName, File file) {
         try {
             String rowKey = path + SEPARATOR + fileName;
-            throw new FailRetryException(new MessageBrief(this.getEntityClazz(), rowKey, new FileInputStream(file)));
+            throw new FileFailRetryException(new MessageBrief(this.getEntityClazz(), rowKey, new FileInputStream(file)));
         } catch (IOException e) {
             logger.info("文件流读取失败: {}", file.getAbsolutePath(), e);
         }

@@ -1,4 +1,4 @@
-package cn.henry.study.result;
+package cn.henry.study.base;
 
 /**
  * description: 参数无效项

@@ -2,7 +2,7 @@ package cn.henry.study.handler;
 
 import cn.henry.study.base.BaseGlobalExceptionHandler;
 import cn.henry.study.exceptions.BaseException;
-import cn.henry.study.result.DefaultErrorResult;
+import cn.henry.study.result.DefaultWebErrorResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,28 +29,28 @@ public class GlobalControllerExceptionHandler extends BaseGlobalExceptionHandler
     @Override
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public DefaultErrorResult handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+    public DefaultWebErrorResult handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         return super.handleConstraintViolationException(e, request);
     }
 
     @Override
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public DefaultErrorResult handleConstraintViolationException(HttpMessageNotReadableException e, HttpServletRequest request) {
+    public DefaultWebErrorResult handleConstraintViolationException(HttpMessageNotReadableException e, HttpServletRequest request) {
         return super.handleConstraintViolationException(e, request);
     }
 
     @Override
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
-    public DefaultErrorResult handleBindException(BindException e, HttpServletRequest request) {
+    public DefaultWebErrorResult handleBindException(BindException e, HttpServletRequest request) {
         return super.handleBindException(e, request);
     }
 
     @Override
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public DefaultErrorResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public DefaultWebErrorResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         return super.handleMethodArgumentNotValidException(e, request);
     }
 
@@ -59,7 +59,7 @@ public class GlobalControllerExceptionHandler extends BaseGlobalExceptionHandler
      */
     @Override
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<DefaultErrorResult> handleBusinessException(BaseException e, HttpServletRequest request) {
+    public ResponseEntity<DefaultWebErrorResult> handleBusinessException(BaseException e, HttpServletRequest request) {
         return super.handleBusinessException(e, request);
     }
 
@@ -69,7 +69,7 @@ public class GlobalControllerExceptionHandler extends BaseGlobalExceptionHandler
     @Override
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Throwable.class)
-    public DefaultErrorResult handleThrowable(Throwable e, HttpServletRequest request) {
+    public DefaultWebErrorResult handleThrowable(Throwable e, HttpServletRequest request) {
         // TODO 可通过邮件、微信公众号等方式发送信息至开发人员、记录存档等操作
         return super.handleThrowable(e, request);
     }

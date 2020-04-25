@@ -28,9 +28,12 @@ public enum ResultCode {
 
     /* 系统错误：40001-49999 */
     SYSTEM_INNER_ERROR(40001, "系统繁忙，请稍后重试"),
+    GATEWAY_ERROR(40002, "网关异常"),
+    GATEWAY_CONNECT_TIME_OUT(40003, "网关超时"),
+    GATEWAY_NOT_FOUND_SERVICE(40004, "服务未找到"),
 
     /* 数据错误：50001-599999 */
-    RESULE_DATA_NONE(50001, "数据未找到"),
+    DATA_NOT_FOUND(50001, "数据未找到"),
     DATA_IS_WRONG(50002, "数据有误"),
     DATA_ALREADY_EXISTED(50003, "数据已存在"),
 

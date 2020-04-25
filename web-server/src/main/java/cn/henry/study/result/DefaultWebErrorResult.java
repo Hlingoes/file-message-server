@@ -1,10 +1,10 @@
 package cn.henry.study.result;
 
-import cn.henry.study.exceptions.BaseException;
 import cn.henry.study.enums.ExceptionEnum;
+import cn.henry.study.enums.HttpBasedStatusEnum;
+import cn.henry.study.exceptions.BaseException;
 import cn.henry.study.utils.RequestContextHolderUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,11 +17,11 @@ import java.util.Date;
  * @author Hlingoes
  * @date 2020/1/1 22:42
  */
-public class DefaultErrorResult implements Serializable {
+public class DefaultWebErrorResult implements Serializable, Result {
     private static final long serialVersionUID = 1899083570489722793L;
 
     /**
-     * HTTP响应状态码 {@link HttpStatus}
+     * HTTP响应状态码
      */
     private Integer status;
 
@@ -62,14 +62,14 @@ public class DefaultErrorResult implements Serializable {
      */
     private Date timestamp;
 
-    public static DefaultErrorResult failure(ResultCode resultCode, Throwable e, HttpStatus httpStatus, Object errors) {
-        DefaultErrorResult result = DefaultErrorResult.failure(resultCode, e, httpStatus);
+    public static DefaultWebErrorResult failure(ResultCode resultCode, Throwable e, HttpBasedStatusEnum httpStatus, Object errors) {
+        DefaultWebErrorResult result = DefaultWebErrorResult.failure(resultCode, e, httpStatus);
         result.setErrors(errors);
         return result;
     }
 
-    public static DefaultErrorResult failure(ResultCode resultCode, Throwable e, HttpStatus httpStatus) {
-        DefaultErrorResult result = new DefaultErrorResult();
+    public static DefaultWebErrorResult failure(ResultCode resultCode, Throwable e, HttpBasedStatusEnum httpStatus) {
+        DefaultWebErrorResult result = new DefaultWebErrorResult();
         result.setCode(resultCode.code());
         result.setMessage(resultCode.message());
         result.setStatus(httpStatus.value());
@@ -80,17 +80,17 @@ public class DefaultErrorResult implements Serializable {
         return result;
     }
 
-    public static DefaultErrorResult failure(BaseException e) {
+    public static DefaultWebErrorResult failure(BaseException e) {
         ExceptionEnum ee = ExceptionEnum.getByEClass(e.getClass());
         if (ee != null) {
-            return DefaultErrorResult.failure(ee.getResultCode(), e, ee.getHttpStatus(), e.getData());
+            return DefaultWebErrorResult.failure(ee.getResultCode(), e, ee.getHttpStatus(), e.getData());
         }
 
-        DefaultErrorResult defaultErrorResult = DefaultErrorResult.failure(e.getResultCode() == null ? ResultCode.SUCCESS : e.getResultCode(), e, HttpStatus.OK, e.getData());
+        DefaultWebErrorResult defaultWebErrorResult = DefaultWebErrorResult.failure(e.getResultCode() == null ? ResultCode.SUCCESS : e.getResultCode(), e, HttpBasedStatusEnum.OK, e.getData());
         if (StringUtils.isNotEmpty(e.getMessage())) {
-            defaultErrorResult.setMessage(e.getMessage());
+            defaultWebErrorResult.setMessage(e.getMessage());
         }
-        return defaultErrorResult;
+        return defaultWebErrorResult;
     }
 
     public Integer getStatus() {

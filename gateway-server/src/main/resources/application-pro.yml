@@ -11,39 +11,66 @@ spring:
         locator:
           # 是否和服务注册与发现组件结合，设置为 true 后可以直接使用应用名称调用服务
           enabled: true
-      # 路由（routes：路由，它由唯一标识（ID）、目标服务地址（uri）、一组断言（predicates）和一组过滤器组成（filters）。filters 不是必需参数。）
-      routes:
-        # 路由标识（id：标识，具有唯一性）   综合
-        - id: route_all
-          # 目标服务地址（uri：地址，请求转发后的地址）
-          uri: lb://gateway-service
-          # 路由条件（predicates：断言，匹配 HTTP 请求内容）
-          predicates:
-            ## 转发地址格式为 uri/routeAll，/all 部分会被下面的过滤器给截取掉
-            - Path=/all/routeAll
-            ## 匹配 GET 请求
-            - Method=GET
-          # 过滤器（filters：过滤器，过滤规则）
-          filters:
-            ## 截取路径位数
-            - StripPrefix=1
-            ## 添加指定参数
-            - AddRequestParameter=pass, yes
-            ## 熔断
-            - name: Hystrix
-              args:
-                name: fallbackcmd
-                ### fallback 时调用的方法 http://localhost:8000/fallback
-                fallbackUri: forward:/fallback
-            ## 限流
+          lower-case-service-id: true
+          default-filters:
+            - AddResponseHeader=X-Response-Default-Foo, Default-Bar
             - name: RequestRateLimiter
               args:
-                ### 限流过滤器的 Bean 名称
-                key-resolver: '#{@uriKeyResolver}'
-                ### 希望允许用户每秒处理多少个请求
-                redis-rate-limiter.replenishRate: 1
-                ### 用户允许在一秒钟内完成的最大请求数
-                redis-rate-limiter.burstCapacity: 3
+                redis-rate-limiter.replenishRate: 1  #令牌桶的容积
+                redis-rate-limiter.burstCapacity: 1  #流速 每秒
+                rate-limiter: "#{@defaultRedisRateLimiter}"  #SPEL表达式去的对应的bean
+                key-resolver: "#{@remoteAddressKeyResolver}" #SPEL表达式去的对应的bean
+          routes:
+            - id: web-server
+              uri: lb://web-server
+              predicates:
+                - Path=/web-server/**
+              filters:
+                - StripPrefix=1
+                - AddResponseHeader=foo, bar
+gate:
+  ignore:
+    authentication:
+      startWith: /test,/open
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+#请求和响应GZIP压缩支持
+feign:
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
+  #  compression:
+  #    response:
+  #      enabled: true
+  #    request:
+  #      enabled: true
+  #      mime-types: text/xml,application/xml,application/json
+  #      min-request-size: 2048
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          # 隔离策略，有THREAD和SEMAPHORE
+          # THREAD - 它在单独的线程上执行，并发请求受线程池中的线程数量的限制
+          # SEMAPHORE - 它在调用线程上执行，并发请求受到信号量计数的限制
+          strategy: Semaphore
+          semaphore:
+            # 该参数当使用ExecutionIsolationStrategy.SEMAPHORE策略时才有效。如果达到最大并发请求数，请求会被拒绝。
+            # 选用semaphore时每次执行的单元要比较小且执行速度快(ms级别)，否则的话应该用thread，semaphore应该占整个容器(tomcat)的线程池的一小部分
+            # 只有在高并发(单个实例每秒达到几百个调用)的调用时，才需要修改HystrixCommands 的隔离策略为semaphore
+            # 最大并发请求数，默认10
+            maxConcurrentRequests: 10
+          thread:
+            timeoutInMilliseconds: 3000
 eureka:
   instance:
     # 使用 ip 代替实例名

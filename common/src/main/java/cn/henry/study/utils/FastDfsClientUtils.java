@@ -1,5 +1,7 @@
 package cn.henry.study.utils;
 
+import cn.henry.study.base.FastdfsFileIndex;
+import cn.henry.study.exceptions.FileFailRetryException;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 /**
  * description: fastDFS文件服务的客户端工具类
@@ -22,10 +25,12 @@ import java.io.InputStream;
 public class FastDfsClientUtils {
     private static Logger logger = LoggerFactory.getLogger(FastDfsClientUtils.class);
 
+    private static SnowflakeIdWorker SNOW_FLAKE;
+
     static {
         try {
-            String propFilePath = "fastdfs-client.properties";
-            ClientGlobal.initByProperties(propFilePath);
+            ClientGlobal.initByProperties("fastdfs-client.properties");
+            SNOW_FLAKE = new SnowflakeIdWorker(1, 1);
         } catch (Exception e) {
             logger.error("FastDFS Client Init Fail!", e);
         }
@@ -50,7 +55,7 @@ public class FastDfsClientUtils {
      * @return java.lang.String[]
      * @author Hlingoes 2020/4/2
      */
-    public static String[] upload(String rowKey, byte[] bytes) {
+    public static FastdfsFileIndex upload(String rowKey, byte[] bytes) {
         String fileName = StringUtils.substringAfterLast(rowKey, "/");
         String ext = StringUtils.substringAfterLast(fileName, ".");
         logger.info("upload rowKey: {}, File Length: {}", rowKey, bytes.length);
@@ -61,24 +66,33 @@ public class FastDfsClientUtils {
         long startTime = System.currentTimeMillis();
         String[] uploadResults = null;
         StorageClient storageClient = null;
-        try {
-            storageClient = getTrackerClient();
-            uploadResults = storageClient.upload_file(bytes, ext, meta_list);
-        } catch (IOException e) {
-            logger.error("IO Exception when uploading the file: {}", rowKey, e);
-        } catch (Exception e) {
-            logger.error("Not IO Exception when uploading the file: {}", rowKey, e);
+        // 失败重试，最多尝试3次
+        Exception ex = null;
+        for (int i = 0; i < 3; i++) {
+            try {
+                storageClient = getTrackerClient();
+                uploadResults = storageClient.upload_file(bytes, ext, meta_list);
+                break;
+            } catch (Exception e) {
+                ex = e;
+            }
         }
-        logger.info("upload_file time used:{}ms", (System.currentTimeMillis() - startTime));
-
+        if (ex != null) {
+            logger.error("uploading file fail: {}", rowKey, ex);
+            throw new FileFailRetryException();
+        }
         if (uploadResults == null && storageClient != null) {
-            logger.error("upload file fail, error code:{}", storageClient.getErrorCode());
+            logger.error("upload file fail: {}, error code:{}", rowKey, storageClient.getErrorCode());
         }
-        String groupName = uploadResults[0];
-        String remoteFileName = uploadResults[1];
-
-        logger.info("upload file success，group_name: {}, remoteFileName: {}", groupName, remoteFileName);
-        return uploadResults;
+        FastdfsFileIndex fastdfsFileIndex = new FastdfsFileIndex();
+        Date time = new Date();
+        fastdfsFileIndex.setId(SNOW_FLAKE.nextId());
+        fastdfsFileIndex.setGroupName(uploadResults[0]);
+        fastdfsFileIndex.setRemoteFileName(uploadResults[1]);
+        fastdfsFileIndex.setCreateTime(time);
+        fastdfsFileIndex.setUpdateTime(time);
+        logger.info("upload file success，{}, uses:{}", fastdfsFileIndex, System.currentTimeMillis() - startTime);
+        return fastdfsFileIndex;
     }
 
     /**

@@ -1,6 +1,6 @@
 package cn.henry.study.utils;
 
-import cn.henry.study.result.ParameterInvalidItem;
+import cn.henry.study.base.ParameterInvalidItem;
 import org.apache.commons.collections4.CollectionUtils;
 import org.assertj.core.util.Lists;
 import org.springframework.validation.BindingResult;
@@ -22,7 +22,7 @@ public class ConvertUtils {
      * description: 将无效参数转为实体辅助类
      *
      * @param cvset
-     * @return java.util.List<cn.henry.study.result.ParameterInvalidItem>
+     * @return java.util.List<cn.henry.study.base.ParameterInvalidItem>
      * @author Hlingoes 2020/1/1
      */
     public static List<ParameterInvalidItem> convertCVSetToParameterInvalidItemList(Set<ConstraintViolation<?>> cvset) {
@@ -51,7 +51,7 @@ public class ConvertUtils {
      * description: 将无效绑定参数转为实体辅助类
      *
      * @param bindingResult
-     * @return java.util.List<cn.henry.study.result.ParameterInvalidItem>
+     * @return java.util.List<cn.henry.study.base.ParameterInvalidItem>
      * @author Hlingoes 2020/1/1
      */
     public static List<ParameterInvalidItem> convertBindingResultToMapParameterInvalidItemList(BindingResult bindingResult) {
