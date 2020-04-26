@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: msg-consumer
 logging:
   config: classpath:logback-custom.xml
 logback:

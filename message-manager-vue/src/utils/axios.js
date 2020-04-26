@@ -11,7 +11,8 @@ axios.interceptors.request.use(
 	}
 )
 
-axios.defaults.timeout = 36000000 //设置超时时间
+axios.defaults.timeout = 6 * 1000; //设置超时时间
+axios.defaults.baseURL = '/api/'  // api 即上面 vue.config.js 中配置的地址
 
 axios.interceptors.response.use(
 	response => {

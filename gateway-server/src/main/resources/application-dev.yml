@@ -3,8 +3,6 @@ spring:
     host: localhost
     port: 6379
     database: 0
-  application:
-    name: gateway-server
   cloud:
     gateway:
       discovery:
@@ -35,6 +33,18 @@ spring:
               filters:
                 - StripPrefix=1
                 - AddResponseHeader=feign
+        # 跨域
+        globalcors:
+          corsConfigurations:
+            '[/**]':
+              allowedHeaders: "*"
+              allowedOrigins: "*"
+              allowedMethods:
+                - GET
+                  POST
+                  DELETE
+                  PUT
+                  OPTION
 #请求和响应GZIP压缩支持
 feign:
   httpclient:

@@ -10,8 +10,6 @@ eureka:
     serviceUrl:
       defaultZone: http://henry:faith@localhost:9761/eureka/
 spring:
-  application:
-    name: web-server
   servlet:
     multipart:
       #单个文件的最大上限

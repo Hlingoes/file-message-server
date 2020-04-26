@@ -19,16 +19,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private ResponseResultInterceptor responseResultInterceptor;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
-                .allowedHeaders("*")
-                .maxAge(3600)
-                .allowCredentials(true);
-    }
-
-    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("swagger-ui.html")

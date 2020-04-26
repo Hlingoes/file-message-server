@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: web-server
 
 #日志配置，自定义日志路径，防止因自动加载顺序问题，读取不到spring的配置
 logging:
