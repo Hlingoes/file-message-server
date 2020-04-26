@@ -129,8 +129,8 @@
         },
         methods: {
             initWebSocket() {
-                // 初始化weosocket
-                const wsuri = "ws://localhost:9012/websocket";
+                // 初始化websocket
+                const wsuri = "ws://" + location.host + "/socket/web-server/websocket";
                 this.websock = new WebSocket(wsuri);
                 this.websock.onmessage = this.webSocketOnMessage;
                 this.websock.onopen = this.webSocketOnOpen;

@@ -33,6 +33,11 @@ spring:
               filters:
                 - StripPrefix=1
                 - AddResponseHeader=feign
+            #表示websocket的转发
+            - id: web-server-websocket
+              uri: lb:ws://web-server
+              predicates:
+                - Path=/web-server/websocket/**
         # 跨域
         globalcors:
           corsConfigurations:
