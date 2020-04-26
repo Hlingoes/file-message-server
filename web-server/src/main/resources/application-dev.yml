@@ -136,7 +136,7 @@ spring:
             threadsInheritContextClassLoaderOfInitializingThread: true
 #mybatis配置
 mybatis:
-  type-aliases-package: cn.henry.study.entity
+  type-aliases-package: cn.henry.study.web.entity
   mapper-locations: classpath:mybatis/mapper/*.xml
 #分页配置, pageHelper是物理分页插件
 pagehelper:

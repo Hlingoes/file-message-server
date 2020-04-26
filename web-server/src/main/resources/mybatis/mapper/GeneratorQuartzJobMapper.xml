@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.henry.study.mapper.GeneratorQuartzJobMapper">
-  <resultMap id="BaseResultMap" type="cn.henry.study.entity.GeneratorQuartzJob">
+<mapper namespace="cn.henry.study.web.mapper.GeneratorQuartzJobMapper">
+  <resultMap id="BaseResultMap" type="cn.henry.study.web.entity.GeneratorQuartzJob">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
     <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
@@ -28,7 +28,7 @@
     delete from quartz_job
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.henry.study.entity.GeneratorQuartzJob">
+  <insert id="insert" parameterType="cn.henry.study.web.entity.GeneratorQuartzJob">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -41,7 +41,7 @@
       #{oldJobGroup,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="cn.henry.study.entity.GeneratorQuartzJob">
+  <insert id="insertSelective" parameterType="cn.henry.study.web.entity.GeneratorQuartzJob">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -111,7 +111,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.henry.study.entity.GeneratorQuartzJob">
+  <update id="updateByPrimaryKeySelective" parameterType="cn.henry.study.web.entity.GeneratorQuartzJob">
     update quartz_job
     <set>
       <if test="jobName != null">
@@ -147,7 +147,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="cn.henry.study.entity.GeneratorQuartzJob">
+  <update id="updateByPrimaryKey" parameterType="cn.henry.study.web.entity.GeneratorQuartzJob">
     update quartz_job
     set job_name = #{jobName,jdbcType=VARCHAR},
       job_group = #{jobGroup,jdbcType=VARCHAR},

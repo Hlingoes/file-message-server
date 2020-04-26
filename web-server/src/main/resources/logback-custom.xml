@@ -123,7 +123,7 @@
                     <MaxIndex>10</MaxIndex>
                 </rollingPolicy>
                 <!-- 自定义的日志滚动触发器 -->
-                <triggeringPolicy class="cn.henry.study.logback.FailuresRetryTriggeringPolicy">
+                <triggeringPolicy class="cn.henry.study.web.logback.FailuresRetryTriggeringPolicy">
                 </triggeringPolicy>
             </appender>
         </sift>
@@ -182,7 +182,7 @@
         </logger>
 
         <!-- 发送文件失败的动态日志 -->
-        <logger name="cn.henry.study.entity.MessageBrief" level="ERROR" additivity="false">
+        <logger name="cn.henry.study.web.entity.MessageBrief" level="ERROR" additivity="false">
             <appender-ref ref="SIFT"/>
         </logger>
     </springProfile>

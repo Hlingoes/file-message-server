@@ -222,7 +222,7 @@ public class MessageBrief {
 
     private String logName;
 
-    private String retryPath;
+    private String retryFile;
 
     /**
      * Jackson反序列化需要无参构造器
@@ -234,13 +234,13 @@ public class MessageBrief {
     public MessageBrief(String rowKey, String logName) {
         this.rowKey = rowKey;
         this.logName = logName;
-        this.retryPath = this.tempFile().getAbsolutePath();
+        this.retryFile = this.tempFile().getAbsolutePath();
     }
 
     public MessageBrief(Class clazz, String rowKey, InputStream inputStream) {
         this.rowKey = rowKey;
         this.logName = clazz.getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
-        this.retryPath = this.tempFile().getAbsolutePath();
+        this.retryFile = this.tempFile().getAbsolutePath();
         writeTempFile(inputStream);
     }
 
@@ -402,7 +402,7 @@ public class FailuresRetryTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
                      <MaxIndex>10</MaxIndex>
                  </rollingPolicy>
                  <!-- 自定义的日志滚动触发器 -->
-                 <triggeringPolicy class="cn.henry.study.logback.FailuresRetryTriggeringPolicy">
+                 <triggeringPolicy class="FailuresRetryTriggeringPolicy">
                  </triggeringPolicy>
              </appender>
          </sift>
@@ -460,7 +460,7 @@ public class FailuresRetryTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
          </logger>
  
          <!-- 发送文件失败的动态日志 -->
-         <logger name="cn.henry.study.entity.MessageBrief" level="ERROR" additivity="false">
+         <logger name="MessageBrief" level="ERROR" additivity="false">
              <appender-ref ref="SIFT"/>
          </logger>
      </springProfile>

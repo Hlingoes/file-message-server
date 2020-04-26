@@ -178,7 +178,7 @@
                             <!-- MANIFEST.MF 中 Class-Path 加入前缀 -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <!--指定入口类 -->
-                            <mainClass>cn.henry.study.WebMessageServer</mainClass>
+                            <mainClass>cn.henry.study.web.WebMessageServer</mainClass>
                         </manifest>
                         <manifestEntries>
                             <!-- 在Class-Path下添加配置文件的路径 -->

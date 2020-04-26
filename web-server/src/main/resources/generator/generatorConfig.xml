@@ -12,10 +12,10 @@
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 
         <!-- 生成mysql带有分页的sql的插件  这个可以自己写，-->
-        <plugin type="cn.henry.study.plugin.MyBatisModelPlugin" />
+        <plugin type="cn.henry.study.web.plugin.MyBatisModelPlugin" />
 
         <!-- 自定义的注释规则，继承 DefaultCommentGenerator 重写 一些方法 -->
-        <commentGenerator type="cn.henry.study.plugin.MyBatisCommentPlugin">
+        <commentGenerator type="cn.henry.study.web.plugin.MyBatisCommentPlugin">
             <!-- 是否去除自动生成日期的注释 true：是 ： false:否 -->
             <property name="suppressDate" value="true"/>
             <!-- 是否去除所有自动生成的注释 true：是 ： false:否 -->
@@ -49,7 +49,7 @@
                enableDeleteByExample="false"
                enableSelectByExample="false"
                enableUpdateByExample="false">
-            <property name="rootClass" value="cn.henry.study.base.Metas"/>
+            <property name="rootClass" value="cn.henry.study.common.base.Metas"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
     </context>
