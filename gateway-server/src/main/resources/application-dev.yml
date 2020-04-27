@@ -24,6 +24,7 @@ spring:
               predicates:
                 - Path=/web-server/**
               filters:
+                - SwaggerHeaderFilter
                 - StripPrefix=1
                 - AddResponseHeader=foo, bar
             - id: msg-consumer
@@ -31,8 +32,8 @@ spring:
               predicates:
                 - Path=/msg-consumer/**
               filters:
+                - SwaggerHeaderFilter
                 - StripPrefix=1
-                - AddResponseHeader=feign
             #表示websocket的转发
             - id: web-server-websocket
               uri: lb:ws://web-server

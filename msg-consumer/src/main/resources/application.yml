@@ -3,6 +3,9 @@ spring:
     active: dev
   application:
     name: msg-consumer
+eureka:
+  instance:
+    status-page-url: http://${spring.cloud.client.ip-address}:${server.port}/swagger-ui.html
 logging:
   config: classpath:logback-custom.xml
 logback:

@@ -1,4 +1,4 @@
-package cn.henry.study.web.configuration;
+package cn.henry.study.consumer.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class Swagger2Config {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("cn.henry.study.web.controller"))
+                .apis(RequestHandlerSelectors.basePackage("cn.henry.study.consumer.controller"))
                 .paths(PathSelectors.any()).build();
     }
 
