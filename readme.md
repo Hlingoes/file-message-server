@@ -1,6 +1,5 @@
 ### 集合http，ftp，rabbitmq的文件与消息系列服务，归纳优化各种写法，整理出优雅的写法，提高程序性能好，学习之余给业务开发提供方便。
-#### 环境搭建
-##### 1. 使用IDEA开发，基于alibaba编程规范，配置编辑器的注释模块
+##### 使用IDEA开发，基于alibaba编程规范，配置编辑器的注释模块
 ######方法注释模板
 
 ````
@@ -26,9 +25,10 @@ groovyScript(
     return commonResult ", methodParameters())
 PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的注释需要手动添加
 ````
-##### 2. 在windows10本地创建新用户，搭建FTP服务器
-##### 3. 在windows10本地创建新用户，搭建rabbitmq服务器
-##### 4. 项目的resources/summaries中放着项目实践中的相关总结
+#### 项目启动方式
+1. 在message-manager-vue目录，通过命令行窗口执行：npm run serve, 可访问web页面： http://localhost:8090/#/
+2. 后台启动需要预先安装rabbitmq，redis，mysql，ftp服务，修改yml中对应的配置
+3. 依次启动eureka，web-server，msg-consumer(采用feign调用)，gateway-server，访问注册中心：http://localhost:9761/
 #### 更新记录
 ##### 1. 2019-12-22 完成RestTemplate的服务开发，做了基本测试 
 ##### 2. 2019-12-23 完成HttpRestTemplate的服务开发，优化小文件下载，整合HTTP连接池,实现大文件的多线程分割下载，做了基本测试
@@ -45,6 +45,7 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 ##### 13. 2020-04-12 完成项目的maven多模块改造
 ##### 14. 2020-04-14 开始项目的spring-cloud化，逐步引入功能
 ##### 15. 2020-04-27 完成spring eureka，gateway，feign，hystrix的引入，以及前后端的初步打通
+##### 16. 2020-04-30 项目的summaries中放着项目实践中的相关总结，同步于[博客园](https://www.cnblogs.com/Hlingoes/)中
 
 ---
 > 参考了众多博主的帖子，按照实际使用做了调整，一并感谢，共勉

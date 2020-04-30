@@ -18,25 +18,39 @@ spring:
                 redis-rate-limiter.burstCapacity: 1  #流速 每秒
                 rate-limiter: "#{@defaultRedisRateLimiter}"  #SPEL表达式去的对应的bean
                 key-resolver: "#{@remoteAddressKeyResolver}" #SPEL表达式去的对应的bean
-          routes:
-            - id: web-server
-              uri: lb://web-server
-              predicates:
-                - Path=/web-server/**
-              filters:
-                - StripPrefix=1
-                - AddResponseHeader=foo, bar
-gate:
-  ignore:
-    authentication:
-      startWith: /test,/open
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
+      routes:
+        - id: web-server
+          uri: lb://web-server
+          predicates:
+            - Path=/web-server/**
+          filters:
+            - SwaggerHeaderFilter
+            - StripPrefix=1
+            - AddResponseHeader=foo, bar
+        - id: msg-consumer
+          uri: lb://msg-consumer
+          predicates:
+            - Path=/msg-consumer/**
+          filters:
+            - SwaggerHeaderFilter
+            - StripPrefix=1
+        #表示websocket的转发
+        - id: web-server-websocket
+          uri: lb:ws://web-server
+          predicates:
+            - Path=/web-server/websocket/**
+      # 跨域
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedHeaders: "*"
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+                POST
+                DELETE
+                PUT
+                OPTION
 #请求和响应GZIP压缩支持
 feign:
   httpclient:

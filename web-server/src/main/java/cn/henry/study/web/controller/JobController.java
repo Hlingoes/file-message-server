@@ -35,7 +35,9 @@ public class JobController {
 
     @GetMapping("/testAdding")
     public CommonResult add(String jobName) throws Exception {
-        return CommonResult.success(jobMapper.saveJob(jobService.getTestQuartzJob(jobName)));
+        QuartzJob job = jobService.getTestQuartzJob(jobName);
+        jobMapper.saveJob(job);
+        return CommonResult.success(job);
     }
 
     @GetMapping("/testBatchAdding")
