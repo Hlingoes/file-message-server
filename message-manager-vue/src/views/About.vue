@@ -56,7 +56,7 @@
             </el-row>
             <el-row :gutter="20">
                 <el-col :span="12">
-                    <el-form-item label="上传文件" prop="filePath">
+                    <el-form-item label="上传文件" prop="fileName">
                         <el-upload
                                 class="upload-demo"
                                 ref="upload"
@@ -71,10 +71,11 @@
                                 :auto-upload="false"
                                 :before-upload="beforeAvatarUpload">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">
+                            <el-button style="float: left;margin-left: 10px; margin-top: 5px; " size="small"
+                                       type="success" @click="submitUpload">
                                 上传到服务器
                             </el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            <div slot="tip" class="el-upload__tip">(只能上传jpg/png文件，且不超过500kb)</div>
                         </el-upload>
                     </el-form-item>
                 </el-col>
@@ -145,6 +146,7 @@
                     pass: "faith",
                     checkPass: "faith",
                     fileName: "",
+                    filePath: "",
                     commandLine: "netstat -nta|grep 9761|wc -l"
                 },
                 webSocketRule: {
@@ -279,3 +281,24 @@
         }
     };
 </script>
+<style>
+    .el-upload, .el-upload__tip {
+        float: left;
+    }
+
+    .el-upload__tip {
+        margin-top: 0;
+    }
+
+    .el-upload-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: absolute;
+        top: 30px;
+    }
+
+    .el-upload-list__item-name {
+        text-align: left;
+    }
+</style>
