@@ -5,16 +5,14 @@
                 status-icon
                 :rules="webSocketRule"
                 ref="webSocketForm"
-                label-width="150px"
-        >
+                label-width="150px">
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="服务地址" prop="ip" required>
                         <el-input
                                 type="text"
                                 v-model="webSocketForm.ip"
-                                auto-complete="off"
-                        ></el-input>
+                                auto-complete="off"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -46,8 +44,30 @@
                 </el-col>
             </el-row>
             <el-row :gutter="20">
-                <el-col :span="24"
-                >
+                <el-col :span="12">
+                    <el-form-item label="上传文件" prop="filePath">
+                        <el-upload
+                                class="upload-demo"
+                                ref="upload"
+                                name="file"
+                                :action="getUploadUrl()"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :file-list="fileList"
+                                :data="upData"
+                                :on-error="uploadFalse"
+                                :on-success="uploadSuccess"
+                                :auto-upload="false"
+                                :before-upload="beforeAvatarUpload">
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">
+                                上传到服务器
+                            </el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
                     <el-form-item label="命令行" prop="commandLine">
                         <el-input
                                 v-model.number="webSocketForm.commandLine"
@@ -105,37 +125,46 @@
                 }
             };
             return {
-                websock: null,
+                webSocket: null,
                 webSocketForm: {
-                    ip: "",
-                    userName: "",
-                    pass: "",
-                    checkPass: "",
-                    commandLine: ""
+                    ip: "1.1.1.1",
+                    userName: "henry",
+                    pass: "faith",
+                    checkPass: "faith",
+                    fileName: "",
+                    filePath: "",
+                    commandLine: "netstat -nta|grep 9761|wc -l"
                 },
                 webSocketRule: {
                     pass: [{validator: validatePass, trigger: "blur"}],
                     checkPass: [{validator: validatePass2, trigger: "blur"}],
                     ip: [{validator: checkIp, trigger: "blur"}]
-                }
+                },
+                fileList: []
             };
+        },
+        computed: {
+            // 这里定义上传文件时携带的参数，即表单数据
+            upData: function () {
+                return this.webSocketForm;
+            }
         },
         created() {
             this.initWebSocket();
         },
         destroyed() {
             // 离开路由之后断开websocket连接
-            this.websock.close();
+            this.webSocket.close();
         },
         methods: {
             initWebSocket() {
                 // 初始化websocket
                 const wsuri = "ws://" + location.host + "/socket/web-server/websocket";
-                this.websock = new WebSocket(wsuri);
-                this.websock.onmessage = this.webSocketOnMessage;
-                this.websock.onopen = this.webSocketOnOpen;
-                this.websock.onerror = this.webSocketOnError;
-                this.websock.onclose = this.webSocketClose;
+                this.webSocket = new WebSocket(wsuri);
+                this.webSocket.onmessage = this.webSocketOnMessage;
+                this.webSocket.onopen = this.webSocketOnOpen;
+                this.webSocket.onerror = this.webSocketOnError;
+                this.webSocket.onclose = this.webSocketClose;
             },
             webSocketOnOpen() {
                 // 连接建立之后执行send方法发送数据
@@ -152,7 +181,7 @@
             },
             webSocketSend(data) {
                 // 数据发送
-                this.websock.send(data);
+                this.webSocket.send(data);
             },
             webSocketClose(e) {
                 // 关闭
@@ -171,7 +200,58 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
-            }
+            },
+            getUploadUrl() {
+                return "http://" + location.host + "/api/web-server/test/uploadFile";
+            },
+            submitUpload() {
+                this.$refs.upload.submit();
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            //文件上传成功触发
+            uploadSuccess(response, file, fileList) {
+                console.log(response)
+                if (response.code == 1) {
+                    this.webSocketForm.filePath = response.data.filePath;
+                    this.$message({
+                        message: '导入成功',
+                        type: 'success'
+                    });
+                } else {
+                    this.$message({
+                        message: '导入失败',
+                        type: 'error'
+                    });
+                }
+            },
+            //文件上传失败触发
+            uploadFalse(response, file, fileList) {
+                console.log(response);
+                this.$message({
+                    message: '文件上传失败！',
+                    type: 'error'
+                });
+            },
+            // 上传前对文件的大小和类型的判断
+            beforeAvatarUpload(file) {
+                this.webSocketForm.fileName = file.name;
+                const extension = file.name.split(".")[1] === "xls";
+                const extension2 = file.name.split(".")[1] === "xlsx";
+                const extension3 = file.name.split(".")[1] === "txt";
+                const extension4 = file.name.split(".")[1] === "pdf";
+                if (!extension && !extension2 && !extension3 && !extension4) {
+                    this.$message({
+                        message: '上传文件只能是 xls、xlsx、txt、pdf 格式!',
+                        type: 'error'
+                    });
+                }
+                return extension || extension2 || extension3 || extension4;
+            },
         }
     };
 </script>

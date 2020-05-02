@@ -1,8 +1,8 @@
 package cn.henry.study.web.entity;
 
-import cn.henry.study.web.constants.HeaderConstants;
 import cn.henry.study.common.utils.FileHelpUtils;
 import cn.henry.study.common.utils.JacksonUtils;
+import cn.henry.study.web.constants.HeaderConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -34,14 +34,14 @@ public class MessageBrief {
     public MessageBrief(String rowKey, String logName) {
         this.rowKey = rowKey;
         this.logName = logName;
-        this.retryFile = FileHelpUtils.findTempleFailedFile(this.rowKey);
+        this.retryFile = FileHelpUtils.findTempleFile(this.rowKey);
     }
 
     public MessageBrief(Class clazz, String rowKey, byte[] bytes) {
         this.rowKey = rowKey;
         this.logName = clazz.getSimpleName() + HeaderConstants.SIFT_LOG_PREFIX;
-        this.retryFile = FileHelpUtils.findTempleFailedFile(this.rowKey);
-        FileHelpUtils.writeTempFile(rowKey, bytes);
+        this.retryFile = FileHelpUtils.findTempleFile(this.rowKey);
+        FileHelpUtils.writeTempFile(this.retryFile, bytes);
     }
 
     /**

@@ -110,7 +110,7 @@ public class FileHelpUtils {
      * @author Hlingoes 2020/3/26
      */
     public static void writeTempFile(String rowKey, byte[] bytes) {
-        File file = FileHelpUtils.findTempleFailedFile(rowKey);
+        File file = FileHelpUtils.findTempleFile(rowKey);
         // 同一文件，多次失败，不需要重复写入
         if (file.exists()) {
             return;
@@ -148,9 +148,16 @@ public class FileHelpUtils {
      * @return java.io.File
      * @author Hlingoes 2020/4/26
      */
-    public static File findTempleFailedFile(String rowKey) {
-        File dir = findHomeDir(FileHelpUtils.class);
+    public static File findTempleFile(String rowKey) {
         String fileName = StringUtils.substringAfterLast(rowKey, "/");
+        if(StringUtils.isEmpty(fileName)){
+            // 不带"/"直接是文件名
+            fileName = rowKey;
+        }
+        File dir = findHomeDir(FileHelpUtils.class);
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
         return FileUtils.getFile(dir, retryDir, fileName);
     }
 

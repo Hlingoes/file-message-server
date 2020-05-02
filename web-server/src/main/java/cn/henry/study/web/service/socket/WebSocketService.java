@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint(value = "/websocket")
 @Component
 public class WebSocketService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketService.class);
+    private static Logger logger = LoggerFactory.getLogger(WebSocketService.class);
 
     /**
      * 与某个客户端的连接会话，需要通过它来给客户端发送数据
@@ -45,7 +45,7 @@ public class WebSocketService {
      */
     @OnOpen
     public void onOpen(Session session) {
-        LOGGER.info("客户端连接！");
+        logger.info("客户端连接！");
         this.session = session;
         try {
             webSocketSet.add(this);
@@ -57,7 +57,7 @@ public class WebSocketService {
             // 准备执行命令
 //            shellExecutor.execCommand(this);
         } catch (IOException e) {
-            LOGGER.error("websocket IO异常", e);
+            logger.error("websocket IO异常", e);
         }
     }
 
@@ -72,7 +72,7 @@ public class WebSocketService {
     public void onClose() {
         webSocketSet.remove(this);
         this.shellExecutor.close();
-        LOGGER.info("有一连接关闭！");
+        logger.info("有一连接关闭！");
     }
 
     /**
@@ -85,13 +85,13 @@ public class WebSocketService {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        LOGGER.info("来自客户端的消息:{}", message);
+        logger.info("来自客户端的消息:{}", message);
         try {
             // 通过工具类的标准输入网远程服务器中写内容
             this.shellExecutor.printWriter.write(message + "\r\n");
             this.shellExecutor.printWriter.flush();
         } catch (Exception e) {
-            LOGGER.info("消息发送失败", e);
+            logger.info("消息发送失败", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class WebSocketService {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        LOGGER.error("发生错误", error);
+        logger.error("发生错误", error);
     }
 
     /**
@@ -120,7 +120,7 @@ public class WebSocketService {
             try {
                 item.sendMessage(message);
             } catch (IOException e) {
-                LOGGER.info("{}：发送消息失败", item.session.getId());
+                logger.info("{}：发送消息失败", item.session.getId());
                 continue;
             }
         }
