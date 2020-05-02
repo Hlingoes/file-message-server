@@ -1,10 +1,10 @@
 package cn.henry.study.web.service.quartz;
 
+import cn.henry.study.common.utils.SnowflakeIdWorker;
 import cn.henry.study.web.entity.QuartzJob;
 import cn.henry.study.web.enums.JobStatusEnum;
 import cn.henry.study.web.job.FailFileRetryJob;
 import cn.henry.study.web.mapper.JobMapper;
-import cn.henry.study.common.utils.SnowflakeIdWorker;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.quartz.*;
@@ -29,9 +29,17 @@ public class QuartzJobService {
     @Autowired
     private JobMapper jobMapper;
 
+    public List<QuartzJob> findAll() {
+        return this.jobMapper.findAll();
+    }
+
+    public int insertBatch(List<QuartzJob> quartzJobs){
+        return this.jobMapper.insertBatch(quartzJobs);
+    }
+
     public PageInfo listQuartzJob(String jobName, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<QuartzJob> jobList = jobMapper.listJob(jobName);
+        List<QuartzJob> jobList = this.jobMapper.listJob(jobName);
         PageInfo pageInfo = new PageInfo(jobList);
         return pageInfo;
     }
@@ -41,32 +49,32 @@ public class QuartzJobService {
         quartz.setTriggerState(JobStatusEnum.RUNNING.getStatus());
         quartz.setOldJobGroup(quartz.getJobGroup());
         quartz.setOldJobName(quartz.getJobName());
-        return jobMapper.saveJob(quartz);
+        return this.jobMapper.saveJob(quartz);
     }
 
     public void triggerJob(String jobName, String jobGroup) throws SchedulerException {
         JobKey key = new JobKey(jobName, jobGroup);
-        scheduler.triggerJob(key);
+        this.scheduler.triggerJob(key);
     }
 
     public int pauseJob(String jobName, String jobGroup) throws SchedulerException {
         JobKey key = new JobKey(jobName, jobGroup);
-        scheduler.pauseJob(key);
-        return jobMapper.updateJobStatus(jobName, jobGroup, JobStatusEnum.PAUSED.getStatus());
+        this.scheduler.pauseJob(key);
+        return this.jobMapper.updateJobStatus(jobName, jobGroup, JobStatusEnum.PAUSED.getStatus());
     }
 
     public int resumeJob(String jobName, String jobGroup) throws SchedulerException {
         JobKey key = new JobKey(jobName, jobGroup);
-        scheduler.resumeJob(key);
-        return jobMapper.updateJobStatus(jobName, jobGroup, JobStatusEnum.RUNNING.getStatus());
+        this.scheduler.resumeJob(key);
+        return this.jobMapper.updateJobStatus(jobName, jobGroup, JobStatusEnum.RUNNING.getStatus());
     }
 
     public void removeJob(String jobName, String jobGroup) throws SchedulerException {
         TriggerKey triggerKey = TriggerKey.triggerKey(TRIGGER_IDENTITY + jobName, jobGroup);
-        scheduler.pauseTrigger(triggerKey);
-        scheduler.unscheduleJob(triggerKey);
-        scheduler.deleteJob(JobKey.jobKey(jobName, jobGroup));
-        jobMapper.removeQuartzJob(jobName, jobGroup);
+        this.scheduler.pauseTrigger(triggerKey);
+        this.scheduler.unscheduleJob(triggerKey);
+        this.scheduler.deleteJob(JobKey.jobKey(jobName, jobGroup));
+        this.jobMapper.removeQuartzJob(jobName, jobGroup);
     }
 
     public QuartzJob getJob(String jobName, String jobGroup) {
@@ -74,11 +82,11 @@ public class QuartzJobService {
     }
 
     public int updateJob(QuartzJob quartz) throws Exception {
-        scheduler.deleteJob(new JobKey(quartz.getOldJobName(), quartz.getOldJobGroup()));
+        this.scheduler.deleteJob(new JobKey(quartz.getOldJobName(), quartz.getOldJobGroup()));
         schedulerJob(quartz);
         quartz.setOldJobGroup(quartz.getJobGroup());
         quartz.setOldJobName(quartz.getJobName());
-        return jobMapper.updateJob(quartz);
+        return this.jobMapper.updateJob(quartz);
     }
 
     public void schedulerJob(QuartzJob job) throws Exception {
@@ -92,7 +100,7 @@ public class QuartzJobService {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TRIGGER_IDENTITY + job.getJobName(), job.getJobGroup())
                 .startNow().withSchedule(cronScheduleBuilder).build();
         //交由Scheduler安排触发
-        scheduler.scheduleJob(jobDetail, trigger);
+        this.scheduler.scheduleJob(jobDetail, trigger);
     }
 
     /**

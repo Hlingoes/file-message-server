@@ -11,6 +11,14 @@
                        @change="getConsumerData">
             </el-slider>
         </div>
+        <div class="block">
+            <el-steps :active="active" align-center finish-status="success">
+                <el-step title="开始"></el-step>
+                <el-step title="上传"></el-step>
+                <el-step title="下载"></el-step>
+            </el-steps>
+            <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button>
+        </div>
         <el-form
                 :model="webSocketForm"
                 status-icon
@@ -140,6 +148,7 @@
             return {
                 value1: null,
                 value2: 0,
+                active: 0,
                 webSocketForm: {
                     ip: "1.1.1.1",
                     userName: "henry",
@@ -278,10 +287,49 @@
                 }
                 return extension || extension2 || extension3 || extension4;
             },
+            nextStep() {
+                let fileName = "test_excel_" + this.active;
+                if (this.active++ == 2) {
+                    this.$axios({
+                        method: 'get',
+                        url: 'web-server/test/downloadExcel',
+                        params: {fileName: fileName},
+                        //一定要写
+                        responseType: 'blob'
+                    }).then((response) => {
+                        let blob = new Blob([response.data], {
+                            type: 'application/vnd.ms-excel;charset=utf-8'
+                            // word文档为application/msword;charset=utf-8
+                            // pdf文档为application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8
+                        });
+                        let objectUrl = URL.createObjectURL(blob);
+                        let link = document.createElement("a");
+                        link.href = objectUrl;
+                        // 下载文件的名字
+                        link.setAttribute("download", fileName + '.xlsx');
+                        document.body.appendChild(link);
+                        // 点击下载
+                        link.click();
+                        // 下载完成移除元素
+                        // document.body.removeChild(link);
+                        // 释放掉blob对象
+                        URL.revokeObjectURL(objectUrl);
+                        console.log(response);
+                        this.active = 0;
+                    }).catch((error) => {
+                        //请求失败返回的数据
+                        console.log(error)
+                    })
+                }
+            }
         }
     };
 </script>
 <style>
+    .block {
+        margin: 1em;
+    }
+
     .el-upload, .el-upload__tip {
         float: left;
     }

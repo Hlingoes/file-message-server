@@ -17,6 +17,14 @@
     <sql id="Base_Column_List">
         id,job_name,job_group,job_class_name,cron_expression,trigger_state,old_job_name,old_job_group,description,create_time, update_time
     </sql>
+
+    <select id="findAll" resultMap="QuartzJobMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        quartz_job
+    </select>
+
     <select id="listJob" resultMap="QuartzJobMap">
         SELECT
         <include refid="Base_Column_List" />

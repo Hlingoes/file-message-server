@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import WebSocket from "../views/WebSocket.vue";
 
 Vue.use(VueRouter);
 
@@ -23,7 +22,7 @@ const routes = [
   {
     path: "/webSocket",
     name: "webSocket",
-    component: WebSocket
+    component: resolve => require(['../views/WebSocket.vue'], resolve)
   }
 ];
 

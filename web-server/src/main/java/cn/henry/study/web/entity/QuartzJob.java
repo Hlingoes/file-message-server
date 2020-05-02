@@ -1,6 +1,10 @@
 package cn.henry.study.web.entity;
 
 import cn.henry.study.common.base.Metas;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 
 /**
  * description: 持久化的quartz任务
@@ -8,43 +12,60 @@ import cn.henry.study.common.base.Metas;
  * @author Hlingoes 2020/3/29
  * @citation https://gitee.com/youzhibing/spring-boot-2.0.3/tree/master/spring-boot-quartz-plus
  */
+@ContentRowHeight(20)
+@HeadRowHeight(22)
+@ColumnWidth(26)
 public class QuartzJob extends Metas {
+    private static final long serialVersionUID = 1L;
 
     /**
      * 任务名称
      */
+    @ExcelProperty("Job Name")
     private String jobName;
     /**
      * 任务分组
      */
+    @ExcelProperty("Job Group")
     private String jobGroup;
     /**
      * 任务描述
      */
+    @ExcelProperty("Description")
     private String description;
     /**
      * 执行类
      */
+    /**
+     * 宽度为50
+     */
+    @ColumnWidth(50)
+    @ExcelProperty("Job Class Name")
     private String jobClassName;
     /**
      * 执行时间
      */
+    @ExcelProperty("Cron Expression")
     private String cronExpression;
     /**
      * 执行时间
      */
+    @ExcelProperty("Trigger Name")
     private String triggerName;
     /**
      * 任务状态
      */
+    @ExcelProperty("Trigger State")
     private String triggerState;
     /**
      * 任务名称 用于修改
      */
+    @ExcelProperty("Old Job Name")
     private String oldJobName;
     /**
      * 任务分组 用于修改
      */
+    @ExcelProperty("Old Job Group")
     private String oldJobGroup;
 
     public QuartzJob() {
@@ -133,4 +154,18 @@ public class QuartzJob extends Metas {
         this.oldJobGroup = oldJobGroup;
     }
 
+    @Override
+    public String toString() {
+        return "QuartzJob{" +
+                "jobName='" + jobName + '\'' +
+                ", jobGroup='" + jobGroup + '\'' +
+                ", description='" + description + '\'' +
+                ", jobClassName='" + jobClassName + '\'' +
+                ", cronExpression='" + cronExpression + '\'' +
+                ", triggerName='" + triggerName + '\'' +
+                ", triggerState='" + triggerState + '\'' +
+                ", oldJobName='" + oldJobName + '\'' +
+                ", oldJobGroup='" + oldJobGroup + '\'' +
+                "} " + super.toString();
+    }
 }

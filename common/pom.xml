@@ -15,6 +15,9 @@
 
     <properties>
         <jackson.version>2.10.1</jackson.version>
+        <easyexcel.version>2.1.2</easyexcel.version>
+        <fastjson.version>1.2.47</fastjson.version>
+        <httpclient.version>4.5.8</httpclient.version>
         <commons-net.version>3.6</commons-net.version>
         <commons-pool2.version>2.4.2</commons-pool2.version>
         <commons-lang3.version>3.9</commons-lang3.version>
@@ -40,6 +43,23 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>${easyexcel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
         </dependency>
 
         <dependency>

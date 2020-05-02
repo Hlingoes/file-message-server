@@ -169,7 +169,7 @@
         </root>
 
         <!-- mybatis loggers -->
-        <logger name="cn.henry.study.mapper" level="DEBUG" additivity="false">
+        <logger name="cn.henry.study.web.mapper" level="DEBUG" additivity="false">
             <appender-ref ref="SQL"/>
         </logger>
 

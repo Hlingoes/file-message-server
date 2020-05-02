@@ -1,5 +1,7 @@
 package cn.henry.study.common.base;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,8 +14,10 @@ import java.util.Date;
 public class Metas implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ExcelIgnore
     private Long id;
 
+    @ExcelIgnore
     private Date createTime;
 
     private Date updateTime;
