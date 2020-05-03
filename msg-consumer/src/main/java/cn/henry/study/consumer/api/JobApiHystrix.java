@@ -1,5 +1,7 @@
 package cn.henry.study.consumer.api;
 
+import cn.henry.study.common.result.CommonResult;
+import cn.henry.study.common.result.Result;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobApiHystrix implements JobApi {
     @Override
-    public String addJob(String jobName) {
-        return "web Server 的服务调用失败: " + jobName;
+    public CommonResult addJob(String jobName) {
+        return CommonResult.failure("web Server 的服务调用失败: " + jobName);
     }
 }

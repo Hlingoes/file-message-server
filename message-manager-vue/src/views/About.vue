@@ -176,15 +176,17 @@
             getWebData(data) {
                 this.$axios({
                     method: 'get',
-                    url: 'web-server/test/hello2',
+                    url: 'web-server/test/hello',
                     params: data
                 }).then((response) => {
                     //请求成功返回的数据
                     console.log(response)
-                    this.$message({
-                        message: '恭喜你，这是一条成功消息: ' + response.data,
-                        type: 'success'
-                    });
+                    if (response.data.code == 1) {
+                        this.$message({
+                            message: '恭喜你，这是一条成功消息: ' + response.data.data,
+                            type: 'success'
+                        });
+                    }
                 }).catch((error) => {
                     //请求失败返回的数据
                     console.log(error)
@@ -197,11 +199,13 @@
                     params: {jobName: data}
                 }).then((response) => {
                     //请求成功返回的数据
-                    console.log(response)
-                    this.$message({
-                        message: '恭喜你，这是一条成功消息: ' + response.data,
-                        type: 'success'
-                    });
+                    console.log(response);
+                    if (response.data.code == 1) {
+                        this.$message({
+                            message: '恭喜你，这是一条成功消息: ' + JSON.stringify(response.data.data),
+                            type: 'success'
+                        });
+                    }
                 }).catch((error) => {
                     //请求失败返回的数据
                     console.log(error)
@@ -218,11 +222,13 @@
                             data: data
                         }).then((response) => {
                             //请求成功返回的数据
-                            console.log(response)
-                            this.$message({
-                                message: '恭喜你，这是一条成功消息: ' + JSON.stringify(response.data),
-                                type: 'success'
-                            });
+                            console.log(response);
+                            if (response.code == 1) {
+                                this.$message({
+                                    message: '恭喜你，这是一条成功消息: ' + response.data,
+                                    type: 'success'
+                                });
+                            }
                         }).catch((error) => {
                             //请求失败返回的数据
                             console.log(error)
@@ -237,7 +243,7 @@
                 this.$refs[formName].resetFields();
             },
             getUploadUrl() {
-                return "http://" + location.host + "/api/web-server/test/uploadFile";
+                return "http://" + location.host + "/api/web-server/test/uploadExcel";
             },
             submitUpload() {
                 this.$refs.upload.submit();
@@ -254,7 +260,7 @@
                 if (response.code == 1) {
                     this.webSocketForm.filePath = response.data.filePath;
                     this.$message({
-                        message: '导入成功' + JSON.stringify(response.data),
+                        message: response.data,
                         type: 'success'
                     });
                 } else {

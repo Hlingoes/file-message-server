@@ -1,5 +1,7 @@
 package cn.henry.study.consumer.controller;
 
+import cn.henry.study.common.result.CommonResult;
+import cn.henry.study.common.result.Result;
 import cn.henry.study.consumer.api.JobApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ public class ConsumerController {
     private JobApi jobApi;
 
     @GetMapping("/testAddJob")
-    public String get(String jobName) {
-        return "Consumer: " + jobApi.addJob(jobName);
+    public Result testAddJob(String jobName) {
+        return this.jobApi.addJob(jobName);
     }
 }

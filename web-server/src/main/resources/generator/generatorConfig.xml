@@ -49,7 +49,7 @@
                enableDeleteByExample="false"
                enableSelectByExample="false"
                enableUpdateByExample="false">
-            <property name="rootClass" value="cn.henry.study.common.base.Metas"/>
+            <property name="rootClass" value="cn.henry.study.common.BO.Metas"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
     </context>

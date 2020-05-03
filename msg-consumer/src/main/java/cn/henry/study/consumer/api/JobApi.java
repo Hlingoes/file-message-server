@@ -1,5 +1,7 @@
 package cn.henry.study.consumer.api;
 
+import cn.henry.study.common.result.CommonResult;
+import cn.henry.study.common.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,5 +24,5 @@ public interface JobApi {
      * @author Hlingoes 2020/4/16
      */
     @GetMapping("/job/testAdding")
-    String addJob(@RequestParam("jobName") String jobName);
+    CommonResult addJob(@RequestParam("jobName") String jobName);
 }

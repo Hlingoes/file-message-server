@@ -1,7 +1,7 @@
 package cn.henry.study.web.service.files;
 
 import cn.henry.study.web.anno.FormAttribute;
-import cn.henry.study.common.base.FormField;
+import cn.henry.study.common.BO.FormField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

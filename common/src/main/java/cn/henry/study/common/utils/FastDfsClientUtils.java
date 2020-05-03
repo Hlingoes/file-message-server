@@ -1,6 +1,6 @@
 package cn.henry.study.common.utils;
 
-import cn.henry.study.common.base.FastdfsFileIndex;
+import cn.henry.study.common.BO.FastdfsFileIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;

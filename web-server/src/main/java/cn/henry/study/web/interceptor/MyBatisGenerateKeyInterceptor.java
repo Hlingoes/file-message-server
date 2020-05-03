@@ -1,6 +1,6 @@
 package cn.henry.study.web.interceptor;
 
-import cn.henry.study.common.base.Metas;
+import cn.henry.study.common.BO.Metas;
 import cn.henry.study.common.utils.SnowflakeIdWorker;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;

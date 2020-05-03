@@ -9,6 +9,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,15 +30,19 @@ public class QuartzJobService {
     @Autowired
     private JobMapper jobMapper;
 
-    public List<QuartzJob> findAll() {
+    public List<QuartzJob> findAll() throws DataAccessException {
         return this.jobMapper.findAll();
     }
 
-    public int insertBatch(List<QuartzJob> quartzJobs){
+    public int insertBatch(List<QuartzJob> quartzJobs) throws DataAccessException {
         return this.jobMapper.insertBatch(quartzJobs);
     }
 
-    public PageInfo listQuartzJob(String jobName, Integer pageNum, Integer pageSize) {
+    public int insertSingle(QuartzJob quartz) throws DataAccessException {
+        return this.jobMapper.saveJob(quartz);
+    }
+
+    public PageInfo listQuartzJob(String jobName, Integer pageNum, Integer pageSize) throws DataAccessException {
         PageHelper.startPage(pageNum, pageSize);
         List<QuartzJob> jobList = this.jobMapper.listJob(jobName);
         PageInfo pageInfo = new PageInfo(jobList);
@@ -77,7 +82,7 @@ public class QuartzJobService {
         this.jobMapper.removeQuartzJob(jobName, jobGroup);
     }
 
-    public QuartzJob getJob(String jobName, String jobGroup) {
+    public QuartzJob getJob(String jobName, String jobGroup) throws DataAccessException {
         return jobMapper.getJob(jobName, jobGroup);
     }
 

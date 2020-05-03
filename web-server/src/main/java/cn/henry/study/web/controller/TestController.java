@@ -40,14 +40,9 @@ public class TestController {
     @Autowired
     private QuartzJobService jobService;
 
-    @GetMapping(value = "hello1")
-    public String hello1() {
-        return "hello world";
-    }
-
-    @GetMapping(value = "hello2")
-    public String hello2() {
-        return "hello world";
+    @GetMapping(value = "hello")
+    public Result hello() {
+        return CommonResult.success("hello world");
     }
 
     @PostMapping(value = "submit")
@@ -159,10 +154,9 @@ public class TestController {
      * @author Hlingoes 2020/5/2
      */
     @PostMapping("uploadExcel")
-    @ResponseBody
-    public String upload(MultipartFile file) throws IOException {
-        EasyExcel.read(file.getInputStream(), QuartzJob.class, new QuartzJobExcelListener(this.jobService))
-                .sheet().doRead();
-        return "success";
+    public Result uploadExcel(CommandParams commandParams, @RequestParam("file") MultipartFile file) throws IOException {
+        QuartzJobExcelListener quartzJobExcelListener = new QuartzJobExcelListener(this.jobService);
+        EasyExcel.read(file.getInputStream(), QuartzJob.class, quartzJobExcelListener).sheet().doRead();
+        return CommonResult.success(quartzJobExcelListener.getDescription().toString());
     }
 }

@@ -1,12 +1,15 @@
 package cn.henry.study.web.listener;
 
 import cn.henry.study.common.utils.JacksonUtils;
+import cn.henry.study.common.BO.ExcelImportDescription;
 import cn.henry.study.web.entity.QuartzJob;
 import cn.henry.study.web.service.quartz.QuartzJobService;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,14 @@ public class QuartzJobExcelListener extends AnalysisEventListener<QuartzJob> {
      */
     private static final int BATCH_COUNT = 5;
 
-    List<QuartzJob> list = new ArrayList<>();
+    /**
+     * 导入导出的成功或失败信息
+     */
+    private ExcelImportDescription description = new ExcelImportDescription();
+
+    private List<QuartzJob> list = new ArrayList<>();
+
+    private List<Integer> flags = new ArrayList<>();
     /**
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
@@ -43,20 +53,21 @@ public class QuartzJobExcelListener extends AnalysisEventListener<QuartzJob> {
     /**
      * 这个每一条数据解析都会来调用
      *
-     * @param data
-     *            one row value. Is is same as {@link AnalysisContext#readRowHolder()}
+     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
      * @param context
      */
     @Override
     public void invoke(QuartzJob data, AnalysisContext context) {
         logger.info("解析到一条数据:{}", JacksonUtils.object2Str(data));
         list.add(data);
+        flags.add(1);
         // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
-        if (list.size() >= BATCH_COUNT) {
-            saveData();
-            // 存储完成清理 list
-            list.clear();
-        }
+//        if (list.size() >= BATCH_COUNT) {
+//            saveData();
+//            // 存储完成清理 list
+//            list.clear();
+//        }
+        singleInsert(data);
     }
 
     /**
@@ -67,7 +78,9 @@ public class QuartzJobExcelListener extends AnalysisEventListener<QuartzJob> {
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
-        saveData();
+//        saveData();
+        list.clear();
+        flags.clear();
         logger.info("所有数据解析完成！");
     }
 
@@ -76,7 +89,37 @@ public class QuartzJobExcelListener extends AnalysisEventListener<QuartzJob> {
      */
     private void saveData() {
         logger.info("{}条数据，开始存储数据库！", list.size());
-        jobService.insertBatch(list);
-        logger.info("存储数据库成功！");
+        try {
+            this.jobService.insertBatch(list);
+            logger.info("存储数据库成功！");
+        } catch (DataAccessException e) {
+            logger.error("存储数据库失败{}条，[{}]", list.size(), JacksonUtils.object2Str(list), e);
+        }
     }
+
+    /**
+     * description: 单条写入，记录成功，失败和纪录重复
+     *
+     * @param data
+     * @return void
+     * @author Hlingoes 2020/5/3
+     */
+    private void singleInsert(QuartzJob data) {
+        try {
+            this.jobService.insertSingle(data);
+            this.description.addSuccessMark(flags.size());
+        } catch (DataAccessException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof MySQLIntegrityConstraintViolationException) {
+                this.description.addRepeatMark(flags.size());
+            } else {
+                this.description.addFailMark(flags.size());
+            }
+        }
+    }
+
+    public ExcelImportDescription getDescription() {
+        return description;
+    }
+
 }
