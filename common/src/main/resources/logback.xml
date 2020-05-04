@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <!-- logback.xml和logback-test.xml会被logback组件直接读取 -->
+    <!-- 如果要交给spring管理，需要修改配置文件名为logback-spring.xml或自定义文件名 -->
+
+    <property name="LOG_HOME" value="log"/>
+    <property name="LOG_NAME_PREFIX" value="common"/>
+
+    <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35}:%line - %msg%n"/>
+    <timestamp key="bySecond" datePattern="yyyyMMddHHmmss"/>
+    <property name="logPath" value="${LOG_HOME}/${LOG_NAME_PREFIX}_"/>
+
+    <!-- appender是configuration的子节点，是负责写日志的组件。 -->
+    <!-- ch.qos.logback.core.ConsoleAppender：把日志输出到控制台 -->
+    <!-- 打印到控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <!-- 打印所有日志，保存到文件-->
+    <appender name="SERVICE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}all.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${logPath}all.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="SERVICE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}info.log</File>
+        <!--只输出INFO-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--过滤 INFO-->
+            <level>INFO</level>
+            <!--匹配到就禁止-->
+            <onMatch>ACCEPT</onMatch>
+            <!--没有匹配到就允许-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${logPath}info.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="SERVICE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}error.log</File>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!--设置日志级别,过滤掉info日志,只输入error日志-->
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${LOG_HOME}/error.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern节点，用来设置日志的输入格式 -->
+            <pattern>${pattern}</pattern>
+            <!-- 记录日志的编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 控制台输出日志级别 -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVICE_ALL"/>
+    </root>
+
+    <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
+    <!-- com.henry为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
+    <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
+    <logger name="cn.henry.study" level="INFO" additivity="false">
+        <appender-ref ref="SERVICE_INFO"/>
+        <appender-ref ref="SERVICE_ERROR"/>
+    </logger>
+
+</configuration>
