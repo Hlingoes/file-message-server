@@ -103,6 +103,16 @@ public class ZkUtilsTest {
         Thread.sleep(1000 * 1000);
     }
 
+    /**
+     * 监听子节点的操作
+     */
+    @Test
+    public void testLock() throws Exception {
+        ZkCuratorUtils.instanceDistributedLock("/test/fun").acquireLock(2, 1);
+        // 休眠以观察测试效果
+        Thread.sleep(1000 * 1000);
+    }
+
     @After
     public void destroy() {
         ZkCuratorUtils.destroy();
