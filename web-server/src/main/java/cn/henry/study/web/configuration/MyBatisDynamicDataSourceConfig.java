@@ -1,10 +1,15 @@
 package cn.henry.study.web.configuration;
 
-import cn.henry.study.web.entity.JdbcProperties;
 import cn.henry.study.web.database.DynamicDataSource;
+import cn.henry.study.web.entity.JdbcProperties;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -22,12 +27,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +59,12 @@ public class MyBatisDynamicDataSourceConfig implements InitializingBean, Applica
 
     @Autowired
     private DataSourceConfig dataSourceConfig;
+
+    @Autowired
+    WallFilter wallFilter;
+
+    @Autowired
+    StatFilter statFilter;
 
     private ApplicationContext applicationContext;
 
@@ -78,12 +92,46 @@ public class MyBatisDynamicDataSourceConfig implements InitializingBean, Applica
             beanDefinitionBuilder.addPropertyValue("testOnBorrow", dataSourceConfig.getTestOnBorrow());
             beanDefinitionBuilder.addPropertyValue("testOnReturn", dataSourceConfig.getTestOnReturn());
             beanDefinitionBuilder.addPropertyValue("testWhileIdle", dataSourceConfig.getTestWhileIdle());
+            // 配置druid支持sql的多语句执行，必选放在filters属性前，否则默认使用filters
+            if (StringUtils.isNotEmpty(dataSourceConfig.getFilters()) && dataSourceConfig.getFilters().contains("wall")) {
+                List<Filter> filters = new ArrayList<>();
+                filters.add(wallFilter);
+                filters.add(statFilter);
+                beanDefinitionBuilder.addPropertyValue("proxyFilters", filters);
+            }
             beanDefinitionBuilder.addPropertyValue("filters", dataSourceConfig.getFilters());
             BeanDefinition dataBeanDefinition = beanDefinitionBuilder.getRawBeanDefinition();
             BeanDefinitionRegistry beanFactory = (BeanDefinitionRegistry) applicationContext.getAutowireCapableBeanFactory();
             beanFactory.registerBeanDefinition(props.getRouteKey(), dataBeanDefinition);
             logger.info("数据库连接源: {}", props);
         }
+    }
+
+    @Bean(name = "wallFilter")
+    @DependsOn("wallConfig")
+    public WallFilter wallFilter(WallConfig wallConfig) {
+        WallFilter wallFilter = new WallFilter();
+        wallFilter.setConfig(wallConfig);
+        return wallFilter;
+    }
+
+    @Bean(name = "wallConfig")
+    public WallConfig wallConfig() {
+        WallConfig wallConfig = new WallConfig();
+        // 允许一次执行多条语句
+        wallConfig.setMultiStatementAllow(true);
+        // 允许一次执行多条语句
+        wallConfig.setNoneBaseStatementAllow(true);
+        return wallConfig;
+    }
+
+    @Bean(name = "statFilter")
+    public StatFilter statFilter() {
+        StatFilter statFilter = new StatFilter();
+        statFilter.setSlowSqlMillis(30000L);
+        statFilter.setLogSlowSql(true);
+        statFilter.setMergeSql(true);
+        return statFilter;
     }
 
     @Override
@@ -115,7 +163,7 @@ public class MyBatisDynamicDataSourceConfig implements InitializingBean, Applica
         DynamicDataSource dataSource = new DynamicDataSource();
         // 该方法是AbstractRoutingDataSource的方法
         dataSource.setTargetDataSources(targetDataSources);
-        // 没有设置master哭，则默认的datasource设置为最后一个数据源
+        // 如果没有设置master，则默认的datasource设置为最后一个数据源
         if (null == defaultSource) {
             defaultSource = applicationContext.getBean(beanKey);
         }

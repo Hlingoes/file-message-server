@@ -95,14 +95,14 @@ spring:
     mysqlClients:
       - type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/ny_cloud_vue?useUnicode=true&amp;characterEncoding=UTF-8
+        url: jdbc:mysql://localhost:3306/ny_cloud_vue?allowMultiQueries=true&amp;useUnicode=true&amp;characterEncoding=UTF-8
         username: henry
         password: faith
         master: false
         routeKey: ny_cloud_vue
       - type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/henrydb?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true
+        url: jdbc:mysql://localhost:3306/henrydb?allowMultiQueries=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true
         username: henry
         password: faith
         master: true
@@ -118,7 +118,7 @@ spring:
     testOnBorrow: false             #是否在获得连接后检测其可用性
     testOnReturn: false             #是否在连接放回连接池后检测其可用性
     testWhileIdle: true             #是否在连接空闲一段时间后检测其可用性
-    filters: wall,stat
+    filters: stat,wall             #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall’用于防火墙
   quartz:
     #相关属性配置
     properties:

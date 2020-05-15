@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.henry.study.web.mapper.DynamicTableMapper">
+    <update id="createDynamicTable" parameterType="String">
+        DROP TABLE IF EXISTS ${tableName};
+        CREATE TABLE ${tableName} (
+          id bigint unsigned NOT NULL COMMENT &apos;自增主键&apos;,
+          job_name varchar(50) NOT NULL COMMENT &apos;任务名称&apos;,
+          job_group varchar(50) NOT NULL COMMENT &apos;任务分组&apos;,
+          job_class_name varchar(100) NOT NULL COMMENT &apos;执行类&apos;,
+          cron_expression varchar(100) NOT NULL COMMENT &apos;cron表达式&apos;,
+          trigger_state varchar(15) NOT NULL  COMMENT &apos;任务状态&apos;,
+          old_job_name varchar(50) NOT NULL DEFAULT &apos;&apos; COMMENT &apos;修改之前的任务名称&apos;,
+          old_job_group varchar(50) NOT NULL DEFAULT &apos;&apos; COMMENT &apos;修改之前的任务分组&apos;,
+          description varchar(100) NOT NULL COMMENT &apos;描述&apos;,
+          create_time timestamp NOT NULL COMMENT &apos;创建时间&apos;,
+          update_time timestamp NOT NULL COMMENT &apos;修改时间&apos;,
+          PRIMARY KEY (id),
+          UNIQUE KEY un_group_name (job_group,job_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&apos;定时任务&apos;;
+    </update>
+</mapper>
