@@ -19,4 +19,8 @@
           UNIQUE KEY un_group_name (job_group,job_name)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&apos;定时任务&apos;;
     </update>
+
+    <select id="checkTableExistsWithShow" resultType="java.util.Map" parameterType="String">
+        SHOW TABLES like #{tableName} ;
+    </select>
 </mapper>

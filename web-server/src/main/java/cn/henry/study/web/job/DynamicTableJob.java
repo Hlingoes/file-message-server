@@ -1,34 +1,34 @@
-package cn.henry.study.web;
+package cn.henry.study.web.job;
 
-import cn.henry.study.common.utils.JacksonUtils;
 import cn.henry.study.web.configuration.DataSourceConfig;
 import cn.henry.study.web.database.DatabaseContextHolder;
-import cn.henry.study.web.job.DynamicTableJob;
 import cn.henry.study.web.mapper.DynamicTableMapper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * description: 测试mybatis的crud操作
+ * description: 支持多数据源的业务分表
  *
  * @author Hlingoes
- * @date 2020/5/16 0:24
+ * @date 2020/5/15 23:02
  */
-@SpringBootTest(classes = WebMessageServer.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RunWith(SpringRunner.class)
-public class MapperTest {
-    private static Logger logger = LoggerFactory.getLogger(MapperTest.class);
+@DisallowConcurrentExecution
+public class DynamicTableJob extends QuartzJobBean {
+    private Logger logger = LoggerFactory.getLogger(DynamicTableJob.class);
 
     @Autowired
     private DataSourceConfig dataSourceConfig;
@@ -36,9 +36,26 @@ public class MapperTest {
     @Autowired
     private DynamicTableMapper dynamicTableMapper;
 
-    @Test
-    public void testDynamicTable() {
-        String tableName = getShardingTableName("quartz_job");
+    @Override
+    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        if (!checkShardingRule()) {
+            return;
+        }
+        List<String> serveNames = (List<String>) jobExecutionContext.getJobDetail().getJobDataMap().get("serveNames");
+        serveNames.forEach(serveName -> {
+            String tableName = getShardingTableName(serveName);
+            shardingTableByDataSource(tableName);
+        });
+    }
+
+    /**
+     * description: 兼容动态数据源，创建分表
+     *
+     * @param tableName
+     * @return void
+     * @author Hlingoes 2020/5/16
+     */
+    private void shardingTableByDataSource(String tableName) {
         // 兼容动态数据源
         this.dataSourceConfig.getMysqlClients().forEach(client -> {
             // 设定指定数据源
@@ -54,6 +71,24 @@ public class MapperTest {
                 DatabaseContextHolder.removeRouteKey();
             }
         });
+    }
+
+    /**
+     * description: 分表规则每月的最后一天，生成第二个月的动态表
+     *
+     * @param
+     * @return boolean
+     * @author Hlingoes 2020/5/16
+     */
+    private boolean checkShardingRule() {
+        LocalDate today = LocalDate.now();
+        // 本月的第一天
+        LocalDate firstDay = LocalDate.of(today.getYear(), today.getMonth(), 1);
+        // 本月的最后一天
+        LocalDate lastDay = today.with(TemporalAdjusters.lastDayOfMonth());
+        logger.info("本月的第一天: {}, 本月的最后一天: {} ", firstDay, lastDay);
+        // 判断是不是本月的最后一天
+        return Objects.equals(today, lastDay);
     }
 
     /**
@@ -91,12 +126,5 @@ public class MapperTest {
      */
     private void createShardingTable(String tableName) throws DataAccessException {
         this.dynamicTableMapper.createDynamicTable(tableName);
-    }
-
-    @Test
-    public void testCheckTableExists() {
-        Map<String, String> result = this.dynamicTableMapper.checkTableExistsWithShow("quartz_job_202005");
-        Map<String, String> result2 = this.dynamicTableMapper.checkTableExistsWithShow("quartz_job");
-        logger.info("查询结果：result = {}，result2={}", JacksonUtils.object2Str(result), JacksonUtils.object2Str(result2));
     }
 }
