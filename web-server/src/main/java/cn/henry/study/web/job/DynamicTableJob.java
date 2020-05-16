@@ -61,9 +61,11 @@ public class DynamicTableJob extends QuartzJobBean {
             // 设定指定数据源
             DatabaseContextHolder.setRouteKey(client.getRouteKey());
             try {
-                if (checkTableNotExists(tableName)) {
-                    createShardingTable(tableName);
+                if (checkTableExists(tableName)) {
+                    logger.info("分表tableName={}已存在，不需要新建", tableName);
                 }
+                createShardingTable(tableName);
+                logger.info("创建分表成功, tableName={}", tableName);
             } catch (Exception e) {
                 logger.error("创建分表失败, tableName={}", tableName, e);
             } finally {
@@ -112,9 +114,9 @@ public class DynamicTableJob extends QuartzJobBean {
      * @return boolean
      * @author Hlingoes 2020/5/16
      */
-    private boolean checkTableNotExists(String tableName) throws DataAccessException {
+    private boolean checkTableExists(String tableName) throws DataAccessException {
         Map<String, String> result = this.dynamicTableMapper.checkTableExistsWithShow(tableName);
-        return CollectionUtils.isEmpty(result);
+        return !CollectionUtils.isEmpty(result);
     }
 
     /**
