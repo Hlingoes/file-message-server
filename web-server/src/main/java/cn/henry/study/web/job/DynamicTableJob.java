@@ -63,6 +63,7 @@ public class DynamicTableJob extends QuartzJobBean {
             try {
                 if (checkTableExists(tableName)) {
                     logger.info("分表tableName={}已存在，不需要新建", tableName);
+                    return;
                 }
                 createShardingTable(tableName);
                 logger.info("创建分表成功, tableName={}", tableName);
