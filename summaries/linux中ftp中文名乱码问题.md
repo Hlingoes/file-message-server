@@ -49,7 +49,7 @@ System.out.println("当前工作目录："+ new String(ftp.printWorkingDirectory
 ###### 个人理解的转码和解码过程如下：
 
 ````
-filePath 的原始编码: origin_charset => start
+filePath 的原始编码: origin_charset => page
 java后台: new String(filePath.getBytes(Local_CHARSET), "ISO-8859-1") => step_1
 FTP Protocol: new String(filePath.getBytes("ISO-8859-1"), FTP_CHARSET) => step_2
 FTP 服务器的默认编码: new String(filePath.getBytes(FTP_CHARSET), server_charset) => end

@@ -1,6 +1,6 @@
 package cn.henry.study.web.utils;
 
-import cn.henry.study.common.BO.ParameterInvalidItem;
+import cn.henry.study.common.bo.ParameterInvalidItem;
 import org.apache.commons.collections4.CollectionUtils;
 import org.assertj.core.util.Lists;
 import org.springframework.validation.BindingResult;

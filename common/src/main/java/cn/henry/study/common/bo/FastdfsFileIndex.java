@@ -1,4 +1,4 @@
-package cn.henry.study.common.BO;
+package cn.henry.study.common.bo;
 
 import java.io.Serializable;
 

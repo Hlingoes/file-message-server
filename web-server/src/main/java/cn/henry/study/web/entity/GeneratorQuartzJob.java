@@ -1,6 +1,6 @@
 package cn.henry.study.web.entity;
 
-import cn.henry.study.common.BO.Metas;
+import cn.henry.study.common.bo.Metas;
 
 import java.io.Serializable;
 

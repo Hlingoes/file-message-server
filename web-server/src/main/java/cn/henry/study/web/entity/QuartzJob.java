@@ -1,6 +1,6 @@
 package cn.henry.study.web.entity;
 
-import cn.henry.study.common.BO.Metas;
+import cn.henry.study.common.bo.Metas;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;

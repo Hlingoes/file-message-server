@@ -1,4 +1,4 @@
-package cn.henry.study.common.BO;
+package cn.henry.study.common.bo;
 
 /**
  * description: 参数无效项

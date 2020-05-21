@@ -1,6 +1,6 @@
 package cn.henry.study.web.base;
 
-import cn.henry.study.common.BO.ParameterInvalidItem;
+import cn.henry.study.common.bo.ParameterInvalidItem;
 import cn.henry.study.web.utils.ConvertUtils;
 import cn.henry.study.common.enums.HttpBasedStatusEnum;
 import cn.henry.study.common.exceptions.BaseException;

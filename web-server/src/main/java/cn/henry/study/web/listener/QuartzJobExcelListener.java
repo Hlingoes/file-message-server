@@ -1,7 +1,7 @@
 package cn.henry.study.web.listener;
 
 import cn.henry.study.common.utils.JacksonUtils;
-import cn.henry.study.common.BO.ExcelImportDescription;
+import cn.henry.study.common.bo.ExcelImportDescription;
 import cn.henry.study.web.entity.QuartzJob;
 import cn.henry.study.web.service.quartz.QuartzJobService;
 import com.alibaba.excel.context.AnalysisContext;
