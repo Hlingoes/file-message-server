@@ -5,7 +5,7 @@ import cn.henry.study.common.bo.PartitionElements;
 import java.util.List;
 
 /**
- * description: 批量操作的接口，包括find, update, delete
+ * description: 业务分治接口
  *
  * @author Hlingoes 2020/5/22
  */

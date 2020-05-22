@@ -6,7 +6,7 @@ import cn.henry.study.common.service.OperationService;
 import java.util.concurrent.Callable;
 
 /**
- * description: 数据库的批量操作
+ * description: 分段操作
  *
  * @author Hlingoes
  * @date 2020/5/22 0:13

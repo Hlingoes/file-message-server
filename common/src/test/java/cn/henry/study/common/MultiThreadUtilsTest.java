@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * description:
+ * description: 多线程业务分治归并处理测试
  *
  * @author Hlingoes
  * @date 2020/5/23 0:23

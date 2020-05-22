@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * description:
+ * description: 多线程业务分治归并处理
  *
  * @author Hlingoes
  * @date 2020/5/22 0:42
