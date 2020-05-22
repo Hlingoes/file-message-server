@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class MultiThreadUtils {
     private static Logger logger = LoggerFactory.getLogger(MultiThreadUtils.class);
 
-    private static ThreadPoolExecutor executor = ThreadPoolUtils.getExecutorPool();
+    private static ThreadPoolExecutor executor = ThreadPoolExecutorUtils.getExecutorPool();
     private static int defautCount = 1000;
 
     /**
@@ -43,15 +43,17 @@ public class MultiThreadUtils {
      * @author Hlingoes 2020/5/23
      */
     public static void batchExecute(OperationService service, int count, Object[] args) {
-        // 查询数据库总数量
+        // 数据总数量
         int total = service.count(args);
-        // 需要查询的次数
+        // 分段个数
         int times = total / count;
         if (total % count != 0) {
             times = times + 1;
         }
+        // 预防list和map的resize，初始化给定容量，可提高性能
         ArrayList<Future<PartitionElements>> futures = new ArrayList<>(times);
         OperationThread dbThread = null;
+        // 添加线程任务
         for (int i = 0; i <= times; i++) {
             dbThread = new OperationThread(new PartitionElements(i + 1, count, args), service);
             Future<PartitionElements> future = executor.submit(dbThread);
@@ -61,6 +63,7 @@ public class MultiThreadUtils {
         executor.shutdown();
         // 处理线程返回结果
         if (!futures.isEmpty()) {
+            // 阻塞线程，并行处理数据
             for (Future<PartitionElements> future : futures) {
                 try {
                     service.prepare(future.get());

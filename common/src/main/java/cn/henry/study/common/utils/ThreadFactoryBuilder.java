@@ -21,14 +21,14 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Hlingoes
  * @date 2019/12/22 0:45
  */
-public class CustomThreadFactoryBuilder {
-    private static Logger logger = LoggerFactory.getLogger(CustomThreadFactoryBuilder.class);
+public class ThreadFactoryBuilder {
+    private static Logger logger = LoggerFactory.getLogger(ThreadFactoryBuilder.class);
 
     private String nameFormat = null;
     private boolean daemon = false;
     private int priority = Thread.NORM_PRIORITY;
 
-    public CustomThreadFactoryBuilder setNameFormat(String nameFormat) {
+    public ThreadFactoryBuilder setNameFormat(String nameFormat) {
         if (nameFormat == null) {
             throw new NullPointerException();
         }
@@ -36,12 +36,12 @@ public class CustomThreadFactoryBuilder {
         return this;
     }
 
-    public CustomThreadFactoryBuilder setDaemon(boolean daemon) {
+    public ThreadFactoryBuilder setDaemon(boolean daemon) {
         this.daemon = daemon;
         return this;
     }
 
-    public CustomThreadFactoryBuilder setPriority(int priority) {
+    public ThreadFactoryBuilder setPriority(int priority) {
         if (priority < Thread.MIN_PRIORITY) {
             throw new IllegalArgumentException(String.format(
                     "Thread priority (%s) must be >= %s", priority, Thread.MIN_PRIORITY));
@@ -60,7 +60,7 @@ public class CustomThreadFactoryBuilder {
         return build(this);
     }
 
-    private static ThreadFactory build(CustomThreadFactoryBuilder builder) {
+    private static ThreadFactory build(ThreadFactoryBuilder builder) {
         final String nameFormat = builder.nameFormat;
         final Boolean daemon = builder.daemon;
         final Integer priority = builder.priority;

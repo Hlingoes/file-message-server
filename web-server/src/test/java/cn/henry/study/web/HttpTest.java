@@ -1,9 +1,8 @@
 package cn.henry.study.web;
 
-import cn.henry.study.web.entity.Book;
-import cn.henry.study.web.pool.HttpClientDownloadPool;
-import cn.henry.study.web.service.files.HttpClientTemplateService;
 import cn.henry.study.common.utils.JacksonUtils;
+import cn.henry.study.web.entity.Book;
+import cn.henry.study.web.service.files.HttpClientTemplateService;
 import org.apache.catalina.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,17 +30,13 @@ import java.util.Map;
 @SpringBootTest(classes = WebMessageServer.class)
 @RunWith(SpringRunner.class)
 public class HttpTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpTest.class);
+    private static Logger logger = LoggerFactory.getLogger(HttpTest.class);
 
     @Resource(name = "restTemplate")
     private RestTemplate restTemplate;
 
     @Autowired
     private HttpClientTemplateService httpClientTemplate;
-
-    @Autowired
-    private HttpClientDownloadPool httpDownloadPool;
 
     public void testLogin() {
         String url = "http://localhost:8181/UserApplication/FormUserManager/login";
@@ -88,11 +83,11 @@ public class HttpTest {
     public void testDownload() {
         String path = "G:\\迅雷下载";
         String url = "http://d2.11684.com/jc-srRabbitMQpdf_20190-11684.com.rar";
-        httpDownloadPool.downloadByMultithread(url, path, 10);
+        httpClientTemplate.downloadByMultiThread(url, path);
     }
 
     @Test
     public void testReflection() {
-        LOGGER.info(JacksonUtils.object2Str(httpClientTemplate.getFormFields(Book.class)));
+        logger.info(JacksonUtils.object2Str(httpClientTemplate.getFormFields(Book.class)));
     }
 }

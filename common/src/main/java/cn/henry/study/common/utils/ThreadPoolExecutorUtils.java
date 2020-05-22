@@ -40,13 +40,13 @@ import java.util.concurrent.*;
  * @citation https://www.jianshu.com/p/896b8e18501b
  * @date 2020/2/26 0:46
  */
-public class ThreadPoolUtils {
-    private static Logger logger = LoggerFactory.getLogger(CustomThreadFactoryBuilder.class);
+public class ThreadPoolExecutorUtils {
+    private static Logger logger = LoggerFactory.getLogger(ThreadFactoryBuilder.class);
 
+    public static int DEFAULT_CORE_SIZE = Runtime.getRuntime().availableProcessors();
     private static int POLL_WAITING_TIME = 3 * 60;
     private static int DEFAULT_QUEUE_SIZE = 1000;
-    private static int DEFAULT_CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors();
-    private static int DEFAULT_MAX_POOL_SIZE = 4 * DEFAULT_CORE_POOL_SIZE;
+    private static int DEFAULT_MAX_SIZE = 4 * DEFAULT_CORE_SIZE;
 
     /**
      * description: 创建线程池
@@ -60,8 +60,8 @@ public class ThreadPoolUtils {
      */
     public static ThreadPoolExecutor getExecutorPool(int waitingTime, int coreSize, int maxPoolSize, int queueSize) {
         POLL_WAITING_TIME = waitingTime;
-        DEFAULT_CORE_POOL_SIZE = coreSize;
-        DEFAULT_MAX_POOL_SIZE = maxPoolSize;
+        DEFAULT_CORE_SIZE = coreSize;
+        DEFAULT_MAX_SIZE = maxPoolSize;
         DEFAULT_QUEUE_SIZE = queueSize;
         return getExecutorPool();
     }
@@ -78,7 +78,7 @@ public class ThreadPoolUtils {
     public static ThreadPoolExecutor getExecutorPool(int waitingTime, int queueSize, int maxPoolSize) {
         POLL_WAITING_TIME = waitingTime;
         DEFAULT_QUEUE_SIZE = queueSize;
-        DEFAULT_MAX_POOL_SIZE = maxPoolSize;
+        DEFAULT_MAX_SIZE = maxPoolSize;
         return getExecutorPool();
     }
 
@@ -116,12 +116,12 @@ public class ThreadPoolUtils {
      * @author Hlingoes 2020/3/20
      */
     public static ThreadPoolExecutor getExecutorPool() {
-        ThreadFactory customFactory = new CustomThreadFactoryBuilder()
+        ThreadFactory customFactory = new ThreadFactoryBuilder()
                 .setNameFormat("custom-pool-%d")
                 .build();
         BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
-        ThreadPoolExecutor customThreadPool = new ThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE,
-                DEFAULT_MAX_POOL_SIZE, 60, TimeUnit.SECONDS, queue, customFactory,
+        ThreadPoolExecutor customThreadPool = new ThreadPoolExecutor(DEFAULT_CORE_SIZE,
+                DEFAULT_MAX_SIZE, 60, TimeUnit.SECONDS, queue, customFactory,
                 (r, executor) -> {
                     if (!executor.isShutdown()) {
                         logger.warn("ThreadPool is too busy! waiting to insert task to queue! ");
