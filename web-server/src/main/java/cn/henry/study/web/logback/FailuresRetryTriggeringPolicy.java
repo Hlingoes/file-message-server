@@ -1,7 +1,7 @@
 package cn.henry.study.web.logback;
 
 import ch.qos.logback.core.rolling.TriggeringPolicyBase;
-import org.apache.commons.lang3.&apos;;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
