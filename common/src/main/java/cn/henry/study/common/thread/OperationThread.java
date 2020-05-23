@@ -1,7 +1,9 @@
 package cn.henry.study.common.thread;
 
 import cn.henry.study.common.bo.PartitionElements;
-import cn.henry.study.common.service.OperationService;
+import cn.henry.study.common.service.OperationThreadService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 
@@ -12,25 +14,22 @@ import java.util.concurrent.Callable;
  * @date 2020/5/22 0:13
  */
 public class OperationThread implements Callable<PartitionElements> {
-    private PartitionElements elements;
-    private OperationService service;
+    private static Logger logger = LoggerFactory.getLogger(OperationThread.class);
 
-    public OperationThread(PartitionElements elements, OperationService service) {
+    private PartitionElements elements;
+    private OperationThreadService service;
+
+    public OperationThread(PartitionElements elements, OperationThreadService service) {
         this.elements = elements;
         this.service = service;
     }
 
     @Override
     public PartitionElements call() {
-        int start = (this.elements.getPage() - 1) * this.elements.getRows();
-        Object[] args = this.elements.getArgs();
-        int len = args.length;
-        Object[] newArgs = new Object[len + 2];
-        System.arraycopy(args, 0, newArgs, 0, len);
-        // 分段参数
-        newArgs[len] = start;
-        newArgs[len + 1] = this.elements.getRows();
-        this.elements.setDatas(this.service.find(this.elements, newArgs));
+        long startTime = System.currentTimeMillis();
+        this.elements.setDatas(this.service.find(this.elements));
+        long endTime = System.currentTimeMillis();
+        logger.info("partition operation finished, cost: {}ms", (endTime - startTime));
         return this.elements;
     }
 
@@ -42,11 +41,11 @@ public class OperationThread implements Callable<PartitionElements> {
         this.elements = elements;
     }
 
-    public OperationService getService() {
+    public OperationThreadService getService() {
         return service;
     }
 
-    public void setService(OperationService service) {
+    public void setService(OperationThreadService service) {
         this.service = service;
     }
 

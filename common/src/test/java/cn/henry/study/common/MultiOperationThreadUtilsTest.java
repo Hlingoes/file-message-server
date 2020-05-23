@@ -1,8 +1,8 @@
 package cn.henry.study.common;
 
 import cn.henry.study.common.bo.PartitionElements;
-import cn.henry.study.common.service.OperationService;
-import cn.henry.study.common.utils.MultiThreadUtils;
+import cn.henry.study.common.service.OperationThreadService;
+import cn.henry.study.common.utils.MultiOperationThreadUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +16,19 @@ import java.util.List;
  * @author Hlingoes
  * @date 2020/5/23 0:23
  */
-public class MultiThreadUtilsTest {
-    private static Logger logger = LoggerFactory.getLogger(MultiThreadUtilsTest.class);
+public class MultiOperationThreadUtilsTest {
+    private static Logger logger = LoggerFactory.getLogger(MultiOperationThreadUtilsTest.class);
 
-    class MulitiTestService implements OperationService {
+    class MulitiTestThreadService implements OperationThreadService {
 
         @Override
-        public int count(Object[] args) {
-            return 100;
+        public long count(Object[] args) {
+            return 100L;
         }
 
         @Override
-        public List<Object> find(PartitionElements elements, Object[] args) {
-            List<Object> list = new ArrayList<>(elements.getRows());
+        public List<Object> find(PartitionElements elements) {
+            List<Object> list = new ArrayList<>((int)elements.getRows());
             for (int i = 0; i < elements.getRows(); i++) {
                 list.add("test_" + i);
             }
@@ -36,12 +36,12 @@ public class MultiThreadUtilsTest {
         }
 
         @Override
-        public void update(PartitionElements elements, Object[] args) {
+        public void update(PartitionElements elements) {
 
         }
 
         @Override
-        public void delete(PartitionElements elements, Object[] args) {
+        public void delete(PartitionElements elements) {
 
         }
 
@@ -64,6 +64,6 @@ public class MultiThreadUtilsTest {
 
     @Test
     public void testBatchExecute() {
-        MultiThreadUtils.batchExecute(new MulitiTestService(), 10, new Object[]{"test"});
+        MultiOperationThreadUtils.batchExecute(new MulitiTestThreadService(), 10, new Object[]{"test"});
     }
 }

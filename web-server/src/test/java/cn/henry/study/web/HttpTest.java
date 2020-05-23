@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,11 @@ public class HttpTest {
     public void testDownload() {
         String path = "G:\\迅雷下载";
         String url = "http://d2.11684.com/jc-srRabbitMQpdf_20190-11684.com.rar";
-        httpClientTemplate.downloadByMultiThread(url, path);
+        try {
+            httpClientTemplate.downloadByMultiThread(url, path);
+        } catch (IOException e) {
+            logger.error("下载失败", e);
+        }
     }
 
     @Test

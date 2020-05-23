@@ -9,46 +9,43 @@ import java.util.List;
  *
  * @author Hlingoes 2020/5/22
  */
-public interface OperationService {
+public interface OperationThreadService {
 
     /**
      * description: 任务总量
      *
      * @param args
-     * @return int
+     * @return long
      * @author Hlingoes 2020/5/22
      */
-    int count(Object[] args);
+    long count(Object[] args);
 
     /**
      * description: 单次分段查询
      *
      * @param elements
-     * @param args
      * @return java.util.List<java.lang.Object>
      * @author Hlingoes 2020/5/22
      */
-    List<Object> find(PartitionElements elements, Object[] args);
+    List<Object> find(PartitionElements elements);
 
     /**
      * description: 更新
      *
      * @param elements
-     * @param args
      * @return void
      * @author Hlingoes 2020/5/22
      */
-    void update(PartitionElements elements, Object[] args);
+    void update(PartitionElements elements);
 
     /**
      * description: 删除
      *
      * @param elements
-     * @param args
      * @return void
      * @author Hlingoes 2020/5/22
      */
-    void delete(PartitionElements elements, Object[] args);
+    void delete(PartitionElements elements);
 
     /**
      * description: 与处理方法

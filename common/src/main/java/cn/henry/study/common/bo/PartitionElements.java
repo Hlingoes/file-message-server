@@ -9,8 +9,9 @@ import java.util.List;
  * @date 2020/5/22 23:50
  */
 public class PartitionElements {
-    private int page;
-    private int rows;
+    private long index;
+    private long rows;
+    private long total;
     private Object[] args;
     private List<Object> datas;
 
@@ -18,26 +19,35 @@ public class PartitionElements {
 
     }
 
-    public PartitionElements(int page, int rows, Object[] args) {
-        this.page = page;
+    public PartitionElements(long index, long rows, long total, Object[] args) {
+        this.index = index;
         this.rows = rows;
+        this.total = total;
         this.args = args;
     }
 
-    public int getPage() {
-        return page;
+    public long getIndex() {
+        return index;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setIndex(long index) {
+        this.index = index;
     }
 
-    public int getRows() {
+    public long getRows() {
         return rows;
     }
 
-    public void setRows(int rows) {
+    public void setRows(long rows) {
         this.rows = rows;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
     }
 
     public List<Object> getDatas() {
@@ -59,7 +69,7 @@ public class PartitionElements {
     @Override
     public String toString() {
         return "PartitionElements{" +
-                "page=" + page +
+                "index=" + index +
                 ", rows=" + rows +
                 ", datas=" + datas +
                 '}';

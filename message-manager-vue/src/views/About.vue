@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <h1>This is an about page</h1>
+        <h1>This is an about index</h1>
         <el-rate v-model="value1"
                  show-text
                  @change="getWebData">
