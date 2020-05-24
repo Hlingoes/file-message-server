@@ -18,41 +18,47 @@ public interface OperationThreadService {
      * @return long
      * @author Hlingoes 2020/5/22
      */
-    long count(Object[] args);
+    long count(Object[] args) throws Exception;
 
     /**
-     * description: 单次分段查询
+     * description: 在多线程分治任务之前的预处理方法，返回业务数据
+     *
+     * @param args
+     * @throws Exception
+     * @return Object
+     * @author Hlingoes 2020/5/23
+     */
+    Object prepare(Object[] args) throws Exception;
+
+    /**
+     * description: 多线程的任务逻辑
      *
      * @param elements
+     * @throws Exception
      * @return java.util.List<java.lang.Object>
-     * @author Hlingoes 2020/5/22
+     * @author Hlingoes 2020/5/24
      */
-    List<Object> find(PartitionElements elements);
+    List<Object> invoke(PartitionElements elements) throws Exception;
 
     /**
-     * description: 更新
+     * description: 多线程单个任务结束后的归并方法
      *
      * @param elements
-     * @return void
-     * @author Hlingoes 2020/5/22
-     */
-    void update(PartitionElements elements);
-
-    /**
-     * description: 删除
-     *
-     * @param elements
-     * @return void
-     * @author Hlingoes 2020/5/22
-     */
-    void delete(PartitionElements elements);
-
-    /**
-     * description: 与处理方法
-     *
-     * @param elements
+     * @param object
+     * @throws Exception
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    void prepare(PartitionElements elements);
+    void post(PartitionElements elements, Object object) throws Exception;
+
+    /**
+     * description: 归并结果之后的尾处理
+     *
+     * @param object
+     * @throws Exception
+     * @return void
+     * @author Hlingoes 2020/5/24
+     */
+    void finished(Object object)throws Exception;
+
 }

@@ -103,7 +103,7 @@ public class MyBatisDynamicDataSourceConfig implements InitializingBean, Applica
             BeanDefinition dataBeanDefinition = beanDefinitionBuilder.getRawBeanDefinition();
             BeanDefinitionRegistry beanFactory = (BeanDefinitionRegistry) applicationContext.getAutowireCapableBeanFactory();
             beanFactory.registerBeanDefinition(props.getRouteKey(), dataBeanDefinition);
-            logger.info("数据库连接源: {}", props);
+            logger.info("数据库连接源: {}", props.toString());
         }
     }
 

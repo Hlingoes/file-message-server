@@ -74,4 +74,16 @@ public class JdbcProperties {
         this.routeKey = routeKey;
     }
 
+    @Override
+    public String toString() {
+        return "JdbcProperties{" +
+                "type='" + type + '\'' +
+                ", driverClassName='" + driverClassName + '\'' +
+                ", url='" + url + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", master=" + master +
+                ", routeKey='" + routeKey + '\'' +
+                '}';
+    }
 }

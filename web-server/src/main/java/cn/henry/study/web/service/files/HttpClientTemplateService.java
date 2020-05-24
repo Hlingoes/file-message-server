@@ -3,8 +3,8 @@ package cn.henry.study.web.service.files;
 import cn.henry.study.common.bo.PartitionElements;
 import cn.henry.study.common.service.OperationThreadService;
 import cn.henry.study.common.utils.MultiOperationThreadUtils;
-import cn.henry.study.common.utils.ThreadPoolExecutorUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 /**
  * description: 使用带连接池的自定义HttpTemplate服务
@@ -33,6 +32,7 @@ import java.util.concurrent.ExecutorService;
  * 最后合并成一个文件
  *
  * @author Hlingoes
+ * @citation https://blog.csdn.net/zzzgd_666/article/details/88915818
  * @date 2019/12/21 22:26
  */
 @Service
@@ -50,28 +50,24 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
     @Resource(name = "httpClientTemplate")
     private RestTemplate httpClientTemplate;
 
-    /**
-     * 线程池
-     */
-    private static ExecutorService executor = ThreadPoolExecutorUtils.getExecutorPool();
     private static String prefix = String.valueOf(System.currentTimeMillis());
 
     /**
      * description: 多线程下载文件
      *
      * @param url
-     * @param targetPath
+     * @param targetDir
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    public void downloadByMultiThread(String url, String targetPath) throws IOException {
-        long startTimestamp = System.currentTimeMillis();
-        String fileFullPath = obtainFilePath(url, targetPath);
+    public void downloadByMultiThread(String url, String targetDir) throws Exception {
+        long startTime = System.currentTimeMillis();
+        String fileFullPath = obtainFilePath(url, targetDir);
         Object[] args = new Object[]{url, fileFullPath};
         logger.info("Download started, url:{}, fileFullPath:{}", url, fileFullPath);
         MultiOperationThreadUtils.batchExecute(this, args);
-        long completedTimestamp = System.currentTimeMillis();
-        logger.info("Download finished, url:{}, fileFullPath:{}, const: {}ms", url, fileFullPath, (completedTimestamp - startTimestamp));
+        long completedTime = System.currentTimeMillis();
+        logger.info("Download finished, url:{}, fileFullPath:{}, const: {}ms", url, fileFullPath, (completedTime - startTime));
     }
 
     /**
@@ -157,21 +153,6 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
      * description: 使用流接收数据，可以边读边写，适合下载大文件
      *
      * @param url
-     * @param targetDir
-     * @param params
-     * @return void
-     * @author Hlingoes 2020/5/23
-     */
-    public void downloadFileByStreamMode(String url, String targetDir, Map<String, String> params) {
-        String completeUrl = obtainGetUri(url, params);
-        String filePath = obtainFilePath(completeUrl, targetDir);
-        downloadFileByStreamMode(completeUrl, filePath);
-    }
-
-    /**
-     * description: 使用流接收数据，可以边读边写，适合下载大文件
-     *
-     * @param url
      * @param filePath
      * @return void
      * @author Hlingoes 2020/5/23
@@ -181,6 +162,21 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
         RequestCallback requestCallback = request -> request.getHeaders()
                 .setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
         downloadFileByStreamMode(url, filePath, requestCallback);
+    }
+
+    /**
+     * description: 使用流接收数据，可以边读边写，适合下载大文件
+     *
+     * @param url
+     * @param targetDir
+     * @param params
+     * @return void
+     * @author Hlingoes 2020/5/23
+     */
+    public void downloadFileByStreamMode(String url, String targetDir, Map<String, String> params) {
+        String completeUrl = obtainGetUri(url, params);
+        String filePath = obtainFilePath(completeUrl, targetDir);
+        downloadFileByStreamMode(completeUrl, filePath);
     }
 
     /**
@@ -266,17 +262,19 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
     }
 
     @Override
-    public List<Object> find(PartitionElements elements) {
+    public List<Object> invoke(PartitionElements elements) {
         // 将需要下载的文件分段
-        long start = (elements.getIndex() - 1L) * elements.getRows();
-        long end = elements.getIndex() * elements.getRows() - 1L;
-        // 如果end > total, 表示最后一个分段，直接到total
-        if (end > elements.getTotal()) {
+        long start = (elements.getCurrentPage() - 1L) * elements.getPageSize();
+        long end = elements.getCurrentPage() * elements.getPageSize() - 1L;
+        // 如果是最后一个分段，直接到total
+        if (elements.getCurrentPage() == elements.getPageCount()) {
             end = elements.getTotal();
         }
         Object[] args = elements.getArgs();
-        String url = args[1].toString();
-        String filePath = String.format("%s-%s-%d", args[2], prefix, elements.getIndex());
+        String url = args[0].toString();
+        String fileFullPath = args[1].toString();
+        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getCurrentPage());
+        logger.info("Content-Length between: {} to {}, total: {}", start, end, elements.getTotal());
         if (isBigFile(end - start)) {
             downloadFilePartitionByStreamMode(start, end, url, filePath);
         } else {
@@ -286,24 +284,21 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
     }
 
     @Override
-    public void update(PartitionElements elements) {
-
+    public Object prepare(Object[] args) throws Exception {
+        String fileFullPath = args[1].toString();
+        RandomAccessFile resultFile = new RandomAccessFile(fileFullPath, "rw");
+        return resultFile;
     }
 
     @Override
-    public void delete(PartitionElements elements) {
-
-    }
-
-    @Override
-    public void prepare(PartitionElements elements) {
+    public void post(PartitionElements elements, Object object) {
         // 按分段合并文件
+        RandomAccessFile resultFile = (RandomAccessFile) object;
         Object[] args = elements.getArgs();
-        String fileFullPath = args[2].toString();
-        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getIndex());
+        String fileFullPath = args[1].toString();
+        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getCurrentPage());
         try {
             logger.info("开始合并, 文件:{}", filePath);
-            RandomAccessFile resultFile = new RandomAccessFile(fileFullPath, "rw");
             RandomAccessFile tempFile = new RandomAccessFile(filePath, "rw");
             tempFile.getChannel().transferTo(0, tempFile.length(), resultFile.getChannel());
             tempFile.close();
@@ -312,6 +307,13 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
         } catch (IOException e) {
             logger.error("[多线程下载] {} 合并出错", filePath, e);
         }
+    }
+
+    @Override
+    public void finished(Object object) throws Exception {
+        // 关闭文件流
+        RandomAccessFile resultFile = (RandomAccessFile) object;
+        IOUtils.closeQuietly(resultFile);
     }
 
     @Override

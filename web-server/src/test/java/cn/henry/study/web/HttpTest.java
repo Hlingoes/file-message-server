@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author Hlingoes 2019/12/21
  */
-@SpringBootTest(classes = WebMessageServer.class)
+@SpringBootTest(classes = WebMessageServer.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class HttpTest {
     private static Logger logger = LoggerFactory.getLogger(HttpTest.class);
@@ -81,12 +81,14 @@ public class HttpTest {
         restTemplate.postForObject(url, multiValueMap, String.class);
     }
 
+    @Test
     public void testDownload() {
         String path = "G:\\迅雷下载";
-        String url = "http://d2.11684.com/jc-srRabbitMQpdf_20190-11684.com.rar";
+//        String url = "http://d2.11684.com/jc-srRabbitMQpdf_20190-11684.com.rar";
+        String url = "http://dx1.liangchan.net/down/UploadFile/程序员的数学3.rar";
         try {
             httpClientTemplate.downloadByMultiThread(url, path);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("下载失败", e);
         }
     }

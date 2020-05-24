@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+<configuration>
 
     <!-- logback.xml和logback-test.xml会被logback组件直接读取 -->
     <!-- 如果要交给spring管理，需要修改配置文件名为logback-spring.xml -->
@@ -163,7 +163,7 @@
     <!--    </springProfile>-->
     <springProfile name="dev,test">
         <!-- 控制台输出日志级别 -->
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="SERVICE_ALL"/>
         </root>
@@ -171,6 +171,7 @@
         <!-- mybatis loggers -->
         <logger name="cn.henry.study.web.mapper" level="DEBUG" additivity="false">
             <appender-ref ref="SQL"/>
+            <appender-ref ref="STDOUT"/>
         </logger>
 
         <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
@@ -179,6 +180,7 @@
         <logger name="cn.henry.study" level="INFO" additivity="false">
             <appender-ref ref="SERVICE_INFO"/>
             <appender-ref ref="SERVICE_ERROR"/>
+            <appender-ref ref="STDOUT"/>
         </logger>
 
         <!-- 发送文件失败的动态日志 -->

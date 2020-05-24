@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -30,101 +29,47 @@ public class MultiOperationThreadUtils {
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    public static void batchExecute(OperationThreadService service, Object[] args) {
+    public static void batchExecute(OperationThreadService service, Object[] args) throws Exception {
         long total = service.count(args);
-        long rows = total / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
-        batchExecute(service, args, rows, total);
+        long pageSize = total / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
+        batchExecute(service, pageSize, total, args);
     }
 
     /**
      * description: 开启多线程执行任务
      *
      * @param service
-     * @param rows
+     * @param pageSize
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    public static void batchExecute(OperationThreadService service, long rows, Object[] args) {
+    public static void batchExecute(OperationThreadService service, long pageSize, Object[] args) throws Exception {
         long total = service.count(args);
-        batchExecute(service, args, rows, total);
+        batchExecute(service, pageSize, total, args);
     }
 
     /**
      * description: 开启多线程执行任务
      *
      * @param service
-     * @param rows    单次任务处理量
-     * @param args    任务总量
+     * @param pageSize
+     * @param total
+     * @param args
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    private static void batchExecute(OperationThreadService service, Object[] args, long rows, long total) {
-        long taskCount = calculateTaskCount(total, rows);
+    private static void batchExecute(OperationThreadService service, long pageSize, long total, Object[] args) throws Exception {
+        // 在多线程分治任务之前的预处理方法，返回业务数据
+        final Object obj = service.prepare(args);
+        long pageCount = PartitionElements.calculateTaskCount(total, pageSize);
         // 预防list和map的resize，初始化给定容量，可提高性能
-        ArrayList<Future<PartitionElements>> futures = new ArrayList<>((int) taskCount);
-        OperationThread opThread = null;
-        // 添加线程任务
-        for (int i = 0; i <= taskCount; i++) {
-            opThread = new OperationThread(new PartitionElements(i + 1, rows, total, args), service);
-            Future<PartitionElements> future = executor.submit(opThread);
-            futures.add(future);
-        }
-        // 关闭线程池
-        executor.shutdown();
-        // 阻塞线程，并行处理数据
-        for (Future<PartitionElements> future : futures) {
-            try {
-                service.prepare(future.get());
-            } catch (InterruptedException | ExecutionException e) {
-                logger.error("future recall fail", e);
-            }
-        }
-    }
-
-    /**
-     * description: 开启多线程，最后同步执行任务
-     *
-     * @param service
-     * @return void
-     * @author Hlingoes 2020/5/23
-     */
-    public static void batchAsyncExecute(OperationThreadService service, Object[] args) {
-        long total = service.count(args);
-        long rows = total / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
-        batchAsyncExecute(service, args, rows, total);
-    }
-
-    /**
-     * description: 开启多线程，最后同步执行任务
-     *
-     * @param service
-     * @param rows
-     * @return void
-     * @author Hlingoes 2020/5/23
-     */
-    public static void batchAsyncExecute(OperationThreadService service, long rows, Object[] args) {
-        long total = service.count(args);
-        batchAsyncExecute(service, args, rows, total);
-    }
-
-    /**
-     * description: 开启多线程，最后同步执行任务
-     *
-     * @param service
-     * @param rows    单次任务处理量
-     * @param args    任务总量
-     * @return void
-     * @author Hlingoes 2020/5/23
-     */
-    private static void batchAsyncExecute(OperationThreadService service, Object[] args, long rows, long total) {
-        long taskCount = calculateTaskCount(total, rows);
-        // 预防list和map的resize，初始化给定容量，可提高性能
-        ArrayList<CompletableFuture<PartitionElements>> futures = new ArrayList<>((int) taskCount);
+        ArrayList<CompletableFuture<PartitionElements>> futures = new ArrayList<>((int) pageCount);
         OperationThread opThread = null;
         CompletableFuture<PartitionElements> future = null;
         // 添加线程任务
-        for (int i = 0; i <= taskCount; i++) {
-            opThread = new OperationThread(new PartitionElements(i + 1, rows, total, args), service);
+        for (int i = 0; i < pageCount; i++) {
+            // 划定任务分布
+            opThread = new OperationThread(new PartitionElements(i + 1, pageSize, pageCount, total, args), service);
             future = CompletableFuture.supplyAsync(opThread::call, executor);
             futures.add(future);
         }
@@ -133,29 +78,19 @@ public class MultiOperationThreadUtils {
         // 阻塞线程，同步处理数据
         futures.forEach(f -> {
             try {
-                f.thenAccept(elems -> {
-                    service.prepare(elems);
+                f.thenAccept(element -> {
+                    // 线程单个任务结束后的归并方法
+                    try {
+                        service.post(element, obj);
+                    } catch (Exception e) {
+                        logger.error("post routine fail", e);
+                    }
                 }).get();
             } catch (InterruptedException | ExecutionException e) {
-                logger.error("future recall fail", e);
+                logger.error("future call fail", e);
             }
         });
-    }
 
-    /**
-     * description: 根据任务总量和单次任务处理量，计算任务个数
-     *
-     * @param total
-     * @param rows
-     * @return long
-     * @author Hlingoes 2020/5/23
-     */
-    private static long calculateTaskCount(long total, long rows) {
-        long taskCount = total / rows;
-        if (total % rows != 0) {
-            taskCount = taskCount + 1;
-        }
-        return taskCount;
     }
 
 }

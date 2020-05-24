@@ -22,31 +22,26 @@ public class MultiOperationThreadUtilsTest {
     class MulitiTestThreadService implements OperationThreadService {
 
         @Override
-        public long count(Object[] args) {
+        public long count(Object[] args) throws Exception {
             return 100L;
         }
 
         @Override
-        public List<Object> find(PartitionElements elements) {
-            List<Object> list = new ArrayList<>((int)elements.getRows());
-            for (int i = 0; i < elements.getRows(); i++) {
+        public Object prepare(Object[] args) throws Exception {
+            return null;
+        }
+
+        @Override
+        public List<Object> invoke(PartitionElements elements) throws Exception {
+            List<Object> list = new ArrayList<>((int) elements.getPageSize());
+            for (int i = 0; i < elements.getPageSize(); i++) {
                 list.add("test_" + i);
             }
             return list;
         }
 
         @Override
-        public void update(PartitionElements elements) {
-
-        }
-
-        @Override
-        public void delete(PartitionElements elements) {
-
-        }
-
-        @Override
-        public void prepare(PartitionElements elements) {
+        public void post(PartitionElements elements, Object object) throws Exception {
             String insertSql = "insert into test (id) values ";
             StringBuilder sb = new StringBuilder();
             List<Object> datas = elements.getDatas();
@@ -60,10 +55,20 @@ public class MultiOperationThreadUtilsTest {
                 }
             }
         }
+
+        @Override
+        public void finished(Object object) throws Exception {
+
+        }
     }
 
     @Test
     public void testBatchExecute() {
-        MultiOperationThreadUtils.batchExecute(new MulitiTestThreadService(), 10, new Object[]{"test"});
+        try {
+            MultiOperationThreadUtils.batchExecute(new MulitiTestThreadService(), 10, new Object[]{"test"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 }

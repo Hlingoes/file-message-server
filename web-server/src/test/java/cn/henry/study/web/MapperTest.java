@@ -3,7 +3,6 @@ package cn.henry.study.web;
 import cn.henry.study.common.utils.JacksonUtils;
 import cn.henry.study.web.configuration.DataSourceConfig;
 import cn.henry.study.web.database.DatabaseContextHolder;
-import cn.henry.study.web.job.DynamicTableJob;
 import cn.henry.study.web.mapper.DynamicTableMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -3,14 +3,27 @@ package cn.henry.study.common.bo;
 import java.util.List;
 
 /**
- * description: 分段查询参数
+ * description: 分段参数
  *
  * @author Hlingoes
  * @date 2020/5/22 23:50
  */
 public class PartitionElements {
-    private long index;
-    private long rows;
+    /**
+     * 当前页数
+     */
+    private long currentPage;
+    /**
+     * 每页显示条目个数
+     */
+    private long pageSize;
+    /**
+     * 总页数
+     */
+    private long pageCount;
+    /**
+     * 总条目数
+     */
     private long total;
     private Object[] args;
     private List<Object> datas;
@@ -19,27 +32,52 @@ public class PartitionElements {
 
     }
 
-    public PartitionElements(long index, long rows, long total, Object[] args) {
-        this.index = index;
-        this.rows = rows;
+    public PartitionElements(long currentPage, long pageSize, long pageCount, long total, Object[] args) {
+        this.currentPage = currentPage;
+        this.pageSize = pageSize;
+        this.pageCount = pageCount;
         this.total = total;
         this.args = args;
     }
 
-    public long getIndex() {
-        return index;
+    /**
+     * description: 根据任务总量和单次任务处理量，计算任务个数
+     *
+     * @param total
+     * @param pageSize
+     * @return long
+     * @author Hlingoes 2020/5/23
+     */
+    public static long calculateTaskCount(long total, long pageSize) {
+        long pageCount = total / pageSize;
+        if (total % pageSize != 0) {
+            pageCount = pageCount + 1;
+        }
+        return pageCount;
     }
 
-    public void setIndex(long index) {
-        this.index = index;
+    public long getCurrentPage() {
+        return currentPage;
     }
 
-    public long getRows() {
-        return rows;
+    public void setCurrentPage(long currentPage) {
+        this.currentPage = currentPage;
     }
 
-    public void setRows(long rows) {
-        this.rows = rows;
+    public long getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(long pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public long getPageCount() {
+        return pageCount;
+    }
+
+    public void setPageCount(long pageCount) {
+        this.pageCount = pageCount;
     }
 
     public long getTotal() {
@@ -69,8 +107,8 @@ public class PartitionElements {
     @Override
     public String toString() {
         return "PartitionElements{" +
-                "index=" + index +
-                ", rows=" + rows +
+                "currentPage=" + currentPage +
+                ", pageSize=" + pageSize +
                 ", datas=" + datas +
                 '}';
     }
