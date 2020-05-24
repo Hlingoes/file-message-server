@@ -17,13 +17,13 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author Hlingoes
  * @date 2020/5/22 0:42
  */
-public class MultiOperationThreadUtils {
-    private static Logger logger = LoggerFactory.getLogger(MultiOperationThreadUtils.class);
+public class MultiThreadOperationUtils {
+    private static Logger logger = LoggerFactory.getLogger(MultiThreadOperationUtils.class);
 
     private static ThreadPoolExecutor executor = ThreadPoolExecutorUtils.getExecutorPool();
 
     /**
-     * description: 开启多线程执行任务
+     * description: 开启多线程执行任务，默认的总页数为系统的cpu核数
      *
      * @param service
      * @return void
@@ -32,11 +32,11 @@ public class MultiOperationThreadUtils {
     public static void batchExecute(OperationThreadService service, Object[] args) throws Exception {
         long total = service.count(args);
         long pageSize = total / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
-        batchExecute(service, pageSize, total, args);
+        batchExecute(service, pageSize, ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE, total, args);
     }
 
     /**
-     * description: 开启多线程执行任务
+     * description: 开启多线程执行任务，给定每页显示条目个数
      *
      * @param service
      * @param pageSize
@@ -45,7 +45,8 @@ public class MultiOperationThreadUtils {
      */
     public static void batchExecute(OperationThreadService service, long pageSize, Object[] args) throws Exception {
         long total = service.count(args);
-        batchExecute(service, pageSize, total, args);
+        long pageCount = PartitionElements.calculateTaskCount(total, pageSize);
+        batchExecute(service, pageSize, pageCount, total, args);
     }
 
     /**
@@ -58,10 +59,9 @@ public class MultiOperationThreadUtils {
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    private static void batchExecute(OperationThreadService service, long pageSize, long total, Object[] args) throws Exception {
+    private static void batchExecute(OperationThreadService service, long pageSize, long pageCount, long total, Object[] args) throws Exception {
         // 在多线程分治任务之前的预处理方法，返回业务数据
         final Object obj = service.prepare(args);
-        long pageCount = PartitionElements.calculateTaskCount(total, pageSize);
         // 预防list和map的resize，初始化给定容量，可提高性能
         ArrayList<CompletableFuture<PartitionElements>> futures = new ArrayList<>((int) pageCount);
         OperationThread opThread = null;
@@ -90,7 +90,7 @@ public class MultiOperationThreadUtils {
                 logger.error("future call fail", e);
             }
         });
-
+        service.finished(obj);
     }
 
 }

@@ -1,5 +1,6 @@
 package cn.henry.study.common.bo;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -109,7 +110,9 @@ public class PartitionElements {
         return "PartitionElements{" +
                 "currentPage=" + currentPage +
                 ", pageSize=" + pageSize +
-                ", datas=" + datas +
+                ", pageCount=" + pageCount +
+                ", total=" + total +
+                ", args=" + Arrays.toString(args) +
                 '}';
     }
 }

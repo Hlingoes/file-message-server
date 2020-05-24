@@ -2,7 +2,7 @@ package cn.henry.study.web.service.files;
 
 import cn.henry.study.common.bo.PartitionElements;
 import cn.henry.study.common.service.OperationThreadService;
-import cn.henry.study.common.utils.MultiOperationThreadUtils;
+import cn.henry.study.common.utils.MultiThreadOperationUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -65,7 +65,7 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
         String fileFullPath = obtainFilePath(url, targetDir);
         Object[] args = new Object[]{url, fileFullPath};
         logger.info("Download started, url:{}, fileFullPath:{}", url, fileFullPath);
-        MultiOperationThreadUtils.batchExecute(this, args);
+        MultiThreadOperationUtils.batchExecute(this, args);
         long completedTime = System.currentTimeMillis();
         logger.info("Download finished, url:{}, fileFullPath:{}, const: {}ms", url, fileFullPath, (completedTime - startTime));
     }
@@ -262,6 +262,13 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
     }
 
     @Override
+    public Object prepare(Object[] args) throws Exception {
+        String fileFullPath = args[1].toString();
+        RandomAccessFile resultFile = new RandomAccessFile(fileFullPath, "rw");
+        return resultFile;
+    }
+
+    @Override
     public List<Object> invoke(PartitionElements elements) {
         // 将需要下载的文件分段
         long start = (elements.getCurrentPage() - 1L) * elements.getPageSize();
@@ -274,20 +281,13 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
         String url = args[0].toString();
         String fileFullPath = args[1].toString();
         String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getCurrentPage());
-        logger.info("Content-Length between: {} to {}, total: {}", start, end, elements.getTotal());
+        logger.info("Content-Length between: {} to {}, {}", start, end, elements.toString());
         if (isBigFile(end - start)) {
             downloadFilePartitionByStreamMode(start, end, url, filePath);
         } else {
             downloadFilePartitionByMemoryMode(start, end, url, filePath);
         }
         return null;
-    }
-
-    @Override
-    public Object prepare(Object[] args) throws Exception {
-        String fileFullPath = args[1].toString();
-        RandomAccessFile resultFile = new RandomAccessFile(fileFullPath, "rw");
-        return resultFile;
     }
 
     @Override
@@ -303,7 +303,7 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
             tempFile.getChannel().transferTo(0, tempFile.length(), resultFile.getChannel());
             tempFile.close();
             FileUtils.deleteQuietly(new File(filePath));
-            logger.info("删除临时文件: {}", filePath);
+            logger.info("合并完成，删除临时文件: {}", filePath);
         } catch (IOException e) {
             logger.error("[多线程下载] {} 合并出错", filePath, e);
         }
@@ -314,6 +314,7 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
         // 关闭文件流
         RandomAccessFile resultFile = (RandomAccessFile) object;
         IOUtils.closeQuietly(resultFile);
+        logger.info("finish task, close stream");
     }
 
     @Override

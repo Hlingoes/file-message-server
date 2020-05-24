@@ -2,7 +2,7 @@ package cn.henry.study.common;
 
 import cn.henry.study.common.bo.PartitionElements;
 import cn.henry.study.common.service.OperationThreadService;
-import cn.henry.study.common.utils.MultiOperationThreadUtils;
+import cn.henry.study.common.utils.MultiThreadOperationUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,8 @@ import java.util.List;
  * @author Hlingoes
  * @date 2020/5/23 0:23
  */
-public class MultiOperationThreadUtilsTest {
-    private static Logger logger = LoggerFactory.getLogger(MultiOperationThreadUtilsTest.class);
+public class MultiThreadOperationUtilsTest {
+    private static Logger logger = LoggerFactory.getLogger(MultiThreadOperationUtilsTest.class);
 
     class MulitiTestThreadService implements OperationThreadService {
 
@@ -65,7 +65,7 @@ public class MultiOperationThreadUtilsTest {
     @Test
     public void testBatchExecute() {
         try {
-            MultiOperationThreadUtils.batchExecute(new MulitiTestThreadService(), 10, new Object[]{"test"});
+            MultiThreadOperationUtils.batchExecute(new MulitiTestThreadService(), 10, new Object[]{"test"});
         } catch (Exception e) {
             e.printStackTrace();
         }
