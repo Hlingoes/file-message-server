@@ -5,7 +5,7 @@ import cn.henry.study.common.bo.PartitionElements;
 import java.util.List;
 
 /**
- * description: 业务分治接口
+ * description: 业务分治归并处理接口
  *
  * @author Hlingoes 2020/5/22
  */

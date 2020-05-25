@@ -20,10 +20,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class MultiThreadOperationUtils {
     private static Logger logger = LoggerFactory.getLogger(MultiThreadOperationUtils.class);
 
-    private static ThreadPoolExecutor executor = ThreadPoolExecutorUtils.getExecutorPool();
-
     /**
-     * description: 开启多线程执行任务，默认的总页数为系统的cpu核数
+     * description: 开启多线程执行任务，按顺序归并处理任务结果
+     * 默认的总页数为系统的cpu核数
      *
      * @param service
      * @return void
@@ -36,7 +35,8 @@ public class MultiThreadOperationUtils {
     }
 
     /**
-     * description: 开启多线程执行任务，给定每页显示条目个数
+     * description: 开启多线程执行任务，按顺序归并处理任务结果
+     * 给定每页显示条目个数
      *
      * @param service
      * @param pageSize
@@ -50,7 +50,7 @@ public class MultiThreadOperationUtils {
     }
 
     /**
-     * description: 开启多线程执行任务
+     * description: 开启多线程执行分治任务，按顺序归并处理任务结果
      *
      * @param service
      * @param pageSize
@@ -60,6 +60,7 @@ public class MultiThreadOperationUtils {
      * @author Hlingoes 2020/5/23
      */
     private static void batchExecute(OperationThreadService service, long pageSize, long pageCount, long total, Object[] args) throws Exception {
+        ThreadPoolExecutor executor = ThreadPoolExecutorUtils.getExecutorPool();
         // 在多线程分治任务之前的预处理方法，返回业务数据
         final Object obj = service.prepare(args);
         // 预防list和map的resize，初始化给定容量，可提高性能

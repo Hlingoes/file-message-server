@@ -84,8 +84,8 @@ public class HttpTest {
     @Test
     public void testDownload() {
         String path = "G:\\迅雷下载";
-        String url = "http://d2.11684.com/jc-srRabbitMQpdf_20190-11684.com.rar";
-//        String url = "http://dx1.liangchan.net/down/UploadFile/程序员的数学3.rar";
+//        String url = "http://d2.11684.com/jc-srRabbitMQpdf_20190-11684.com.rar";
+        String url = "http://dx1.liangchan.net/down/UploadFile/程序员的数学3.rar";
         try {
             httpClientTemplate.downloadByMultiThread(url, path);
         } catch (Exception e) {

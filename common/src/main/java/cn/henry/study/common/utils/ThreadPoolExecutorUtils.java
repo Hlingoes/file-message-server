@@ -45,7 +45,7 @@ public class ThreadPoolExecutorUtils {
 
     public static int DEFAULT_CORE_SIZE = Runtime.getRuntime().availableProcessors();
     private static int POLL_WAITING_TIME = 3 * 60;
-    private static int DEFAULT_QUEUE_SIZE = 1000;
+    private static int DEFAULT_QUEUE_SIZE = 10 * 1000;
     private static int DEFAULT_MAX_SIZE = 4 * DEFAULT_CORE_SIZE;
 
     /**
