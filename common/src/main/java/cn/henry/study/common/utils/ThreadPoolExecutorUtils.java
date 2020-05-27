@@ -116,17 +116,36 @@ public class ThreadPoolExecutorUtils {
      * @author Hlingoes 2020/3/20
      */
     public static ThreadPoolExecutor getExecutorPool() {
-        ThreadFactory customFactory = new ThreadFactoryBuilder()
+        ThreadFactory factory = new ThreadFactoryBuilder()
                 .setNameFormat("custom-pool-%d")
                 .build();
         BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
-        ThreadPoolExecutor customThreadPool = new ThreadPoolExecutor(DEFAULT_CORE_SIZE,
-                DEFAULT_MAX_SIZE, 60, TimeUnit.SECONDS, queue, customFactory,
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(DEFAULT_CORE_SIZE,
+                DEFAULT_MAX_SIZE, 60, TimeUnit.SECONDS, queue, factory,
                 (r, executor) -> {
+                    /**
+                     * 自定义的拒绝策略
+                     * 当提交给线程池的某一个新任务无法直接被线程池中“核心线程”直接处理，
+                     * 又无法加入等待队列，也无法创建新的线程执行；
+                     * 又或者线程池已经调用shutdown()方法停止了工作；
+                     * 又或者线程池不是处于正常的工作状态；
+                     * 这时候ThreadPoolExecutor线程池会拒绝处理这个任务
+                     */
                     if (!executor.isShutdown()) {
-                        logger.warn("ThreadPool is too busy! waiting to insert task to queue! ");
+                        logger.warn("ThreadPoolExecutor is over working, please check the thread tasks! ");
                     }
                 }) {
+
+            /**
+             * description: 针对提交给线程池的任务可能会抛出异常这一问题，
+             * 可自行实现线程池的afterExecute方法，或者实现Thread的UncaughtExceptionHandler接口
+             * ThreadFactoryBuilder中已经实现了UncaughtExceptionHandler接口，这里是为了进一步兼容
+             *
+             * @param r
+             * @param t
+             * @return void
+             * @author Hlingoes 2020/5/27
+             */
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
                 super.afterExecute(r, t);
@@ -147,7 +166,14 @@ public class ThreadPoolExecutorUtils {
                 }
             }
         };
-        return customThreadPool;
+        /**
+         * 备选方法，事先知道会有很多任务会提交给这个线程池，可以在初始化的时候完成核心线程的创建，提高系统性能
+         * 一个线程池创建出来之后，在没有给它提交任何任务之前，这个线程池中的线程数为0
+         * 一个个去创建新线程开销太大，影响系统性能
+         * 可以在创建线程池的时候就将所有的核心线程全部一次性创建完毕，系统起来之后就可以直接使用
+         */
+        poolExecutor.prestartAllCoreThreads();
+        return poolExecutor;
     }
 
     /**
