@@ -11,21 +11,21 @@ import java.util.List;
  */
 public class PartitionElements {
     /**
-     * 当前页数
+     * 当前的分段任务索引
      */
-    private long currentPage;
+    private long index;
     /**
-     * 每页显示条目个数
+     * 批量处理的任务个数
      */
-    private long pageSize;
+    private long batchCounts;
     /**
-     * 总页数
+     * 任务的分段个数
      */
-    private long pageCount;
+    private long partitions;
     /**
-     * 总条目数
+     * 任务总数
      */
-    private long total;
+    private long totalCounts;
     private Object[] args;
     private List<Object> datas;
 
@@ -33,68 +33,71 @@ public class PartitionElements {
 
     }
 
-    public PartitionElements(long currentPage, long pageSize, long pageCount, long total, Object[] args) {
-        this.currentPage = currentPage;
-        this.pageSize = pageSize;
-        this.pageCount = pageCount;
-        this.total = total;
+    public PartitionElements(long batchCounts, long totalCounts, Object[] args) {
+        this.batchCounts = batchCounts;
+        this.totalCounts = totalCounts;
+        this.partitions = aquirePartitions(totalCounts, batchCounts);
         this.args = args;
+    }
+
+    public PartitionElements (long index, PartitionElements elements) {
+        this.index = index;
+        this.batchCounts = elements.getBatchCounts();
+        this.partitions = elements.getPartitions();
+        this.totalCounts = elements.getTotalCounts();
+        this.args = elements.getArgs();
     }
 
     /**
      * description: 根据任务总量和单次任务处理量，计算任务个数
      *
-     * @param total
-     * @param pageSize
-     * @return long
+     * @param totalCounts
+     * @param batchCounts
+     * @return long partitions
      * @author Hlingoes 2020/5/23
      */
-    public static long calculateTaskCount(long total, long pageSize) {
-        long pageCount = total / pageSize;
-        if (total % pageSize != 0) {
-            pageCount = pageCount + 1;
+    public long aquirePartitions(long totalCounts, long batchCounts) {
+        long partitions = totalCounts / batchCounts;
+        if (totalCounts % batchCounts != 0) {
+            partitions = partitions + 1;
         }
-        return pageCount;
+        //  兼容任务总数total = 1 的情况
+        if (partitions == 0) {
+            partitions = 1;
+        }
+        return partitions;
     }
 
-    public long getCurrentPage() {
-        return currentPage;
+    public long getIndex() {
+        return index;
     }
 
-    public void setCurrentPage(long currentPage) {
-        this.currentPage = currentPage;
+    public void setIndex(long index) {
+        this.index = index;
     }
 
-    public long getPageSize() {
-        return pageSize;
+    public long getBatchCounts() {
+        return batchCounts;
     }
 
-    public void setPageSize(long pageSize) {
-        this.pageSize = pageSize;
+    public void setBatchCounts(long batchCounts) {
+        this.batchCounts = batchCounts;
     }
 
-    public long getPageCount() {
-        return pageCount;
+    public long getPartitions() {
+        return partitions;
     }
 
-    public void setPageCount(long pageCount) {
-        this.pageCount = pageCount;
+    public void setPartitions(long partitions) {
+        this.partitions = partitions;
     }
 
-    public long getTotal() {
-        return total;
+    public long getTotalCounts() {
+        return totalCounts;
     }
 
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public List<Object> getDatas() {
-        return datas;
-    }
-
-    public void setDatas(List<Object> datas) {
-        this.datas = datas;
+    public void setTotalCounts(long totalCounts) {
+        this.totalCounts = totalCounts;
     }
 
     public Object[] getArgs() {
@@ -105,13 +108,21 @@ public class PartitionElements {
         this.args = args;
     }
 
+    public List<Object> getDatas() {
+        return datas;
+    }
+
+    public void setDatas(List<Object> datas) {
+        this.datas = datas;
+    }
+
     @Override
     public String toString() {
         return "PartitionElements{" +
-                "currentPage=" + currentPage +
-                ", pageSize=" + pageSize +
-                ", pageCount=" + pageCount +
-                ", total=" + total +
+                "index=" + index +
+                ", batchCounts=" + batchCounts +
+                ", partitions=" + partitions +
+                ", totalCounts=" + totalCounts +
                 ", args=" + Arrays.toString(args) +
                 '}';
     }

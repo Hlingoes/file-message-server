@@ -271,16 +271,16 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
     @Override
     public List<Object> invoke(PartitionElements elements) {
         // 将需要下载的文件分段
-        long start = (elements.getCurrentPage() - 1L) * elements.getPageSize();
-        long end = elements.getCurrentPage() * elements.getPageSize() - 1L;
+        long start = (elements.getIndex() - 1L) * elements.getBatchCounts();
+        long end = elements.getIndex() * elements.getBatchCounts() - 1L;
         // 如果是最后一个分段，直接到total
-        if (elements.getCurrentPage() == elements.getPageCount()) {
-            end = elements.getTotal();
+        if (elements.getIndex() == elements.getBatchCounts()) {
+            end = elements.getTotalCounts();
         }
         Object[] args = elements.getArgs();
         String url = args[0].toString();
         String fileFullPath = args[1].toString();
-        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getCurrentPage());
+        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getIndex());
         logger.info("Content-Length between: {} to {}, {}", start, end, elements.toString());
         if (isBigFile(end - start)) {
             downloadFilePartitionByStreamMode(start, end, url, filePath);
@@ -296,7 +296,7 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
         RandomAccessFile resultFile = (RandomAccessFile) object;
         Object[] args = elements.getArgs();
         String fileFullPath = args[1].toString();
-        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getCurrentPage());
+        String filePath = String.format("%s-%s-%d", fileFullPath, prefix, elements.getIndex());
         try {
             logger.info("开始合并, 文件:{}", filePath);
             RandomAccessFile tempFile = new RandomAccessFile(filePath, "rw");

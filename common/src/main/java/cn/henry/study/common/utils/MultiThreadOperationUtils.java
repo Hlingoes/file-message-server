@@ -22,16 +22,22 @@ public class MultiThreadOperationUtils {
 
     /**
      * description: 开启多线程执行任务，按顺序归并处理任务结果
-     * 默认的总页数为系统的cpu核数
+     * 按照默认线程数，计算批量任务数
      *
      * @param service
+     * @param args
      * @return void
      * @author Hlingoes 2020/5/23
      */
     public static void batchExecute(OperationThreadService service, Object[] args) throws Exception {
-        long total = service.count(args);
-        long pageSize = total / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
-        batchExecute(service, pageSize, ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE, total, args);
+        long totalCounts = service.count(args);
+        long batchCounts = totalCounts / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
+        // 兼容任务少于核心线程数的情况
+        if (batchCounts == 0) {
+            batchCounts = 1L;
+        }
+        PartitionElements elements = new PartitionElements(batchCounts, totalCounts, args);
+        batchExecute(service, elements);
     }
 
     /**
@@ -39,38 +45,37 @@ public class MultiThreadOperationUtils {
      * 给定每页显示条目个数
      *
      * @param service
-     * @param pageSize
+     * @param batchCounts
+     * @param args
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    public static void batchExecute(OperationThreadService service, long pageSize, Object[] args) throws Exception {
-        long total = service.count(args);
-        long pageCount = PartitionElements.calculateTaskCount(total, pageSize);
-        batchExecute(service, pageSize, pageCount, total, args);
+    public static void batchExecute(OperationThreadService service, long batchCounts, Object[] args) throws Exception {
+        long totalCounts = service.count(args);
+        PartitionElements elements = new PartitionElements(batchCounts, totalCounts, args);
+        batchExecute(service, elements);
     }
 
     /**
      * description: 开启多线程执行分治任务，按顺序归并处理任务结果
      *
      * @param service
-     * @param pageSize
-     * @param total
-     * @param args
+     * @param elements
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    private static void batchExecute(OperationThreadService service, long pageSize, long pageCount, long total, Object[] args) throws Exception {
+    private static void batchExecute(OperationThreadService service, PartitionElements elements) throws Exception {
         ThreadPoolExecutor executor = ThreadPoolExecutorUtils.getExecutorPool();
         // 在多线程分治任务之前的预处理方法，返回业务数据
-        final Object obj = service.prepare(args);
+        final Object obj = service.prepare(elements.getArgs());
         // 预防list和map的resize，初始化给定容量，可提高性能
-        ArrayList<CompletableFuture<PartitionElements>> futures = new ArrayList<>((int) pageCount);
+        ArrayList<CompletableFuture<PartitionElements>> futures = new ArrayList<>((int) elements.getPartitions());
         OperationThread opThread = null;
         CompletableFuture<PartitionElements> future = null;
         // 添加线程任务
-        for (int i = 0; i < pageCount; i++) {
+        for (int i = 0; i < elements.getPartitions(); i++) {
             // 划定任务分布
-            opThread = new OperationThread(new PartitionElements(i + 1, pageSize, pageCount, total, args), service);
+            opThread = new OperationThread(new PartitionElements(i + 1, elements), service);
             future = CompletableFuture.supplyAsync(opThread::call, executor);
             futures.add(future);
         }

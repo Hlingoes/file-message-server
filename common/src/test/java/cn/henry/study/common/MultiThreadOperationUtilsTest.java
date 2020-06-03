@@ -33,8 +33,8 @@ public class MultiThreadOperationUtilsTest {
 
         @Override
         public List<Object> invoke(PartitionElements elements) throws Exception {
-            List<Object> list = new ArrayList<>((int) elements.getPageSize());
-            for (int i = 0; i < elements.getPageSize(); i++) {
+            List<Object> list = new ArrayList<>((int) elements.getIndex());
+            for (int i = 0; i < elements.getIndex(); i++) {
                 list.add("test_" + i);
             }
             return list;
