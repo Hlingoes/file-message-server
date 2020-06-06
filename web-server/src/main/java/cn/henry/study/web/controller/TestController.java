@@ -1,7 +1,6 @@
 package cn.henry.study.web.controller;
 
 import cn.henry.study.common.result.CommonResult;
-import cn.henry.study.common.result.Result;
 import cn.henry.study.common.utils.FileHelpUtils;
 import cn.henry.study.common.utils.JacksonUtils;
 import cn.henry.study.web.entity.CommandParams;
@@ -41,12 +40,12 @@ public class TestController {
     private QuartzJobService jobService;
 
     @GetMapping(value = "hello")
-    public Result hello() {
+    public CommonResult hello() {
         return CommonResult.success("hello world");
     }
 
     @PostMapping(value = "submit")
-    public Result submit(@RequestBody CommandParams commandParams) {
+    public CommonResult submit(@RequestBody CommandParams commandParams) {
         return CommonResult.success(commandParams);
     }
 
@@ -59,7 +58,7 @@ public class TestController {
      * @author Hlingoes 2020/5/2
      */
     @PostMapping(value = "uploadFile")
-    public Result uploadFile(CommandParams commandParams, @RequestParam("file") MultipartFile file) throws IOException {
+    public CommonResult uploadFile(CommandParams commandParams, @RequestParam("file") MultipartFile file) throws IOException {
         File tempFile = FileHelpUtils.findTempleFile(commandParams.getFileName());
         FileHelpUtils.writeTempFile(tempFile, file.getBytes());
         commandParams.setFilePath(tempFile.getAbsolutePath());
@@ -154,7 +153,7 @@ public class TestController {
      * @author Hlingoes 2020/5/2
      */
     @PostMapping("uploadExcel")
-    public Result uploadExcel(CommandParams commandParams, @RequestParam("file") MultipartFile file) throws IOException {
+    public CommonResult uploadExcel(CommandParams commandParams, @RequestParam("file") MultipartFile file) throws IOException {
         QuartzJobExcelListener quartzJobExcelListener = new QuartzJobExcelListener(this.jobService);
         EasyExcel.read(file.getInputStream(), QuartzJob.class, quartzJobExcelListener).sheet().doRead();
         return CommonResult.success(quartzJobExcelListener.getDescription().toString());

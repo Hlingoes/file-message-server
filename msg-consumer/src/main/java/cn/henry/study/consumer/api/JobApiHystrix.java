@@ -1,7 +1,6 @@
 package cn.henry.study.consumer.api;
 
 import cn.henry.study.common.result.CommonResult;
-import cn.henry.study.common.result.Result;
 import org.springframework.stereotype.Component;
 
 /**

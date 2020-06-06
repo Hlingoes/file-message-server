@@ -43,10 +43,11 @@ import java.util.concurrent.*;
 public class ThreadPoolExecutorUtils {
     private static Logger logger = LoggerFactory.getLogger(ThreadFactoryBuilder.class);
 
-    public static int DEFAULT_CORE_SIZE = Runtime.getRuntime().availableProcessors();
-    private static int POLL_WAITING_TIME = 3 * 60;
-    private static int DEFAULT_QUEUE_SIZE = 10 * 1000;
-    private static int DEFAULT_MAX_SIZE = 4 * DEFAULT_CORE_SIZE;
+    public static int defaultCoreSize = Runtime.getRuntime().availableProcessors();
+    private static int pollWaitingTime = 3 * 60;
+    private static int defaultQueueSize = 10 * 1000;
+    private static int defaultMaxSize = 4 * defaultCoreSize;
+    private static String threadName = "custom-pool";
 
     /**
      * description: 创建线程池
@@ -59,10 +60,10 @@ public class ThreadPoolExecutorUtils {
      * @author Hlingoes 2020/4/12
      */
     public static ThreadPoolExecutor getExecutorPool(int waitingTime, int coreSize, int maxPoolSize, int queueSize) {
-        POLL_WAITING_TIME = waitingTime;
-        DEFAULT_CORE_SIZE = coreSize;
-        DEFAULT_MAX_SIZE = maxPoolSize;
-        DEFAULT_QUEUE_SIZE = queueSize;
+        pollWaitingTime = waitingTime;
+        defaultCoreSize = coreSize;
+        defaultMaxSize = maxPoolSize;
+        defaultQueueSize = queueSize;
         return getExecutorPool();
     }
 
@@ -76,9 +77,9 @@ public class ThreadPoolExecutorUtils {
      * @author Hlingoes 2020/3/20
      */
     public static ThreadPoolExecutor getExecutorPool(int waitingTime, int queueSize, int maxPoolSize) {
-        POLL_WAITING_TIME = waitingTime;
-        DEFAULT_QUEUE_SIZE = queueSize;
-        DEFAULT_MAX_SIZE = maxPoolSize;
+        pollWaitingTime = waitingTime;
+        defaultQueueSize = queueSize;
+        defaultMaxSize = maxPoolSize;
         return getExecutorPool();
     }
 
@@ -91,8 +92,8 @@ public class ThreadPoolExecutorUtils {
      * @author Hlingoes 2020/3/20
      */
     public static ThreadPoolExecutor getExecutorPool(int waitingTime, int queueSize) {
-        POLL_WAITING_TIME = waitingTime;
-        DEFAULT_QUEUE_SIZE = queueSize;
+        pollWaitingTime = waitingTime;
+        defaultQueueSize = queueSize;
         return getExecutorPool();
     }
 
@@ -104,8 +105,19 @@ public class ThreadPoolExecutorUtils {
      * @author Hlingoes 2020/3/20
      */
     public static ThreadPoolExecutor getExecutorPool(int waitingTime) {
-        POLL_WAITING_TIME = waitingTime;
+        pollWaitingTime = waitingTime;
         return getExecutorPool();
+    }
+
+    /**
+     * description: 创建线程池
+     *
+     * @param
+     * @return java.util.concurrent.ThreadPoolExecutor
+     * @author Hlingoes 2020/6/6
+     */
+    public static ThreadPoolExecutor getExecutorPool() {
+        return getExecutorPool(threadName);
     }
 
     /**
@@ -115,13 +127,13 @@ public class ThreadPoolExecutorUtils {
      * @return java.util.concurrent.ThreadPoolExecutor
      * @author Hlingoes 2020/3/20
      */
-    public static ThreadPoolExecutor getExecutorPool() {
+    public static ThreadPoolExecutor getExecutorPool(String threadName) {
         ThreadFactory factory = new ThreadFactoryBuilder()
-                .setNameFormat("custom-pool-%d")
+                .setNameFormat(threadName + "-%d")
                 .build();
-        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_SIZE);
-        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(DEFAULT_CORE_SIZE,
-                DEFAULT_MAX_SIZE, 60, TimeUnit.SECONDS, queue, factory,
+        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(defaultQueueSize);
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(defaultCoreSize,
+                defaultMaxSize, 60, TimeUnit.SECONDS, queue, factory,
                 (r, executor) -> {
                     /**
                      * 自定义的拒绝策略
@@ -197,7 +209,7 @@ public class ThreadPoolExecutorUtils {
              * 如果在超时时间结束之前线程池能够正常关闭，这个方法会返回true，否则，一旦超时，就会返回false。
              * 通常来说不可能无限制地等待下去，因此需要预估一个合理的超时时间，然后使用这个方法
              */
-            if (!pool.awaitTermination(POLL_WAITING_TIME, TimeUnit.SECONDS)) {
+            if (!pool.awaitTermination(pollWaitingTime, TimeUnit.SECONDS)) {
                 /**
                  * 如果awaitTermination方法返回false，又希望尽可能在线程池关闭之后再做其他资源回收工作，
                  * 可以考虑再调用一下shutdownNow方法，

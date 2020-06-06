@@ -9,6 +9,8 @@ package cn.henry.study.common.result;
 public enum ResultCode {
     /* 成功状态码 */
     SUCCESS(1, "成功"),
+    LOADING(2, "需要去加载nextId"),
+    OVER(3, "超过maxId 不可用"),
 
     /* 参数错误：10001-19999 */
     PARAM_IS_INVALID(10001, "参数无效"),

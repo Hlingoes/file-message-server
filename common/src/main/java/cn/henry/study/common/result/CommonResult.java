@@ -1,12 +1,14 @@
 package cn.henry.study.common.result;
 
+import java.io.Serializable;
+
 /**
  * description: 通用的返回结果
  *
  * @author Hlingoes
  * @date 2020/1/1 22:20
  */
-public class CommonResult implements Result {
+public class CommonResult implements Serializable {
     private static final long serialVersionUID = 874200365941306385L;
 
     private Integer code;
@@ -24,6 +26,13 @@ public class CommonResult implements Result {
     public static CommonResult success(Object data) {
         CommonResult commonResult = new CommonResult();
         commonResult.setResultCode(ResultCode.SUCCESS);
+        commonResult.setData(data);
+        return commonResult;
+    }
+
+    public static CommonResult success(ResultCode resultCode, Object data) {
+        CommonResult commonResult = new CommonResult();
+        commonResult.setResultCode(resultCode);
         commonResult.setData(data);
         return commonResult;
     }

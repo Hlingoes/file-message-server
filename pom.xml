@@ -57,6 +57,7 @@
         <module>web-server</module>
         <module>msg-consumer</module>
         <module>gateway-server</module>
+        <module>tinyid</module>
     </modules>
 
 </project>

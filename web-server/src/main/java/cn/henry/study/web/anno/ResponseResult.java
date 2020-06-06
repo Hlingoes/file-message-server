@@ -1,7 +1,6 @@
 package cn.henry.study.web.anno;
 
 import cn.henry.study.common.result.CommonResult;
-import cn.henry.study.common.result.Result;
 
 import java.lang.annotation.*;
 
@@ -14,5 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ResponseResult {
-    Class<? extends Result> value() default CommonResult.class;
+    Class<? extends CommonResult> value() default CommonResult.class;
 }

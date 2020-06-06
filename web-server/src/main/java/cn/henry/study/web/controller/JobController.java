@@ -1,7 +1,6 @@
 package cn.henry.study.web.controller;
 
 import cn.henry.study.common.result.CommonResult;
-import cn.henry.study.common.result.Result;
 import cn.henry.study.web.entity.QuartzJob;
 import cn.henry.study.web.mapper.JobMapper;
 import cn.henry.study.web.service.quartz.QuartzJobService;
@@ -35,14 +34,14 @@ public class JobController {
     private JobMapper jobMapper;
 
     @GetMapping("/testAdding")
-    public Result add(String jobName) throws Exception {
+    public CommonResult add(String jobName) throws Exception {
         QuartzJob job = jobService.getTestQuartzJob(jobName);
         jobMapper.saveJob(job);
         return CommonResult.success(job);
     }
 
     @GetMapping("/testBatchAdding")
-    public Result batchAdding(String jobName) throws Exception {
+    public CommonResult batchAdding(String jobName) throws Exception {
         List<QuartzJob> jobs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             jobs.add(jobService.getTestQuartzJob(jobName));
@@ -51,12 +50,12 @@ public class JobController {
     }
 
     @PostMapping("/add")
-    public Result save(QuartzJob quartz) throws Exception {
+    public CommonResult save(QuartzJob quartz) throws Exception {
         return CommonResult.success(jobService.saveJob(quartz));
     }
 
     @PostMapping("/edit")
-    public Result edit(QuartzJob quartz) throws Exception {
+    public CommonResult edit(QuartzJob quartz) throws Exception {
         return CommonResult.success(jobService.updateJob(quartz));
     }
 
@@ -72,12 +71,12 @@ public class JobController {
     }
 
     @GetMapping("/pause")
-    public Result pause(String jobName, String jobGroup) throws SchedulerException {
+    public CommonResult pause(String jobName, String jobGroup) throws SchedulerException {
         return CommonResult.success(jobService.pauseJob(jobName, jobGroup));
     }
 
     @GetMapping("/resume")
-    public Result resume(String jobName, String jobGroup) throws SchedulerException {
+    public CommonResult resume(String jobName, String jobGroup) throws SchedulerException {
         return CommonResult.success(jobService.resumeJob(jobName, jobGroup));
     }
 

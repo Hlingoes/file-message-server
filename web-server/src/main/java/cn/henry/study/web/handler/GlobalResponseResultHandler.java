@@ -4,7 +4,6 @@ import cn.henry.study.web.anno.ResponseResult;
 import cn.henry.study.web.interceptor.ResponseResultInterceptor;
 import cn.henry.study.common.result.CommonResult;
 import cn.henry.study.web.result.DefaultWebErrorResult;
-import cn.henry.study.common.result.Result;
 import cn.henry.study.common.utils.JacksonUtils;
 import cn.henry.study.web.utils.RequestContextHolderUtils;
 import org.springframework.core.MethodParameter;
@@ -57,7 +56,7 @@ public class GlobalResponseResultHandler implements ResponseBodyAdvice<Object> {
                                   Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         ResponseResult responseResultAnn = (ResponseResult) RequestContextHolderUtils.getRequest()
                 .getAttribute(ResponseResultInterceptor.RESPONSE_RESULT);
-        Class<? extends Result> resultClazz = responseResultAnn.value();
+        Class<? extends CommonResult> resultClazz = responseResultAnn.value();
         if (resultClazz.isAssignableFrom(CommonResult.class)) {
             if (body instanceof DefaultWebErrorResult) {
                 DefaultWebErrorResult defaultWebErrorResult = (DefaultWebErrorResult) body;

@@ -1,7 +1,6 @@
 package cn.henry.study.web.result;
 
 import cn.henry.study.common.exceptions.BaseException;
-import cn.henry.study.common.result.Result;
 import cn.henry.study.common.result.ResultCode;
 import cn.henry.study.web.utils.RequestContextHolderUtils;
 import cn.henry.study.common.enums.ExceptionEnum;
@@ -19,7 +18,7 @@ import java.util.Date;
  * @author Hlingoes
  * @date 2020/1/1 22:42
  */
-public class DefaultWebErrorResult implements Serializable, Result {
+public class DefaultWebErrorResult implements Serializable {
     private static final long serialVersionUID = 1899083570489722793L;
 
     /**

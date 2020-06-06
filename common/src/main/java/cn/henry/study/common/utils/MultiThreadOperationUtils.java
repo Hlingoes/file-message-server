@@ -31,7 +31,7 @@ public class MultiThreadOperationUtils {
      */
     public static void batchExecute(OperationThreadService service, Object[] args) throws Exception {
         long totalCounts = service.count(args);
-        long batchCounts = totalCounts / ThreadPoolExecutorUtils.DEFAULT_CORE_SIZE;
+        long batchCounts = totalCounts / ThreadPoolExecutorUtils.defaultCoreSize;
         // 兼容任务少于核心线程数的情况
         if (batchCounts == 0) {
             batchCounts = 1L;
