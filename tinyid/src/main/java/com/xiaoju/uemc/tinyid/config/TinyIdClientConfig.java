@@ -1,4 +1,4 @@
-package com.xiaoju.uemc.tinyid.client.config;
+package com.xiaoju.uemc.tinyid.config;
 
 import java.util.List;
 

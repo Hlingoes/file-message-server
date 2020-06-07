@@ -57,7 +57,7 @@ public class CommonResult implements Serializable {
         return commonResult;
     }
 
-    private void setResultCode(ResultCode code) {
+    public void setResultCode(ResultCode code) {
         this.code = code.code();
         this.msg = code.message();
     }

@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: tinyid-server
+eureka:
+  instance:
+    status-page-url: http://${spring.cloud.client.ip-address}:${server.port}/swagger-ui.html
+#日志配置，自定义日志路径，防止因自动加载顺序问题，读取不到spring的配置
+logging:
+  config: classpath:logback-custom.xml
+logback:
+  logHome: logs
