@@ -105,6 +105,7 @@
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
+
         <!-- 在cmd中切换到local_test.jar包所在的目录
             mvn install:install-file "-DgroupId=cn.henry.frame" "-DartifactId=local_test" "-Dversion=1.0.0" "-Dpackaging=jar" "-Dfile=local_test.jar"
         -->

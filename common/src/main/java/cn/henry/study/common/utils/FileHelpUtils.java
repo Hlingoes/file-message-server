@@ -149,12 +149,12 @@ public class FileHelpUtils {
      */
     public static File findTempleFile(String rowKey) {
         String fileName = StringUtils.substringAfterLast(rowKey, "/");
-        if(StringUtils.isEmpty(fileName)){
+        if (StringUtils.isEmpty(fileName)) {
             // 不带"/"直接是文件名
             fileName = rowKey;
         }
         File dir = findHomeDir(FileHelpUtils.class);
-        if(!dir.exists()){
+        if (!dir.exists()) {
             dir.mkdirs();
         }
         return FileUtils.getFile(dir, retryDir, fileName);
@@ -309,7 +309,7 @@ public class FileHelpUtils {
 
     /**
      * @return a byte[] containing the information contained in the specified
-     *         InputStream.
+     * InputStream.
      * @throws java.io.IOException
      */
     public static byte[] getBytes(InputStream input) throws IOException {

@@ -1,6 +1,6 @@
-package cn.henry.study.common.service;
+package com.xiaoju.uemc.tinyid.service;
 
-import cn.henry.study.common.bo.SegmentId;
+import com.xiaoju.uemc.tinyid.entity.SegmentId;
 
 /**
  * @author du_imba

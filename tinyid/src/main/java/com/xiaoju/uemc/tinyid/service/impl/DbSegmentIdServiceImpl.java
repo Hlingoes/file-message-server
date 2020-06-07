@@ -1,15 +1,15 @@
 package com.xiaoju.uemc.tinyid.service.impl;
 
-import cn.henry.study.common.bo.SegmentId;
 import cn.henry.study.common.exceptions.TinyIdSysException;
-import cn.henry.study.common.service.SegmentIdService;
 import com.xiaoju.uemc.tinyid.constants.TinyIdConstants;
 import com.xiaoju.uemc.tinyid.dao.TinyIdInfoDAO;
+import com.xiaoju.uemc.tinyid.entity.SegmentId;
 import com.xiaoju.uemc.tinyid.entity.TinyIdInfo;
+import com.xiaoju.uemc.tinyid.service.SegmentIdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author du_imba
  */
-@Component
+@Service
 public class DbSegmentIdServiceImpl implements SegmentIdService {
 
     private static final Logger logger = LoggerFactory.getLogger(DbSegmentIdServiceImpl.class);

@@ -1,11 +1,11 @@
-package com.xiaoju.uemc.tinyid;
+package com.xiaoju.uemc.tinyid.server;
 
-import cn.henry.study.common.bo.SegmentId;
-import cn.henry.study.common.generator.IdGenerator;
 import cn.henry.study.common.result.CommonResult;
 import cn.henry.study.common.result.ResultCode;
-import cn.henry.study.common.service.SegmentIdService;
+import com.xiaoju.uemc.tinyid.entity.SegmentId;
 import com.xiaoju.uemc.tinyid.factory.impl.IdGeneratorFactoryServer;
+import com.xiaoju.uemc.tinyid.generator.IdGenerator;
+import com.xiaoju.uemc.tinyid.service.SegmentIdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,15 @@ import java.util.List;
  * @date 2020/6/7 11:36
  */
 @Service
-public class TinyIdServer {
-    private static Logger logger = LoggerFactory.getLogger(TinyIdServer.class);
+public class TinyIdGenerateServer {
+    private static Logger logger = LoggerFactory.getLogger(TinyIdGenerateServer.class);
 
     @Autowired
     private IdGeneratorFactoryServer idGeneratorFactoryServer;
+
     @Autowired
     private SegmentIdService segmentIdService;
+
     @Value("${batch.size.max}")
     private Integer batchSizeMax;
 
@@ -121,4 +123,5 @@ public class TinyIdServer {
         }
         return result;
     }
+
 }

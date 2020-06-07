@@ -1,6 +1,7 @@
-package cn.henry.study.common.factory;
+package com.xiaoju.uemc.tinyid.factory;
 
-import cn.henry.study.common.generator.IdGenerator;
+
+import com.xiaoju.uemc.tinyid.generator.IdGenerator;
 
 import java.util.concurrent.ConcurrentHashMap;
 

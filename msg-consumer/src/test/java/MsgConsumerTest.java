@@ -1,4 +1,4 @@
-import com.xiaoju.uemc.tinyid.TinyIdApplication;
+import cn.henry.study.consumer.MsgConsumerServer;
 import com.xiaoju.uemc.tinyid.server.TinyIdGenerateServer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +12,12 @@ import org.springframework.test.context.junit4.SpringRunner;
  * description:
  *
  * @author Hlingoes
- * @date 2020/6/7 12:22
+ * @date 2020/6/7 18:35
  */
-@SpringBootTest(classes = TinyIdApplication.class)
+@SpringBootTest(classes = MsgConsumerServer.class)
 @RunWith(SpringRunner.class)
-public class TinyIdTest {
-    private static Logger logger = LoggerFactory.getLogger(TinyIdTest.class);
+public class MsgConsumerTest {
+    private static Logger logger = LoggerFactory.getLogger(MsgConsumerTest.class);
 
     @Autowired
     private TinyIdGenerateServer tinyIdGenerateServer;
@@ -29,8 +29,4 @@ public class TinyIdTest {
         }
     }
 
-    @Test
-    public void nextIdBatchTest() {
-        logger.info("aquire ids: {}", this.tinyIdGenerateServer.nextId("test", 10));
-    }
 }

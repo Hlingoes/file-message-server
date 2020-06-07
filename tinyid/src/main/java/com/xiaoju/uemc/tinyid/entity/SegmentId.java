@@ -1,4 +1,4 @@
-package cn.henry.study.common.bo;
+package com.xiaoju.uemc.tinyid.entity;
 
 import cn.henry.study.common.result.CommonResult;
 import cn.henry.study.common.result.ResultCode;

@@ -1,4 +1,4 @@
-package cn.henry.study.common.generator;
+package com.xiaoju.uemc.tinyid.generator;
 
 import java.util.List;
 

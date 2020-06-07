@@ -137,8 +137,8 @@
             <appender-ref ref="SERVICE_ALL"/>
         </root>
 
-        <!-- mybatis loggers -->
-        <logger name="com.xiaoju.uemc.tinyid.dao.impl" level="DEBUG" additivity="false">
+        <!-- jdbcTemplate loggers -->
+        <logger name="org.springframework.jdbc.core" level="DEBUG" additivity="false">
             <appender-ref ref="SQL"/>
             <appender-ref ref="STDOUT"/>
         </logger>

@@ -1,12 +1,12 @@
-package cn.henry.study.common.generator.impl;
+package com.xiaoju.uemc.tinyid.generator.impl;
 
-import cn.henry.study.common.bo.SegmentId;
 import cn.henry.study.common.exceptions.TinyIdSysException;
-import cn.henry.study.common.generator.IdGenerator;
 import cn.henry.study.common.result.CommonResult;
 import cn.henry.study.common.result.ResultCode;
-import cn.henry.study.common.service.SegmentIdService;
 import cn.henry.study.common.utils.ThreadPoolExecutorUtils;
+import com.xiaoju.uemc.tinyid.entity.SegmentId;
+import com.xiaoju.uemc.tinyid.generator.IdGenerator;
+import com.xiaoju.uemc.tinyid.service.SegmentIdService;
 
 import java.util.ArrayList;
 import java.util.List;
