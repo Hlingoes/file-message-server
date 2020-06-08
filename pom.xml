@@ -58,6 +58,7 @@
         <module>msg-consumer</module>
         <module>gateway-server</module>
         <module>tinyid</module>
+        <module>rabbitmq-server</module>
     </modules>
 
 </project>

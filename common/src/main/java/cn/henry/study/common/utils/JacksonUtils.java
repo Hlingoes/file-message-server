@@ -17,10 +17,9 @@ import java.util.List;
  * @date 2019/12/21 22:04
  */
 public class JacksonUtils {
-
     private static Logger logger = LoggerFactory.getLogger(JacksonUtils.class);
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**
      * description: 将对象转换成字符串

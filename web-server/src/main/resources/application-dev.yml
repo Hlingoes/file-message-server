@@ -73,24 +73,6 @@ spring:
       #空闲时检测连接是否有效
       testWhileIdle: true
       useEPSVwithIPv4: false
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: henry
-    password: faith
-    publisher-returns: true
-    publisher-confirms: true
-    template:
-      mandatory: true
-    listener:
-      simple:
-        acknowledge-mode: manual
-        default-requeue-rejected: false
-        concurrency: 1
-        max-concurrency: 1
-        prefetch: 1
-        retry:
-          enabled: true
   datasource:
     mysqlClients:
       - type: com.alibaba.druid.pool.DruidDataSource
