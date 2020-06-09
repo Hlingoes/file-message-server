@@ -28,7 +28,7 @@ public class OperationThread implements Callable<PartitionElements> {
     public PartitionElements call() {
         long startTime = System.currentTimeMillis();
         try {
-            this.elements.setDatas(this.service.invoke(this.elements));
+            this.elements.setData(this.service.invoke(this.elements));
             long endTime = System.currentTimeMillis();
             logger.info("partition operation finished, cost: {}ms", (endTime - startTime));
         } catch (Exception e) {

@@ -310,11 +310,12 @@ public class HttpClientTemplateService extends DefaultFileService implements Ope
     }
 
     @Override
-    public void finished(Object object) throws Exception {
+    public Object finished(Object object) throws Exception {
         // 关闭文件流
         RandomAccessFile resultFile = (RandomAccessFile) object;
         IOUtils.closeQuietly(resultFile);
         logger.info("finish task, close stream");
+        return resultFile;
     }
 
     @Override

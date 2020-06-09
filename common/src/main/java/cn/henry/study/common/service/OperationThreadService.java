@@ -35,10 +35,10 @@ public interface OperationThreadService {
      *
      * @param elements
      * @throws Exception
-     * @return java.util.List<java.lang.Object>
+     * @return java.lang.Object
      * @author Hlingoes 2020/5/24
      */
-    List<Object> invoke(PartitionElements elements) throws Exception;
+    Object invoke(PartitionElements elements) throws Exception;
 
     /**
      * description: 多线程单个任务结束后的归并方法
@@ -56,9 +56,9 @@ public interface OperationThreadService {
      *
      * @param object
      * @throws Exception
-     * @return void
+     * @return java.lang.Object
      * @author Hlingoes 2020/5/24
      */
-    void finished(Object object)throws Exception;
+    Object finished(Object object)throws Exception;
 
 }

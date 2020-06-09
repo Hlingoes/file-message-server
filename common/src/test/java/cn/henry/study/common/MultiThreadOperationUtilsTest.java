@@ -32,7 +32,7 @@ public class MultiThreadOperationUtilsTest {
         }
 
         @Override
-        public List<Object> invoke(PartitionElements elements) throws Exception {
+        public Object invoke(PartitionElements elements) throws Exception {
             List<Object> list = new ArrayList<>((int) elements.getIndex());
             for (int i = 0; i < elements.getIndex(); i++) {
                 list.add("test_" + i);
@@ -44,7 +44,7 @@ public class MultiThreadOperationUtilsTest {
         public void post(PartitionElements elements, Object object) throws Exception {
             String insertSql = "insert into test (id) values ";
             StringBuilder sb = new StringBuilder();
-            List<Object> datas = elements.getDatas();
+            List<Object> datas = (List<Object>) elements.getData();
             for (int i = 0; i < datas.size(); i++) {
                 if ((i + 1) % 5 == 0 || (i + 1) == datas.size()) {
                     sb.append("('" + datas.get(i) + "')");
@@ -57,8 +57,8 @@ public class MultiThreadOperationUtilsTest {
         }
 
         @Override
-        public void finished(Object object) throws Exception {
-
+        public Object finished(Object object) throws Exception {
+            return object;
         }
     }
 

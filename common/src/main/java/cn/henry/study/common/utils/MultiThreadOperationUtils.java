@@ -29,7 +29,7 @@ public class MultiThreadOperationUtils {
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    public static void batchExecute(OperationThreadService service, Object[] args) throws Exception {
+    public static Object batchExecute(OperationThreadService service, Object[] args) throws Exception {
         long totalCounts = service.count(args);
         long batchCounts = totalCounts / ThreadPoolExecutorUtils.defaultCoreSize;
         // 兼容任务少于核心线程数的情况
@@ -37,7 +37,7 @@ public class MultiThreadOperationUtils {
             batchCounts = 1L;
         }
         PartitionElements elements = new PartitionElements(batchCounts, totalCounts, args);
-        batchExecute(service, elements);
+        return batchExecute(service, elements);
     }
 
     /**
@@ -50,10 +50,10 @@ public class MultiThreadOperationUtils {
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    public static void batchExecute(OperationThreadService service, long batchCounts, Object[] args) throws Exception {
+    public static Object batchExecute(OperationThreadService service, long batchCounts, Object[] args) throws Exception {
         long totalCounts = service.count(args);
         PartitionElements elements = new PartitionElements(batchCounts, totalCounts, args);
-        batchExecute(service, elements);
+        return batchExecute(service, elements);
     }
 
     /**
@@ -64,7 +64,7 @@ public class MultiThreadOperationUtils {
      * @return void
      * @author Hlingoes 2020/5/23
      */
-    private static void batchExecute(OperationThreadService service, PartitionElements elements) throws Exception {
+    private static Object batchExecute(OperationThreadService service, PartitionElements elements) throws Exception {
         ThreadPoolExecutor executor = ThreadPoolExecutorUtils.getExecutorPool();
         // 在多线程分治任务之前的预处理方法，返回业务数据
         final Object obj = service.prepare(elements.getArgs());
@@ -96,7 +96,7 @@ public class MultiThreadOperationUtils {
                 logger.error("future call fail", e);
             }
         });
-        service.finished(obj);
+        return service.finished(obj);
     }
 
 }

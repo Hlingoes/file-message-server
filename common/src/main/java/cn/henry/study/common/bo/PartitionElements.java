@@ -1,7 +1,6 @@
 package cn.henry.study.common.bo;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * description: 分段参数
@@ -27,7 +26,7 @@ public class PartitionElements {
      */
     private long totalCounts;
     private Object[] args;
-    private List<Object> datas;
+    private Object data;
 
     public PartitionElements() {
 
@@ -40,7 +39,7 @@ public class PartitionElements {
         this.args = args;
     }
 
-    public PartitionElements (long index, PartitionElements elements) {
+    public PartitionElements(long index, PartitionElements elements) {
         this.index = index;
         this.batchCounts = elements.getBatchCounts();
         this.partitions = elements.getPartitions();
@@ -108,12 +107,12 @@ public class PartitionElements {
         this.args = args;
     }
 
-    public List<Object> getDatas() {
-        return datas;
+    public Object getData() {
+        return data;
     }
 
-    public void setDatas(List<Object> datas) {
-        this.datas = datas;
+    public void setData(Object data) {
+        this.data = data;
     }
 
     @Override
