@@ -8,11 +8,14 @@ import cn.henry.study.web.mapper.JobMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * description: Quartz的web服务类
@@ -80,6 +83,24 @@ public class QuartzJobService {
         this.scheduler.unscheduleJob(triggerKey);
         this.scheduler.deleteJob(JobKey.jobKey(jobName, jobGroup));
         this.jobMapper.removeQuartzJob(jobName, jobGroup);
+    }
+
+    public void removeGroupJobs(String jobGroup) throws SchedulerException {
+        GroupMatcher<JobKey> matcher = GroupMatcher.groupEquals("group_1");
+        Set<JobKey> jobKeySet = this.scheduler.getJobKeys(matcher);
+        List<JobKey> jobKeyList = new ArrayList<JobKey>();
+        jobKeyList.addAll(jobKeySet);
+        /**
+         * 常规删除
+         * this.scheduler.deleteJobs(jobKeyList);
+         */
+        jobKeyList.forEach(jobKey -> {
+            try {
+                removeJob(jobKey.getName(), jobGroup);
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public QuartzJob getJob(String jobName, String jobGroup) throws DataAccessException {

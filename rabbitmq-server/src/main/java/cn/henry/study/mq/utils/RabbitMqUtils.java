@@ -225,7 +225,6 @@ public class RabbitMqUtils {
         rabbitAdmin.removeBinding(binding);
     }
 
-
     /**
      * 获得CloseableHttpClient对象，通过basic认证。
      *
