@@ -1,6 +1,5 @@
 package cn.henry.study.consumer;
 
-import cn.henry.study.mq.annotation.EnableRabbitmqClient;
 import com.xiaoju.uemc.tinyid.annotation.EnableTinyIdClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +16,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableTinyIdClient
-@EnableRabbitmqClient
 public class MsgConsumerServer {
     public static void main(String[] args) {
         SpringApplication.run(MsgConsumerServer.class, args);

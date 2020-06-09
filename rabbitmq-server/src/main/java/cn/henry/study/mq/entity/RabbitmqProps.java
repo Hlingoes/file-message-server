@@ -18,15 +18,6 @@ public class RabbitmqProps {
     public RabbitmqProps() {
     }
 
-    public RabbitmqProps(String host, int port, String username, String password, int concurrency, int prefetch) {
-        this.host = host;
-        this.port = port;
-        this.username = username;
-        this.password = password;
-        this.concurrency = concurrency;
-        this.prefetch = prefetch;
-    }
-
     public String getHost() {
         return host;
     }

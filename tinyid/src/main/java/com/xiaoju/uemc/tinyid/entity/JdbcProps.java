@@ -1,9 +1,5 @@
 package com.xiaoju.uemc.tinyid.entity;
 
-import com.xiaoju.uemc.tinyid.config.DataSourceConfig;
-
-import java.util.Properties;
-
 /**
  * description: 数据库连接配置
  *
@@ -19,15 +15,6 @@ public class JdbcProps {
     private boolean testOnBorrow;
 
     public JdbcProps() {
-    }
-
-    public JdbcProps(Properties props, String activeName) {
-        this.driverClassName = props.get(DataSourceConfig.PROPS_PREFIX + activeName + ".driverClassName").toString();
-        this.url = props.get(DataSourceConfig.PROPS_PREFIX + activeName + ".url").toString();
-        this.username = props.get(DataSourceConfig.PROPS_PREFIX + activeName + ".username").toString();
-        this.password = props.get(DataSourceConfig.PROPS_PREFIX + activeName + ".password").toString();
-        this.maxActive = Integer.valueOf(props.get(DataSourceConfig.PROPS_PREFIX + activeName + ".maxActive").toString());
-        this.testOnBorrow = Boolean.valueOf(props.get(DataSourceConfig.PROPS_PREFIX + activeName + ".testOnBorrow").toString());
     }
 
     public String getDriverClassName() {

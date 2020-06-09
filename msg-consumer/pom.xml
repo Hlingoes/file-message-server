@@ -67,12 +67,6 @@
             <version>1.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>cn.henry.study</groupId>
-            <artifactId>rabbitmq-server</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
     </dependencies>
 
     <build>
