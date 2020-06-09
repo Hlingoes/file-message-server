@@ -90,16 +90,9 @@ public class QuartzJobService {
         Set<JobKey> jobKeySet = this.scheduler.getJobKeys(matcher);
         List<JobKey> jobKeyList = new ArrayList<JobKey>();
         jobKeyList.addAll(jobKeySet);
-        /**
-         * 常规删除
-         * this.scheduler.deleteJobs(jobKeyList);
-         */
+        this.scheduler.deleteJobs(jobKeyList);
         jobKeyList.forEach(jobKey -> {
-            try {
-                removeJob(jobKey.getName(), jobGroup);
-            } catch (SchedulerException e) {
-                e.printStackTrace();
-            }
+            this.jobMapper.removeQuartzJob(jobKey.getName(), jobGroup);
         });
     }
 
