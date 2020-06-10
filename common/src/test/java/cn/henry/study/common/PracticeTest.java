@@ -47,7 +47,7 @@ public class PracticeTest {
         String oph = OptionHelper.substVars("${LOG_HOME}/test-log-.log", context);
         logger.info("这个就没问题");
         LoggerUtils.getLogger(LogNameEnum.TEST, PracticeTest.class).info("#####{}####", oph);
-        LoggerUtils.getLogger(LogNameEnum.TEST, PracticeTest.class).info("看到这条信息就是info");
+        LoggerUtils.getLogger(LogNameEnum.TEST, LoggerUtils.class).info("看到这条信息就是info");
         LoggerUtils.getLogger(LogNameEnum.TEST, PracticeTest.class).error("看到这条信息就是error");
     }
 

@@ -1,9 +1,9 @@
+package cn.henry.study.mq;
+
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.OptionHelper;
 import cn.henry.study.common.enums.LogNameEnum;
-import cn.henry.study.common.utils.JacksonUtils;
 import cn.henry.study.common.utils.LoggerUtils;
-import cn.henry.study.mq.RabbitMqApplication;
 import cn.henry.study.mq.entity.RabbitmqProps;
 import cn.henry.study.mq.sender.SimpleSender;
 import cn.henry.study.mq.utils.RabbitMqUtils;
@@ -57,6 +57,9 @@ public class mqTest {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         String oph = OptionHelper.substVars("${LOG_HOME}/test-log.log", context);
         logger.info("这个就没问题");
-        LoggerUtils.getLogger(LogNameEnum.TEST, mqTest.class).info("#####{}####", oph);
+        LoggerUtils.getLogger(LogNameEnum.TEST, mqTest.class).info("1#####{}####info{}", oph, mqTest.class);
+        LoggerUtils.getLogger(LogNameEnum.TEST, LoggerUtils.class).info("2#####{}####info{}", oph, LoggerUtils.class);
+        LoggerUtils.getLogger(LogNameEnum.TEST, mqTest.class).error("1#####{}####error{}", oph, mqTest.class);
+        LoggerUtils.getLogger(LogNameEnum.TEST, LoggerUtils.class).error("2#####{}####error{}", oph, LoggerUtils.class);
     }
 }

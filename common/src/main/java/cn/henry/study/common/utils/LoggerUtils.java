@@ -10,7 +10,8 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
+import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.OptionHelper;
@@ -58,12 +59,12 @@ public class LoggerUtils {
      * @author Hlingoes 2020/6/10
      */
     public static Logger getLogger(LogNameEnum logNameEnum, Class clazz) {
-        RollingFileAppender errorAppender = createRollingFileAppender(logNameEnum.getLogName(), Level.ERROR);
-        RollingFileAppender infoAppender = createRollingFileAppender(logNameEnum.getLogName(), Level.INFO);
+        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(clazz);
+        LoggerContext loggerContext = logger.getLoggerContext();
+        RollingFileAppender errorAppender = createAppender(logNameEnum.getLogName(), Level.ERROR, loggerContext);
+        RollingFileAppender infoAppender = createAppender(logNameEnum.getLogName(), Level.INFO, loggerContext);
         Optional<ConsoleAppender> consoleAppender = Optional.ofNullable(defaultConsoleAppender);
-        ConsoleAppender realConsoleAppender = consoleAppender.orElse(createConsoleAppender());
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        ch.qos.logback.classic.Logger logger = context.getLogger(logNameEnum.getLogName());
+        ConsoleAppender realConsoleAppender = consoleAppender.orElse(createConsoleAppender(loggerContext));
         // 设置不向上级打印信息
         logger.setAdditive(false);
         logger.addAppender(errorAppender);
@@ -80,24 +81,23 @@ public class LoggerUtils {
      * @return ch.qos.logback.core.rolling.RollingFileAppender
      * @author Hlingoes 2020/6/10
      */
-    private static RollingFileAppender createRollingFileAppender(String name, Level level) {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+    private static RollingFileAppender createAppender(String name, Level level, LoggerContext loggerContext) {
         RollingFileAppender appender = new RollingFileAppender();
         // 这里设置级别过滤器
         appender.addFilter(createLevelFilter(level));
         // 设置上下文，每个logger都关联到logger上下文，默认上下文名称为default。
         // 但可以使用<scope="context">设置成其他名字，用于区分不同应用程序的记录。一旦设置，不能修改。
-        appender.setContext(context);
+        appender.setContext(loggerContext);
         // appender的name属性
         appender.setName(name.toUpperCase() + "-" + level.levelStr.toUpperCase());
         // 设置文件名
-        String logPath = OptionHelper.substVars("${logPath}-" + name + "-" + level.levelStr.toLowerCase() + ".log", context);
+        String logPath = OptionHelper.substVars("${logPath}-" + name + "-" + level.levelStr.toLowerCase() + ".log", loggerContext);
         appender.setFile(logPath);
         appender.setAppend(true);
         appender.setPrudent(false);
         // 加入下面两个节点
-        appender.setRollingPolicy(createSizeAndTimeBasedRollingPolicy(name, level, context, appender));
-        appender.setEncoder(createEncoder(context));
+        appender.setRollingPolicy(createRollingPolicy(name, level, loggerContext, appender));
+        appender.setEncoder(createEncoder(loggerContext));
         appender.start();
         return appender;
     }
@@ -109,13 +109,12 @@ public class LoggerUtils {
      * @return ch.qos.logback.core.ConsoleAppender
      * @author Hlingoes 2020/6/10
      */
-    private static ConsoleAppender createConsoleAppender() {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+    private static ConsoleAppender createConsoleAppender(LoggerContext loggerContext) {
         ConsoleAppender appender = new ConsoleAppender();
-        appender.setContext(context);
+        appender.setContext(loggerContext);
         appender.setName(consoleAppenderName);
         appender.addFilter(createLevelFilter(Level.DEBUG));
-        appender.setEncoder(createEncoder(context));
+        appender.setEncoder(createEncoder(loggerContext));
         appender.start();
         return appender;
     }
@@ -130,26 +129,25 @@ public class LoggerUtils {
      * @return ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
      * @author Hlingoes 2020/6/10
      */
-    private static SizeAndTimeBasedRollingPolicy createSizeAndTimeBasedRollingPolicy(String name, Level level, LoggerContext context, FileAppender appender) {
-        // 设置文件创建时间及大小的类
-        SizeAndTimeBasedRollingPolicy policy = new SizeAndTimeBasedRollingPolicy();
-        // 文件名格式
+    private static TimeBasedRollingPolicy createRollingPolicy(String name, Level level, LoggerContext context, FileAppender appender) {
         String fp = OptionHelper.substVars("${logPath}/${LOG_NAME_PREFIX}-" + name + "-" + level.levelStr.toLowerCase() + "_%d{yyyy-MM-dd}_%i.log", context);
-        // 最大日志文件大小
-        policy.setMaxFileSize(FileSize.valueOf(maxFileSize));
-        // 设置文件名模式
-        policy.setFileNamePattern(fp);
-        // 设置最大历史记录为30条
-        policy.setMaxHistory(maxHistory);
-        // 总大小限制
-        policy.setTotalSizeCap(FileSize.valueOf(totalSizeCap));
-        // 设置父节点是appender
-        policy.setParent(appender);
+        TimeBasedRollingPolicy rollingPolicyBase = new TimeBasedRollingPolicy<>();
         // 设置上下文，每个logger都关联到logger上下文，默认上下文名称为default。
         // 但可以使用<scope="context">设置成其他名字，用于区分不同应用程序的记录。一旦设置，不能修改。
-        policy.setContext(context);
-        policy.start();
-        return policy;
+        rollingPolicyBase.setContext(context);
+        // 设置父节点是appender
+        rollingPolicyBase.setParent(appender);
+        // 设置文件名模式
+        rollingPolicyBase.setFileNamePattern(fp);
+        SizeAndTimeBasedFNATP sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP();
+        // 最大日志文件大小
+        sizeAndTimeBasedFNATP.setMaxFileSize(FileSize.valueOf(maxFileSize));
+        rollingPolicyBase.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
+        // 设置最大历史记录为30条
+        rollingPolicyBase.setMaxHistory(maxHistory);
+        rollingPolicyBase.start();
+
+        return rollingPolicyBase;
     }
 
     /**
@@ -207,4 +205,35 @@ public class LoggerUtils {
         return appenderMap;
     }
 
+    public static Logger getLogger(String jobName, Class<?> cls) {
+        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(cls);
+        LoggerContext loggerContext = logger.getLoggerContext();
+        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        encoder.setContext(loggerContext);
+        encoder.setPattern("%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35}:%line - %msg%n");
+        encoder.start();
+
+        RollingFileAppender appender = new RollingFileAppender();
+        appender.setContext(loggerContext);
+        TimeBasedRollingPolicy rollingPolicyBase = new TimeBasedRollingPolicy<>();
+        rollingPolicyBase.setContext(loggerContext);
+        rollingPolicyBase.setParent(appender);
+        rollingPolicyBase.setFileNamePattern((String.format("%s/test/test-%s", jobName, jobName) + ".%d{yyyy-MM-dd}.%i.log"));
+        SizeAndTimeBasedFNATP sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP();
+        sizeAndTimeBasedFNATP.setMaxFileSize(FileSize.valueOf("10MB"));
+        rollingPolicyBase.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
+        rollingPolicyBase.setMaxHistory(10);
+        rollingPolicyBase.start();
+
+        appender.setFile("E:\\hulin_workspace\\file-message-server\\rabbitmq-server\\logs\\" + jobName + ".log");
+        appender.setEncoder(encoder);
+        appender.setRollingPolicy(rollingPolicyBase);
+        appender.start();
+
+        logger.setAdditive(false);
+        logger.addAppender(appender);
+        logger.addAppender(defaultConsoleAppender);
+
+        return logger;
+    }
 }
