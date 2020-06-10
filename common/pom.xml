@@ -127,6 +127,10 @@
             <scope>system</scope>
             <systemPath>${basedir}/src/main/local_lib/fastdfs-client-java-1.28-SNAPSHOT.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,4 +1,8 @@
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.OptionHelper;
+import cn.henry.study.common.enums.LogNameEnum;
 import cn.henry.study.common.utils.JacksonUtils;
+import cn.henry.study.common.utils.LoggerUtils;
 import cn.henry.study.mq.RabbitMqApplication;
 import cn.henry.study.mq.entity.RabbitmqProps;
 import cn.henry.study.mq.sender.SimpleSender;
@@ -46,5 +50,13 @@ public class mqTest {
         RabbitMqUtils rabbitMqUtils = new RabbitMqUtils(firstRabbitTemplate);
         List<String> queues = rabbitMqUtils.getAllQueuesFromHttp(rabbitmqProps);
         logger.info("queues: {}", queues);
+    }
+
+    @Test
+    public void loggerUtilsTest() {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        String oph = OptionHelper.substVars("${LOG_HOME}/test-log.log", context);
+        logger.info("这个就没问题");
+        LoggerUtils.getLogger(LogNameEnum.TEST, mqTest.class).info("#####{}####", oph);
     }
 }

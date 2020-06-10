@@ -9,9 +9,10 @@
     <springProperty scope="context" name="LOG_NAME_PREFIX" source="spring.application.name" defaultValue=""/>
 
     <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
-    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35}:%line - %msg%n"/>
-    <timestamp key="bySecond" datePattern="yyyyMMddHHmmss"/>
-    <property name="logPath" value="${LOG_HOME}/${LOG_NAME_PREFIX}_"/>
+    <property scope="context" name="pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35}:%line - %msg%n"/>
+    <timestamp scope="context" key="bySecond" datePattern="yyyyMMddHHmmss"/>
+    <property scope="context" name="logPath" value="${LOG_HOME}/${LOG_NAME_PREFIX}"/>
 
     <!-- appender是configuration的子节点，是负责写日志的组件。 -->
     <!-- ch.qos.logback.core.ConsoleAppender：把日志输出到控制台 -->
@@ -28,15 +29,14 @@
     <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
     <!-- 打印所有日志，保存到文件-->
     <appender name="SERVICE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}all.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logPath}all.%d.%i.log</fileNamePattern>
+        <File>${logPath}-all.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${logPath}/${LOG_NAME_PREFIX}-all.%d.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
             <maxHistory>30</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>2GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <encoder>
             <!-- pattern节点，用来设置日志的输入格式 -->
@@ -48,7 +48,7 @@
 
     <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
     <appender name="SERVICE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}info.log</File>
+        <File>${logPath}-info.log</File>
         <!--只输出INFO-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!--过滤 INFO-->
@@ -58,14 +58,13 @@
             <!--没有匹配到就允许-->
             <onMismatch>DENY</onMismatch>
         </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logPath}info.%d.%i.log</fileNamePattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${logPath}/${LOG_NAME_PREFIX}-info.%d.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
             <maxHistory>30</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>2GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <encoder>
             <!-- pattern节点，用来设置日志的输入格式 -->
@@ -77,19 +76,18 @@
 
     <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
     <appender name="SERVICE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}error.log</File>
+        <File>${logPath}-error.log</File>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <!--设置日志级别,过滤掉info日志,只输入error日志-->
             <level>ERROR</level>
         </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logPath}error.%d.%i.log</fileNamePattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${logPath}/${LOG_NAME_PREFIX}-error.%d.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
             <maxHistory>30</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>2GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <encoder>
             <!-- pattern节点，用来设置日志的输入格式 -->
@@ -101,15 +99,14 @@
 
     <!-- 记录sql -->
     <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}sql.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：log/sys.2020-03-28.0.log -->
-            <fileNamePattern>${logPath}sql.%d.%i.log</fileNamePattern>
+        <File>${logPath}-sql.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次，文件名：logger/sys.2020-03-28.0.logger -->
+            <fileNamePattern>${logPath}/${LOG_NAME_PREFIX}-sql.%d.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
             <maxHistory>30</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>2GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <encoder>
             <!-- pattern节点，用来设置日志的输入格式 -->
