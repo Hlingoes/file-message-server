@@ -51,6 +51,7 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 ##### 19. 2020-05-17 完成基于mybatis，druid的动态数据源，自动分表功能，自测试通过
 ##### 20. 2020-05-20 完成多线程分段任务处理归并的业务抽象，自测试通过
 ##### 21. 2020-06-08 完成id生成器tinyid的引入修改，自测试通过
+##### 22. 2020-06-11 完成rabbitmq服务API的优化调整，使用更加灵活的日志定制写法，需关注logback新版本的问题[issue](https://github.com/spring-projects/spring-boot/issues/21056)
 
 ---
 > 参考了众多博主的帖子，按照实际使用做了调整，一并感谢，共勉
@@ -77,6 +78,8 @@ PS: 按照idea自定义的快捷键可以迅速生成方法注释，@throws的�
 > 21. [springcloud项目搭建（Finchley.RELEASE版）](https://blog.csdn.net/qq_37170583/article/details/80704904)
 > 22. [Vue中使用websocket的正确使用方法](https://www.jianshu.com/p/9d8b2e42328c)
 > 23. [vue的webpack代理websocket配置](https://blog.csdn.net/JimBo3693/article/details/100545053)
+> 24. [logback自定义logger的java代码](https://blog.csdn.net/lw656697752/article/details/84904938)
+> 25. [logback运行时动态创建日志文件](https://www.cnblogs.com/leohe/p/12117183.html)
 <br>
 ***
 待续...

@@ -29,13 +29,14 @@ import java.util.Optional;
  * description: 自定义的日志工具类，
  * 需要在logback.xml,logback-spring.xml或自定义的logback-custom.xml中写入基础配置
  *
+ * @citation https://blog.csdn.net/lw656697752/article/details/84904938
+ * @citation https://www.cnblogs.com/leohe/p/12117183.html
  * @author Hlingoes
  * @date 2020/6/10 19:38
  */
 public class LoggerUtils {
     private static String consoleAppenderName = "serve-console";
     private static String maxFileSize = "50MB";
-    private static String totalSizeCap = "10GB";
     private static int maxHistory = 30;
     private static ConsoleAppender defaultConsoleAppender = null;
 
@@ -48,7 +49,6 @@ public class LoggerUtils {
             }
         });
     }
-
 
     /**
      * description: 获取自定义的logger日志
@@ -126,7 +126,7 @@ public class LoggerUtils {
      * @param level
      * @param context
      * @param appender
-     * @return ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
+     * @return ch.qos.logback.core.rolling.TimeBasedRollingPolicy
      * @author Hlingoes 2020/6/10
      */
     private static TimeBasedRollingPolicy createRollingPolicy(String name, Level level, LoggerContext context, FileAppender appender) {
@@ -205,35 +205,4 @@ public class LoggerUtils {
         return appenderMap;
     }
 
-    public static Logger getLogger(String jobName, Class<?> cls) {
-        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(cls);
-        LoggerContext loggerContext = logger.getLoggerContext();
-        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-        encoder.setContext(loggerContext);
-        encoder.setPattern("%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{35}:%line - %msg%n");
-        encoder.start();
-
-        RollingFileAppender appender = new RollingFileAppender();
-        appender.setContext(loggerContext);
-        TimeBasedRollingPolicy rollingPolicyBase = new TimeBasedRollingPolicy<>();
-        rollingPolicyBase.setContext(loggerContext);
-        rollingPolicyBase.setParent(appender);
-        rollingPolicyBase.setFileNamePattern((String.format("%s/test/test-%s", jobName, jobName) + ".%d{yyyy-MM-dd}.%i.log"));
-        SizeAndTimeBasedFNATP sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP();
-        sizeAndTimeBasedFNATP.setMaxFileSize(FileSize.valueOf("10MB"));
-        rollingPolicyBase.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
-        rollingPolicyBase.setMaxHistory(10);
-        rollingPolicyBase.start();
-
-        appender.setFile("E:\\hulin_workspace\\file-message-server\\rabbitmq-server\\logs\\" + jobName + ".log");
-        appender.setEncoder(encoder);
-        appender.setRollingPolicy(rollingPolicyBase);
-        appender.start();
-
-        logger.setAdditive(false);
-        logger.addAppender(appender);
-        logger.addAppender(defaultConsoleAppender);
-
-        return logger;
-    }
 }
