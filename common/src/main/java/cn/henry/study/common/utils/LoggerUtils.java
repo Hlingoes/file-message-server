@@ -37,6 +37,7 @@ import java.util.Optional;
 public class LoggerUtils {
     private static String consoleAppenderName = "serve-console";
     private static String maxFileSize = "50MB";
+    private static String totalSizeCap = "10G";
     private static int maxHistory = 30;
     private static ConsoleAppender defaultConsoleAppender = null;
 
@@ -145,6 +146,8 @@ public class LoggerUtils {
         rollingPolicyBase.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
         // 设置最大历史记录为30条
         rollingPolicyBase.setMaxHistory(maxHistory);
+        // 总大小限制
+        rollingPolicyBase.setTotalSizeCap(FileSize.valueOf(totalSizeCap));
         rollingPolicyBase.start();
 
         return rollingPolicyBase;
