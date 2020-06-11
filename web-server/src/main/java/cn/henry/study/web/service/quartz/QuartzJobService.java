@@ -86,7 +86,7 @@ public class QuartzJobService {
     }
 
     public void removeGroupJobs(String jobGroup) throws SchedulerException {
-        GroupMatcher<JobKey> matcher = GroupMatcher.groupEquals("group_1");
+        GroupMatcher<JobKey> matcher = GroupMatcher.groupEquals(jobGroup);
         Set<JobKey> jobKeySet = this.scheduler.getJobKeys(matcher);
         List<JobKey> jobKeyList = new ArrayList<JobKey>();
         jobKeyList.addAll(jobKeySet);
