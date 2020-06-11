@@ -1,5 +1,4 @@
-
-#####Java 程序中使用 Logback，需要依赖三个 jar 包，分别是 slf4j-api，logback-core，logback-classic,在 maven 项目中依赖如下：
+#### Java 程序中使用 Logback，需要依赖三个 jar 包，分别是 slf4j-api，logback-core，logback-classic,在 maven 项目中依赖如下：
 ````
 <!-- springboot项目默认了logback的依赖，无需手动添加 -->
  <dependency>
@@ -18,18 +17,18 @@
     <version>1.0.11</version>
 </dependency>
 ````
-#####Logback 在启动时，根据以下步骤寻找配置文件：
+##### Logback 在启动时，根据以下步骤寻找配置文件：
 >1. 在 classpath 中寻找 logback-test.xml文件
 >2. 如果找不到 logback-test.xml，则在 classpath 中寻找 logback.groovy 文件
 >3. 如果找不到 logback.groovy，则在 classpath 中寻找 logback.xml文件
 >4. 如果上述的文件都找不到，则 logback 会使用 JDK 的 SPI 机制查找 META-INF/services/ch.qos.logback.classic.spi.Configurator 中的 logback 配置实现类，
 这个实现类必须实现 Configuration 接口，使用它的实现来进行配置
 >5. 如果上述操作都不成功，logback 就会使用它自带的 BasicConfigurator 来配置，并将日志输出到 console
-#####logback的变量作用于有三种：local，context，system 
+##### logback的变量作用于有三种：local，context，system 
 >1. local 作用域在配置文件内有效；
 >2. context 作用域的有效范围延伸至 logger context；
 >3. system 作用域的范围最广，整个 JVM 内都有效
-#####logback 在替换变量时，首先搜索 local 变量，然后搜索 context，然后搜索 system，在spring项目中，应将变量的作用域设置为context，并交给spring控制
+##### logback 在替换变量时，首先搜索 local 变量，然后搜索 context，然后搜索 system，在spring项目中，应将变量的作用域设置为context，并交给spring控制
 ````
 ## application.yml文件配置
 spring:
@@ -174,12 +173,12 @@ logback:
     </springProfile>
 </configuration>
 ````
-#####以上配置可满足日常开发的大部分需求，可以很方便的将info日志与error隔离开，并按照给定logger输出不同配置文件中。
+##### 以上配置可满足日常开发的大部分需求，可以很方便的将info日志与error隔离开，并按照给定logger输出不同配置文件中。
 ##
-####存在的问题
+#### 存在的问题
 >1. 如果需要按照业务，将某些不同包下的日志，集中输出到指定的日志文件中，上述配置就难以实现；
 >2. 上述xml文件会产生大量重复配置，如appender和logger的配置，添加非常的繁琐，造成配置文件庞大；
-####解决方案
+#### 解决方案
 > 1. 通过logback的SiftingAppender，通过ThreadLocal的方式动态切换，这个方案在我之前的博客中有详细，与业务耦合较高
 > 2. 在java代码中动态生成Appender，轻量，易拓展
 ````
@@ -484,4 +483,4 @@ public class PracticeTest {
 2020-06-12 01:40:33 [main] INFO c.h.study.common.utils.LoggerUtils:26 - 看到这条信息就是info
 2020-06-12 01:40:33 [main] ERROR cn.henry.study.common.PracticeTest:27 - 看到这条信息就是error
 ````
-#####更多使用，可以查看本人的git项目[file-message-server](https://github.com/Hlingoes/file-message-server)，按照实际的需求来适配。
+##### 代码在本人的git项目[file-message-server](https://github.com/Hlingoes/file-message-server)，汇总大家的实践和想法，共同完善最佳实践
