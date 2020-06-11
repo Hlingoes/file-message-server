@@ -3,7 +3,7 @@ package cn.henry.study.common.enums;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * description: 日志枚举类
+ * description: 日志枚举类，防止随意生成日志文件
  *
  * @author Hlingoes 2020/6/10
  */

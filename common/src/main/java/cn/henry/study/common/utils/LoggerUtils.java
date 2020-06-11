@@ -37,13 +37,14 @@ import java.util.Optional;
 public class LoggerUtils {
     private static String consoleAppenderName = "serve-console";
     private static String maxFileSize = "50MB";
-    private static String totalSizeCap = "10G";
+    private static String totalSizeCap = "10GB";
     private static int maxHistory = 30;
     private static ConsoleAppender defaultConsoleAppender = null;
 
     static {
         Map<String, Appender<ILoggingEvent>> appenderMap = allAppenders();
         appenderMap.forEach((key, appender) -> {
+            // 如果logback配置文件中，已存在窗口输出的appender，则直接使用；不存在则重新生成
             if (appender instanceof ConsoleAppender) {
                 defaultConsoleAppender = (ConsoleAppender) appender;
                 return;
@@ -52,7 +53,8 @@ public class LoggerUtils {
     }
 
     /**
-     * description: 获取自定义的logger日志
+     * description: 获取自定义的logger日志，在指定日志文件logNameEnum.getLogName()中输出日志
+     * 日志中会包括所有线程及方法堆栈信息
      *
      * @param logNameEnum
      * @param clazz
@@ -91,7 +93,7 @@ public class LoggerUtils {
         appender.setContext(loggerContext);
         // appender的name属性
         appender.setName(name.toUpperCase() + "-" + level.levelStr.toUpperCase());
-        // 设置文件名
+        // 读取logback配置文件中的属性值，设置文件名
         String logPath = OptionHelper.substVars("${logPath}-" + name + "-" + level.levelStr.toLowerCase() + ".log", loggerContext);
         appender.setFile(logPath);
         appender.setAppend(true);
@@ -131,6 +133,7 @@ public class LoggerUtils {
      * @author Hlingoes 2020/6/10
      */
     private static TimeBasedRollingPolicy createRollingPolicy(String name, Level level, LoggerContext context, FileAppender appender) {
+        // 读取logback配置文件中的属性值，设置文件名
         String fp = OptionHelper.substVars("${logPath}/${LOG_NAME_PREFIX}-" + name + "-" + level.levelStr.toLowerCase() + "_%d{yyyy-MM-dd}_%i.log", context);
         TimeBasedRollingPolicy rollingPolicyBase = new TimeBasedRollingPolicy<>();
         // 设置上下文，每个logger都关联到logger上下文，默认上下文名称为default。
