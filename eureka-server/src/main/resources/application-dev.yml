@@ -20,4 +20,9 @@ eureka:
     fetch-registry: false
     # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8000/eureka ；多个地址可使用,分隔
     service-url:
-      defaultZone: http://localhost:${server.port}/eureka/
+      defaultZone: http://${spring.cloud.client.ip-address}:${server.port}/eureka/
+  server:
+    #关闭自我保护
+    enable-self-preservation: false
+    #清理间隔
+    eviction-interval-timer-in-ms: 3000

@@ -6,6 +6,10 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
     # 实例的 ID 规则
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    # 租期更新时间间隔 （单位秒，默认30秒）
+    lease-renewal-interval-in-seconds: 30
+    #租期到期时间 （单位秒，默认90秒）
+    lease-expiration-duration-in-seconds: 90
   client:
     serviceUrl:
       defaultZone: http://henry:faith@localhost:9761/eureka/

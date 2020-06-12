@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
  * @date 2020/5/22 23:45
  */
 public class PracticeTest {
-    private Logger logger = LoggerFactory.getLogger(PracticeTest.class);
+    private static Logger logger = LoggerFactory.getLogger(PracticeTest.class);
+    private static Logger testLogger = LoggerUtils.getLogger(LogNameEnum.TEST, PracticeTest.class);
 
     @Test
     public void loggerUtilsTest() {
@@ -25,10 +26,10 @@ public class PracticeTest {
          *  <property scope="context" name="LOG_NAME_PREFIX" value="common"/>
          */
         String oph = OptionHelper.substVars("${LOG_HOME}/${LOG_NAME_PREFIX}/test-log.log", context);
-        logger.info("默认配置的日志输出");
-        LoggerUtils.getLogger(LogNameEnum.TEST, PracticeTest.class).info("#####{}####", oph);
-        LoggerUtils.getLogger(LogNameEnum.TEST, LoggerUtils.class).info("看到这条信息就是info");
-        LoggerUtils.getLogger(LogNameEnum.TEST, PracticeTest.class).error("看到这条信息就是error");
+        logger.info("logger默认配置的日志输出");
+        testLogger.info("testLogger#####{}####", oph);
+        testLogger.info("testLogger看到这条信息就是info");
+        testLogger.error("testLogger看到这条信息就是error");
     }
 
 }
