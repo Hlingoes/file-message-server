@@ -30,9 +30,9 @@ public class OperationThread implements Callable<PartitionElements> {
         try {
             this.elements.setData(this.service.invoke(this.elements));
             long endTime = System.currentTimeMillis();
-            logger.info("partition operation finished, cost: {}ms", (endTime - startTime));
+            logger.info("partition operation finished: {}, cost: {}ms", this.elements, (endTime - startTime));
         } catch (Exception e) {
-            logger.error("task fail: {}", this.elements.toString(), e);
+            logger.error("task fail: {}", this.elements, e);
         }
         return this.elements;
     }
