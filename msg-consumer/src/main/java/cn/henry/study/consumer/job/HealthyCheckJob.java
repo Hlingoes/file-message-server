@@ -5,13 +5,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,59 +20,35 @@ import java.util.List;
  * @author Hlingoes
  * @date 2020/6/12 23:58
  */
-@Service
+@Component
 public class HealthyCheckJob {
     private static Logger logger = LoggerFactory.getLogger(HealthyCheckJob.class);
 
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    @Scheduled(cron = "* 0/30 * * * ?")
-    public void checkRunningService(String serviceName) {
-        if (!ipCompare(acquireClientUris(serviceName))) {
+    @Value("${spring.application.name}")
+    private String appName;
+
+    @Scheduled(cron = "0 0/1 * * * ?")
+    public void checkRunningService() {
+        String localIpStr = IpUtils.getIpAddress();
+        long localIpLong = IpUtils.ipToLong(localIpStr);
+        List<ServiceInstance> allInstances = this.discoveryClient.getInstances(this.appName);
+        if (CollectionUtils.isEmpty(allInstances)) {
             return;
         }
-        logger.info("{}服务，地址为：{}，正在执行任务...", serviceName, IpUtils.getIpAddress());
-    }
-
-    private List<URI> acquireClientUris(String serviceName) {
-        List<ServiceInstance> serviceInstanceList = this.discoveryClient.getInstances(serviceName);
-        List<URI> urlList = new ArrayList<URI>();
-        if (!CollectionUtils.isEmpty(serviceInstanceList)) {
-            serviceInstanceList.forEach(si -> {
-                urlList.add(si.getUri());
-            });
+        long[] ipLongs = new long[allInstances.size()];
+        for (int i = 0; i < allInstances.size(); i++) {
+            String host = allInstances.get(i).getHost();
+            ipLongs[i] = IpUtils.ipToLong(host);
         }
-        return urlList;
-    }
-
-    /**
-     * 对比方法
-     *
-     * @param uris
-     * @return
-     */
-    private boolean ipCompare(List<URI> uris) {
-        try {
-            String localIpStr = IpUtils.getIpAddress();
-            long localIpLong = IpUtils.ipToLong(localIpStr);
-            int size = uris.size();
-            if (size == 0) {
-                return false;
-            }
-            Long[] longHost = new Long[size];
-            for (int i = 0; i < uris.size(); i++) {
-                String host = uris.get(i).getHost();
-                longHost[i] = IpUtils.ipToLong(host);
-            }
-            Arrays.sort(longHost);
-            if (localIpLong == longHost[0]) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Arrays.sort(ipLongs);
+        if (localIpLong == ipLongs[0]) {
+            logger.info("符合本机执行条件，服务appName={}，地址为：{}，正在执行任务...", this.appName, localIpStr);
+        } else {
+            logger.info("服务appName={}，本机不需要运行任务实例", this.appName);
         }
-        return false;
     }
 
 }

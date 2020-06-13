@@ -20,7 +20,7 @@ public class EurekaStateListener {
 
     @EventListener
     public void listen(EurekaInstanceCanceledEvent event) {
-        logger.info("服务:{}, 已下线", event);
+        logger.info("服务下线: {}", event);
     }
 
     @EventListener
