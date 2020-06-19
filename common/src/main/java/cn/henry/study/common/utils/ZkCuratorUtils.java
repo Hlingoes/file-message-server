@@ -224,6 +224,10 @@ public class ZkCuratorUtils {
         curatorFramework.setData().withVersion(version).forPath(nodePath, data.getBytes("UTF-8"));
     }
 
+    public static void updateNode(String nodePath, String data) throws Exception {
+        curatorFramework.setData().forPath(nodePath, data.getBytes("UTF-8"));
+    }
+
     /**
      * description: 删除节点
      *

@@ -61,7 +61,7 @@ public class ZkUtilsTest {
      */
     @Test
     public void deleteNodes() throws Exception {
-        ZkCuratorUtils.deleteNodes(0, "/test/fun");
+        ZkCuratorUtils.deleteNodes(0, "/test/five_thread_update");
     }
 
     /**

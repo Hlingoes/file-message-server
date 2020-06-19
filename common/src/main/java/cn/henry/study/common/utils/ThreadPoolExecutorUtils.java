@@ -44,7 +44,7 @@ public class ThreadPoolExecutorUtils {
     private static Logger logger = LoggerFactory.getLogger(ThreadFactoryBuilder.class);
 
     public static int defaultCoreSize = Runtime.getRuntime().availableProcessors();
-    private static int pollWaitingTime = 3 * 60;
+    private static int pollWaitingTime = 60;
     private static int defaultQueueSize = 10 * 1000;
     private static int defaultMaxSize = 4 * defaultCoreSize;
     private static String threadName = "custom-pool";
