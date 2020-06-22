@@ -118,6 +118,11 @@
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
         </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
 
         <!-- 引入本地jar包 -->
         <dependency>
