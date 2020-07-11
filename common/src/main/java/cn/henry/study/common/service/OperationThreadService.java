@@ -2,8 +2,6 @@ package cn.henry.study.common.service;
 
 import cn.henry.study.common.bo.PartitionElements;
 
-import java.util.List;
-
 /**
  * description: 业务分治归并处理接口
  *
@@ -16,6 +14,7 @@ public interface OperationThreadService {
      *
      * @param args
      * @return long
+     * @throws Exception
      * @author Hlingoes 2020/5/22
      */
     long count(Object[] args) throws Exception;
@@ -24,8 +23,8 @@ public interface OperationThreadService {
      * description: 在多线程分治任务之前的预处理方法，返回业务数据
      *
      * @param args
-     * @throws Exception
      * @return Object
+     * @throws Exception
      * @author Hlingoes 2020/5/23
      */
     Object prepare(Object[] args) throws Exception;
@@ -34,8 +33,8 @@ public interface OperationThreadService {
      * description: 多线程的任务逻辑
      *
      * @param elements
-     * @throws Exception
      * @return java.lang.Object
+     * @throws Exception
      * @author Hlingoes 2020/5/24
      */
     Object invoke(PartitionElements elements) throws Exception;
@@ -45,8 +44,8 @@ public interface OperationThreadService {
      *
      * @param elements
      * @param object
-     * @throws Exception
      * @return void
+     * @throws Exception
      * @author Hlingoes 2020/5/23
      */
     void post(PartitionElements elements, Object object) throws Exception;
@@ -55,10 +54,10 @@ public interface OperationThreadService {
      * description: 归并结果之后的尾处理
      *
      * @param object
-     * @throws Exception
      * @return java.lang.Object
+     * @throws Exception
      * @author Hlingoes 2020/5/24
      */
-    Object finished(Object object)throws Exception;
+    Object finished(Object object) throws Exception;
 
 }

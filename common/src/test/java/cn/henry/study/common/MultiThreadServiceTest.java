@@ -2,6 +2,8 @@ package cn.henry.study.common;
 
 import cn.henry.study.common.bo.PartitionElements;
 import cn.henry.study.common.service.OperationThreadService;
+import cn.henry.study.common.utils.MultiThreadOperationUtils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,4 +59,13 @@ public class MultiThreadServiceTest implements OperationThreadService {
         return object;
     }
 
+    @Test
+    public void testBatchExecute() {
+        try {
+            Object object = MultiThreadOperationUtils.batchExecute(new MultiThreadServiceTest(), 10, new Object[]{"test"});
+            logger.info("测试完成: {}", object.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
