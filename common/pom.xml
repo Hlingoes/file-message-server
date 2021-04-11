@@ -21,7 +21,7 @@
         <commons-net.version>3.6</commons-net.version>
         <commons-pool2.version>2.4.2</commons-pool2.version>
         <commons-lang3.version>3.9</commons-lang3.version>
-        <commons-io.version>2.4</commons-io.version>
+        <commons-io.version>2.6</commons-io.version>
         <curator.version>4.2.0</curator.version>
         <ganymed-ssh2.version>262</ganymed-ssh2.version>
         <oshi-core.version>4.4.0</oshi-core.version>
@@ -118,10 +118,35 @@
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
         </dependency>
+
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>2.9.0</version>
+        </dependency>
+
+        <!-- spring-boot-starter-web 已经包含了logback、lombok、Freemarker、dom4j依赖，这里只显式的引用下 ，用于复杂excel导出-->
+        <!-- 模板引擎 -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+        <!--
+            由于easy excel中已经包含org.apache.poi:poi, org.apache.poi:poi-ooxml, org.apache.xmlbeans:xmlbeans
+            这里不做引入
+         -->
+
+        <!-- java解析XML文件 -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+
+        <!-- 在Java应用程序中调用COM组件和Win32程序库 -->
+        <dependency>
+            <groupId>net.sf.jacob-project</groupId>
+            <artifactId>jacob</artifactId>
+            <version>1.14.3</version>
         </dependency>
 
         <!-- 引入本地jar包 -->
