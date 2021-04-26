@@ -21,7 +21,7 @@
         <commons-net.version>3.6</commons-net.version>
         <commons-pool2.version>2.4.2</commons-pool2.version>
         <commons-lang3.version>3.9</commons-lang3.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <curator.version>4.2.0</curator.version>
         <ganymed-ssh2.version>262</ganymed-ssh2.version>
         <oshi-core.version>4.4.0</oshi-core.version>
