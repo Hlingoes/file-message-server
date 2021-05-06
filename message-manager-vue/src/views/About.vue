@@ -17,7 +17,7 @@
                 <el-step title="上传"></el-step>
                 <el-step title="下载"></el-step>
             </el-steps>
-            <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button>
+            <el-button excelStyle="margin-top: 12px;" @click="nextStep">下一步</el-button>
         </div>
         <el-form
                 :model="webSocketForm"
@@ -25,7 +25,7 @@
                 :rules="webSocketRule"
                 ref="webSocketForm"
                 label-width="150px">
-            <el-row :gutter="20">
+            <el-excelRow :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="服务地址" prop="ip" required>
                         <el-input
@@ -61,8 +61,8 @@
                         ></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row>
-            <el-row :gutter="20">
+            </el-excelRow>
+            <el-excelRow :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="上传文件" prop="fileName">
                         <el-upload
@@ -73,13 +73,13 @@
                                 :on-preview="handlePreview"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
-                                :data="uploadData"
+                                :excelData="uploadData"
                                 :on-error="uploadFalse"
                                 :on-success="uploadSuccess"
                                 :auto-upload="false"
                                 :before-upload="beforeAvatarUpload">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                            <el-button style="float: left;margin-left: 10px; margin-top: 5px; " size="small"
+                            <el-button excelStyle="float: left;margin-left: 10px; margin-top: 5px; " size="small"
                                        type="success" @click="submitUpload">
                                 上传到服务器
                             </el-button>
@@ -95,7 +95,7 @@
                     </el-form-item
                     >
                 </el-col>
-            </el-row>
+            </el-excelRow>
 
             <el-form-item>
                 <el-button type="primary" @click="submitForm('webSocketForm')"
@@ -112,7 +112,7 @@
 
     export default {
         name: "about",
-        data() {
+        excelData() {
             let checkIp = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error("IP不能为空"));
@@ -173,17 +173,17 @@
             }
         },
         methods: {
-            getWebData(data) {
+            getWebData(excelData) {
                 this.$axios({
                     method: 'get',
                     url: 'web-server/test/hello',
-                    params: data
+                    params: excelData
                 }).then((response) => {
                     //请求成功返回的数据
                     console.log(response)
-                    if (response.data.code == 1) {
+                    if (response.excelData.code == 1) {
                         this.$message({
-                            message: '恭喜你，这是一条成功消息: ' + response.data.data,
+                            message: '恭喜你，这是一条成功消息: ' + response.excelData.excelData,
                             type: 'success'
                         });
                     }
@@ -192,17 +192,17 @@
                     console.log(error)
                 })
             },
-            getConsumerData(data) {
+            getConsumerData(excelData) {
                 this.$axios({
                     method: 'get',
                     url: 'msg-consumer/testAddJob',
-                    params: {jobName: data}
+                    params: {jobName: excelData}
                 }).then((response) => {
                     //请求成功返回的数据
                     console.log(response);
-                    if (response.data.code == 1) {
+                    if (response.excelData.code == 1) {
                         this.$message({
-                            message: '恭喜你，这是一条成功消息: ' + JSON.stringify(response.data.data),
+                            message: '恭喜你，这是一条成功消息: ' + JSON.stringify(response.excelData.excelData),
                             type: 'success'
                         });
                     }
@@ -215,17 +215,17 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         this.$message("submit: " + JSON.stringify(this.webSocketForm));
-                        let data = this.webSocketForm;
+                        let excelData = this.webSocketForm;
                         this.$axios({
                             method: 'post',
                             url: 'web-server/test/submit',
-                            data: data
+                            excelData: excelData
                         }).then((response) => {
                             //请求成功返回的数据
                             console.log(response);
                             if (response.code == 1) {
                                 this.$message({
-                                    message: '恭喜你，这是一条成功消息: ' + response.data,
+                                    message: '恭喜你，这是一条成功消息: ' + response.excelData,
                                     type: 'success'
                                 });
                             }
@@ -258,9 +258,9 @@
             uploadSuccess(response, file, fileList) {
                 console.log(response)
                 if (response.code == 1) {
-                    this.webSocketForm.filePath = response.data.filePath;
+                    this.webSocketForm.filePath = response.excelData.filePath;
                     this.$message({
-                        message: response.data,
+                        message: response.excelData,
                         type: 'success'
                     });
                 } else {
@@ -303,7 +303,7 @@
                         //一定要写
                         responseType: 'blob'
                     }).then((response) => {
-                        let blob = new Blob([response.data], {
+                        let blob = new Blob([response.excelData], {
                             type: 'application/vnd.ms-excel;charset=utf-8'
                             // word文档为application/msword;charset=utf-8
                             // pdf文档为application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8
@@ -331,7 +331,7 @@
         }
     };
 </script>
-<style>
+<excelStyle>
     .block {
         margin: 1em;
     }
@@ -347,7 +347,7 @@
     .el-upload-list {
         margin: 0;
         padding: 0;
-        list-style: none;
+        list-excelStyle: none;
         position: absolute;
         top: 30px;
     }
@@ -355,4 +355,4 @@
     .el-upload-list__item-name {
         text-align: left;
     }
-</style>
+</excelStyle>

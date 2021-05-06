@@ -79,6 +79,6 @@ public class ExportExcel {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("bill", bill);
         //导出到项目所在目录下，export文件夹中
-        FreemarkerUtils.exportToFile(map, templateName, "", "export/复杂合并行(xml版).xml");
+        FreemarkerUtils.writeExcelFile(map, templateName, "", "export/复杂合并行(xml版).xml");
     }
 }

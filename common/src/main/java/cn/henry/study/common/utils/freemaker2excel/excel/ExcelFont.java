@@ -6,7 +6,7 @@ package cn.henry.study.common.utils.freemaker2excel.excel;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Font {
+public class ExcelFont {
 
     private String face;
 

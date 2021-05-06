@@ -43,7 +43,7 @@ public class ExportImageExcel {
 		freemarkerInput.setExcelImageInputs(excelImageInputs);
 		freemarkerInput.setFileName("导出带图片Excel缓存文件");
 		// 导出到项目所在目录下，export文件夹中
-		FreemarkerUtils.exportImageExcel("export/带图片(2003版).xls", freemarkerInput);
+		FreemarkerUtils.createImagedExcel("export/带图片(2003版).xls", freemarkerInput);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class ExportImageExcel {
 		freemarkerInput.setExcelImageInputs(excelImageInputs);
 		freemarkerInput.setFileName("导出带图片Excel缓存文件");
 		// 导出到项目所在目录下，export文件夹中
-		FreemarkerUtils.exportImageExcelNew("export/带图片(2007版).xlsx", freemarkerInput);
+		FreemarkerUtils.createImageExcelNew("export/带图片(2007版).xlsx", freemarkerInput);
 	}
 
 	// 模拟Excel假数据数据

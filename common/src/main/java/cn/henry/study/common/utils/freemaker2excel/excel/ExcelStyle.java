@@ -10,7 +10,7 @@ import java.util.List;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Style {
+public class ExcelStyle {
     private String id;
     private String parent;
     private String name;
@@ -21,11 +21,11 @@ public class Style {
     private NumberFormat numberFormat;
     private Protection protection;
 
-    public Style() {
+    public ExcelStyle() {
 
     }
 
-    public Style(String id, Alignment alignment, List<Border> borders, Font font, Interior interior) {
+    public ExcelStyle(String id, Alignment alignment, List<Border> borders, Font font, Interior interior) {
         this.id = id;
         this.alignment = alignment;
         this.borders = borders;
@@ -33,7 +33,7 @@ public class Style {
         this.interior = interior;
     }
 
-    public Style(String id, NumberFormat numberFormat) {
+    public ExcelStyle(String id, NumberFormat numberFormat) {
         this.id = id;
         this.numberFormat = numberFormat;
     }

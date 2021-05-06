@@ -35,13 +35,13 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<excelStyle scoped>
     h3 {
         margin: 40px 0 0;
     }
 
     ul {
-        list-style-type: none;
+        list-excelStyle-type: none;
         padding: 0;
     }
 
@@ -53,4 +53,4 @@
     a {
         color: #42b983;
     }
-</style>
+</excelStyle>

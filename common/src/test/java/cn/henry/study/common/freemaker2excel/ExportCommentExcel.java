@@ -58,7 +58,7 @@ public class ExportCommentExcel {
 		freemakerInput.setTemplateFilePath("");
 		freemakerInput.setFileName("带注释的表格");
 		freemakerInput.setXmlTempFile("export/temp/");
-		FreemarkerUtils.exportImageExcelNew("export/带注释(2007版).xlsx", freemakerInput);
+		FreemarkerUtils.createImageExcelNew("export/带注释(2007版).xlsx", freemakerInput);
 	}
 
 }

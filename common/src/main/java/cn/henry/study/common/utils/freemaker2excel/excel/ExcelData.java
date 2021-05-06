@@ -6,13 +6,13 @@ package cn.henry.study.common.utils.freemaker2excel.excel;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Data {
+public class ExcelData {
 
     private String type;
 
     private String xmlns;
 
-    private Font font;
+    private ExcelFont excelFont;
 
     private String text;
 
@@ -32,12 +32,12 @@ public class Data {
         this.xmlns = xmlns;
     }
 
-    public Font getFont() {
-        return font;
+    public ExcelFont getExcelFont() {
+        return excelFont;
     }
 
-    public void setFont(Font font) {
-        this.font = font;
+    public void setExcelFont(ExcelFont excelFont) {
+        this.excelFont = excelFont;
     }
 
     public String getText() {

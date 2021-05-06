@@ -6,19 +6,19 @@ package cn.henry.study.common.utils.freemaker2excel.excel;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Cell {
+public class ExcelCell {
 
     private String styleID;
 
     private Integer mergeAcross;
 
-    private Integer MergeDown;
+    private Integer mergeDown;
 
-    private Data data;
+    private ExcelData excelData;
 
     private Integer index;
 
-    private Comment comment;
+    private ExcelComment excelComment;
 
     public String getStyleID() {
         return styleID;
@@ -37,19 +37,19 @@ public class Cell {
     }
 
     public Integer getMergeDown() {
-        return MergeDown;
+        return mergeDown;
     }
 
     public void setMergeDown(Integer mergeDown) {
-        MergeDown = mergeDown;
+        this.mergeDown = mergeDown;
     }
 
-    public Data getData() {
-        return data;
+    public ExcelData getExcelData() {
+        return excelData;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setExcelData(ExcelData excelData) {
+        this.excelData = excelData;
     }
 
     public Integer getIndex() {
@@ -60,11 +60,11 @@ public class Cell {
         this.index = index;
     }
 
-    public Comment getComment() {
-        return comment;
+    public ExcelComment getExcelComment() {
+        return excelComment;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
+    public void setExcelComment(ExcelComment excelComment) {
+        this.excelComment = excelComment;
     }
 }

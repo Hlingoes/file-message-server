@@ -10,11 +10,11 @@ import java.util.List;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class CellRangeAddressEntity {
+public class ExcelCellRangeAddressEntity {
 
     private CellRangeAddress cellRangeAddress;
 
-    private List<Style.Border> borders;
+    private List<ExcelStyle.Border> borders;
 
     public CellRangeAddress getCellRangeAddress() {
         return cellRangeAddress;
@@ -24,11 +24,11 @@ public class CellRangeAddressEntity {
         this.cellRangeAddress = cellRangeAddress;
     }
 
-    public List<Style.Border> getBorders() {
+    public List<ExcelStyle.Border> getBorders() {
         return borders;
     }
 
-    public void setBorders(List<Style.Border> borders) {
+    public void setBorders(List<ExcelStyle.Border> borders) {
         this.borders = borders;
     }
 }

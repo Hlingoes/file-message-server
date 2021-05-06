@@ -6,11 +6,11 @@ package cn.henry.study.common.utils.freemaker2excel.excel;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Worksheet {
+public class ExcelWorksheet {
 
     private String Name;
 
-    private Table table;
+    private ExcelTable excelTable;
 
     public String getName() {
         return Name;
@@ -20,11 +20,11 @@ public class Worksheet {
         Name = name;
     }
 
-    public Table getTable() {
-        return table;
+    public ExcelTable getExcelTable() {
+        return excelTable;
     }
 
-    public void setTable(Table table) {
-        this.table = table;
+    public void setExcelTable(ExcelTable excelTable) {
+        this.excelTable = excelTable;
     }
 }

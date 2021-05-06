@@ -8,7 +8,7 @@ import java.util.List;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Table {
+public class ExcelTable {
     private Integer expandedColumnCount;
 
     private Integer expandedRowCount;
@@ -21,9 +21,9 @@ public class Table {
 
     private Integer defaultRowHeight;
 
-    private List<Column> columns;
+    private List<ExcelColumn> excelColumns;
 
-    private List<Row> rows;
+    private List<ExcelRow> excelRows;
 
     public Integer getExpandedColumnCount() {
         return expandedColumnCount;
@@ -73,19 +73,19 @@ public class Table {
         this.defaultRowHeight = defaultRowHeight;
     }
 
-    public List<Column> getColumns() {
-        return columns;
+    public List<ExcelColumn> getExcelColumns() {
+        return excelColumns;
     }
 
-    public void setColumns(List<Column> columns) {
-        this.columns = columns;
+    public void setExcelColumns(List<ExcelColumn> excelColumns) {
+        this.excelColumns = excelColumns;
     }
 
-    public List<Row> getRows() {
-        return rows;
+    public List<ExcelRow> getExcelRows() {
+        return excelRows;
     }
 
-    public void setRows(List<Row> rows) {
-        this.rows = rows;
+    public void setExcelRows(List<ExcelRow> excelRows) {
+        this.excelRows = excelRows;
     }
 }

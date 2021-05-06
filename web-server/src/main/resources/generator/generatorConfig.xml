@@ -40,7 +40,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="cn.henry.study.mapper" targetProject="src\main\java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-        <table tableName="quartz_job" domainObjectName="GeneratorQuartzJob"
+        <excelTable tableName="quartz_job" domainObjectName="GeneratorQuartzJob"
                enableInsert="true"
                enableDeleteByPrimaryKey="true"
                enableSelectByPrimaryKey="true"
@@ -50,7 +50,7 @@
                enableSelectByExample="false"
                enableUpdateByExample="false">
             <property name="rootClass" value="cn.henry.study.common.bo.Metas"/>
-            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
+            <generatedKey excelColumn="id" sqlStatement="Mysql" identity="true"/>
+        </excelTable>
     </context>
 </generatorConfiguration>

@@ -6,11 +6,11 @@ package cn.henry.study.common.utils.freemaker2excel.excel;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Column {
+public class ExcelColumn {
 
     private Integer index;
     private double width;
-    private int autofitwidth;
+    private int autoFitWidth;
 
     public Integer getIndex() {
         return index;
@@ -28,11 +28,11 @@ public class Column {
         this.width = width;
     }
 
-    public int getAutofitwidth() {
-        return autofitwidth;
+    public int getAutoFitWidth() {
+        return autoFitWidth;
     }
 
-    public void setAutofitwidth(int autofitwidth) {
-        this.autofitwidth = autofitwidth;
+    public void setAutoFitWidth(int autoFitWidth) {
+        this.autoFitWidth = autoFitWidth;
     }
 }

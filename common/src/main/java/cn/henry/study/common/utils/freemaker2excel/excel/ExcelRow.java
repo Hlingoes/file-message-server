@@ -8,11 +8,11 @@ import java.util.List;
  * @author 大脑补丁
  * @create 2020-04-14 16:54
  */
-public class Row {
+public class ExcelRow {
 
     private Integer height;
 
-    private List<Cell> cells;
+    private List<ExcelCell> excelCells;
 
     private Integer index;
 
@@ -24,12 +24,12 @@ public class Row {
         this.height = height;
     }
 
-    public List<Cell> getCells() {
-        return cells;
+    public List<ExcelCell> getExcelCells() {
+        return excelCells;
     }
 
-    public void setCells(List<Cell> cells) {
-        this.cells = cells;
+    public void setExcelCells(List<ExcelCell> excelCells) {
+        this.excelCells = excelCells;
     }
 
     public Integer getIndex() {
