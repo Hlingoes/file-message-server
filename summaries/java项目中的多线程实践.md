@@ -348,7 +348,7 @@ public class PartitionElements {
      */
     private long totalCounts;
     private Object[] args;
-    private Object data;
+    private Object excelData;
 
     public PartitionElements() {
 
@@ -430,11 +430,11 @@ public class PartitionElements {
     }
 
     public Object getData() {
-        return data;
+        return excelData;
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public void setData(Object excelData) {
+        this.excelData = excelData;
     }
 
     @Override

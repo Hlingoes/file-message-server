@@ -41,7 +41,7 @@ public interface FileService {
 public class FailRetryException extends BaseException {
     public FailRetryException(FileService service, MessageBrief brief) {
         super();
-        super.data = brief;
+        super.excelData = brief;
     }
 }
 

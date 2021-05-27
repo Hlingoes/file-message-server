@@ -30,7 +30,7 @@ public class HeaderConstants {
     /**
      * API的返回格式 {ApiStyleEnum}
      */
-    public static final String API_STYLE = "Api-Style";
+    public static final String API_STYLE = "Api-ExcelStyle";
 
     /**
      * 失败重传的文件日志前缀名

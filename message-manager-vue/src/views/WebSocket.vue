@@ -6,7 +6,7 @@
                 :rules="webSocketRule"
                 ref="webSocketForm"
                 label-width="150px">
-            <el-row :gutter="20">
+            <el-excelRow :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="服务地址" prop="ip" required>
                         <el-input
@@ -42,8 +42,8 @@
                         ></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row>
-            <el-row :gutter="20">
+            </el-excelRow>
+            <el-excelRow :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="上传文件" prop="fileName">
                         <el-upload
@@ -54,13 +54,13 @@
                                 :on-preview="handlePreview"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
-                                :data="upData"
+                                :excelData="upData"
                                 :on-error="uploadFalse"
                                 :on-success="uploadSuccess"
                                 :auto-upload="false"
                                 :before-upload="beforeAvatarUpload">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                            <el-button style="float: left;margin-left: 10px; margin-top: 5px; " size="small" type="success" @click="submitUpload">
+                            <el-button excelStyle="float: left;margin-left: 10px; margin-top: 5px; " size="small" type="success" @click="submitUpload">
                                 上传到服务器
                             </el-button>
                             <div slot="tip" class="el-upload__tip">(只能上传jpg/png文件，且不超过500kb)</div>
@@ -75,7 +75,7 @@
                     </el-form-item
                     >
                 </el-col>
-            </el-row>
+            </el-excelRow>
 
             <el-form-item>
                 <el-button type="primary" @click="submitForm('webSocketForm')"
@@ -91,7 +91,7 @@
 <script>
     export default {
         name: "webSocket",
-        data() {
+        excelData() {
             let checkIp = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error("IP不能为空"));
@@ -177,11 +177,11 @@
             },
             webSocketOnMessage(e) {
                 // 数据接收
-                this.$message(e.data);
+                this.$message(e.excelData);
             },
-            webSocketSend(data) {
+            webSocketSend(excelData) {
                 // 数据发送
-                this.webSocket.send(data);
+                this.webSocket.send(excelData);
             },
             webSocketClose(e) {
                 // 关闭
@@ -217,9 +217,9 @@
             uploadSuccess(response, file, fileList) {
                 console.log(response)
                 if (response.code == 1) {
-                    this.webSocketForm.filePath = response.data.filePath;
+                    this.webSocketForm.filePath = response.excelData.filePath;
                     this.$message({
-                        message: '导入成功' + JSON.stringify(response.data),
+                        message: '导入成功' + JSON.stringify(response.excelData),
                         type: 'success'
                     });
                 } else {
@@ -255,7 +255,7 @@
         }
     };
 </script>
-<style>
+<excelStyle>
     .el-upload, .el-upload__tip {
         float: left;
     }
@@ -267,7 +267,7 @@
     .el-upload-list {
         margin: 0;
         padding: 0;
-        list-style: none;
+        list-excelStyle: none;
         position: absolute;
         top: 30px;
     }
@@ -275,4 +275,4 @@
     .el-upload-list__item-name {
         text-align: left;
     }
-</style>
+</excelStyle>

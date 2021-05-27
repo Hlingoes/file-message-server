@@ -225,19 +225,19 @@
     <Cell ss:StyleID="s32"/>
    </Row>
 
-   <#list dataList as data>
+   <#list dataList as excelData>
    <Row ss:AutoFitHeight="0" ss:Height="29.25" ss:StyleID="s40">
-    <Cell ss:StyleID="s45"><Data ss:Type="String">${data.leaseNumber!}</Data></Cell>
-    <Cell ss:StyleID="s45"><Data ss:Type="String">${data.description!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.glDate!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.billCode!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.taxableAmount!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.taxRateVat!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.invoiceDate!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.dueDate!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.taxVat!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.grossAmount!}</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">${data.taxCode!}</Data></Cell>
+    <Cell ss:StyleID="s45"><Data ss:Type="String">${excelData.leaseNumber!}</Data></Cell>
+    <Cell ss:StyleID="s45"><Data ss:Type="String">${excelData.description!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.glDate!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.billCode!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.taxableAmount!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.taxRateVat!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.invoiceDate!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.dueDate!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.taxVat!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.grossAmount!}</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">${excelData.taxCode!}</Data></Cell>
    </Row>
   </#list>
   </Table>

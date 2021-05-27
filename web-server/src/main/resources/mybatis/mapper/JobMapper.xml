@@ -3,16 +3,16 @@
 <mapper namespace="cn.henry.study.web.mapper.JobMapper">
 
     <resultMap id="QuartzJobMap" type="cn.henry.study.web.entity.QuartzJob">
-        <result property="jobName" column="job_name"/>
-        <result property="jobGroup" column="job_group"/>
-        <result property="jobClassName" column="job_class_name"/>
-        <result property="cronExpression" column="cron_expression"/>
-        <result property="triggerState" column="trigger_state"/>
-        <result property="oldJobName" column="old_job_name"/>
-        <result property="oldJobGroup" column="old_job_group"/>
-        <result property="oldJobGroup" column="old_job_group"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result property="jobName" excelColumn="job_name"/>
+        <result property="jobGroup" excelColumn="job_group"/>
+        <result property="jobClassName" excelColumn="job_class_name"/>
+        <result property="cronExpression" excelColumn="cron_expression"/>
+        <result property="triggerState" excelColumn="trigger_state"/>
+        <result property="oldJobName" excelColumn="old_job_name"/>
+        <result property="oldJobGroup" excelColumn="old_job_group"/>
+        <result property="oldJobGroup" excelColumn="old_job_group"/>
+        <result excelColumn="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result excelColumn="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         id,job_name,job_group,job_class_name,cron_expression,trigger_state,old_job_name,old_job_group,description,create_time, update_time
