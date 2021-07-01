@@ -17,7 +17,7 @@
         <jackson.version>2.10.5.1</jackson.version>
         <easyexcel.version>2.1.2</easyexcel.version>
         <fastjson.version>1.2.47</fastjson.version>
-        <httpclient.version>4.5.8</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <commons-net.version>3.6</commons-net.version>
         <commons-pool2.version>2.4.2</commons-pool2.version>
         <commons-lang3.version>3.9</commons-lang3.version>
