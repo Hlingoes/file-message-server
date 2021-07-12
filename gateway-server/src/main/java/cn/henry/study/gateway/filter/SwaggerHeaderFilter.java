@@ -1,7 +1,7 @@
 package cn.henry.study.gateway.filter;
 
 import cn.henry.study.gateway.provider.SwaggerProvider;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
