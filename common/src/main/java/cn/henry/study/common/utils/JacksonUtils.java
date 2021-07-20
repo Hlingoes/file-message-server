@@ -3,6 +3,7 @@ package cn.henry.study.common.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class JacksonUtils {
         try {
             return MAPPER.writeValueAsString(data);
         } catch (JsonProcessingException e) {
-            logger.error("对象转string失败: {}", data, e);
+            logger.warn("object2Str fail", e);
         }
         return null;
     }
@@ -48,8 +49,8 @@ public class JacksonUtils {
     public static <T> T str2Bean(String data, Class<T> beanType) {
         try {
             return MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).readValue(data, beanType);
-        } catch (Exception e) {
-            logger.error("string转对象失败: {}", data, e);
+        } catch (JsonProcessingException e) {
+            logger.warn("str2Bean fail", e);
         }
         return null;
     }
@@ -67,8 +68,9 @@ public class JacksonUtils {
                 .getTypeFactory().constructParametricType(List.class, beanType);
         try {
             return MAPPER.readValue(data, javaType);
-        } catch (Exception e) {
-            logger.error("string转对象失败: {}", data, e);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            logger.warn("str2List fail", e);
         }
         return null;
     }

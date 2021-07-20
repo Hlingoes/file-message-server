@@ -44,12 +44,10 @@ public class MultiThreadServiceTest implements OperationThreadService {
         StringBuilder sb = new StringBuilder();
         List<Object> datas = (List<Object>) elements.getData();
         for (int i = 0; i < datas.size(); i++) {
+            sb.append("('" + datas.get(i) + "')");
             if ((i + 1) % 5 == 0 || (i + 1) == datas.size()) {
-                sb.append("('" + datas.get(i) + "')");
                 logger.info("{}: 测试insert sql: {}", elements, insertSql + sb.toString());
                 sb = new StringBuilder();
-            } else {
-                sb.append("('" + datas.get(i) + "'),");
             }
         }
     }
