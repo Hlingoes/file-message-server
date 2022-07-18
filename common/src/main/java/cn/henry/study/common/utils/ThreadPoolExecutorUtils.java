@@ -146,6 +146,7 @@ public class ThreadPoolExecutorUtils {
                     if (!executor.isShutdown()) {
                         logger.warn("ThreadPoolExecutor is over working, please check the thread tasks! ");
                     }
+                    // @citation https://www.cnblogs.com/thisiswhy/p/16466015.html
                     throw new RejectedExecutionException("Task " + r.toString() + " rejected from " + executor.toString());
                 }) {
 
