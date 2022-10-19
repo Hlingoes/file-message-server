@@ -14,7 +14,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <jackson.version>2.10.5.1</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <easyexcel.version>2.1.2</easyexcel.version>
         <fastjson.version>1.2.47</fastjson.version>
         <httpclient.version>4.5.13</httpclient.version>
